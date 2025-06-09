@@ -1,0 +1,169 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id              Int               @id @default(autoincrement())
+  username        String            @unique
+  email           String            @unique
+  passwordHash    String
+  avatarUrl       String?
+  role            Role              @default(USER)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  Collection      Collection[]
+  BrowsingHistory BrowsingHistory[]
+  UserLibrary     UserLibrary[]
+  Report          Report[]
+  Like            Like[]
+  Comment         Comment[]
+}
+
+model Collection {
+  id              Int               @id @default(autoincrement())
+  title           String
+  description     String?
+  tags            String[]          @default([])
+  url             String
+  userId          Int
+  user            User              @relation(fields: [userId], references: [id])
+  mediaOrder      Int[]
+  engine          Engine            @default(CHESS)
+  isDeleted       Boolean           @default(false)
+  visibility      Visibility        @default(PUBLIC)
+  popularity      Int               @default(0)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  views           Int
+  likes           Int
+  BrowsingHistory BrowsingHistory[]
+
+  @@index([title, tags])
+}
+
+model Media {
+  id              Int               @id @default(autoincrement())
+  type            MediaType
+  url             String
+  description     String?
+  thumbnailUrl    String?
+  altText         String?
+  reportedCount   Int               @default(0)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  BrowsingHistory BrowsingHistory[]
+  UserLibrary     UserLibrary[]
+  Report          Report[]
+  likes           Int
+  views           Int
+  Comment         Comment[]
+
+  @@index([type, createdAt])
+}
+
+model BrowsingHistory {
+  id           Int         @id @default(autoincrement())
+  userId       Int
+  mediaId      Int?
+  collectionId Int?
+  viewedAt     DateTime    @default(now())
+  user         User        @relation(fields: [userId], references: [id])
+  media        Media?      @relation(fields: [mediaId], references: [id])
+  collection   Collection? @relation(fields: [collectionId], references: [id])
+
+  @@index([userId, mediaId, collectionId])
+}
+
+model UserLibrary {
+  id      Int      @id @default(autoincrement())
+  userId  Int
+  mediaId Int
+  savedAt DateTime @default(now())
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  media   Media    @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, mediaId])
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  mediaId   Int
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, mediaId])
+}
+
+model Comment {
+  id        Int       @id @default(autoincrement())
+  content   String    @db.Text
+  userId    Int
+  mediaId   Int
+  parentId  Int? // Support nested comments
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  media     Media     @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: SetNull)
+  replies   Comment[] @relation("CommentReplies")
+
+  @@index([userId, mediaId])
+  @@index([parentId])
+}
+
+model Report {
+  id         Int          @id @default(autoincrement())
+  reporterId Int
+  mediaId    Int?
+  reason     ReportReason
+  status     ReportStatus @default(PENDING)
+  resolvedAt DateTime?
+  createdAt  DateTime     @default(now())
+  reporter   User         @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+  media      Media?       @relation(fields: [mediaId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+}
+
+enum MediaType {
+  TEXT
+  IMAGE
+  VIDEO
+  AUDIO
+  DOCUMENT
+}
+
+enum Visibility {
+  PUBLIC
+  PRIVATE
+  FRIENDS_ONLY
+}
+
+enum ReportReason {
+  SPAM
+  INAPPROPRIATE
+  COPYRIGHT
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  REVIEWED
+  ACTION_TAKEN
+}
+
+enum Role {
+  USER
+  MODERATOR
+  ADMIN
+}
+
+enum Engine {
+  CHESS
+  GO
+}

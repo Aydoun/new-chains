@@ -1,5 +1,10 @@
 import { PrismaClient } from '@prisma/client';
 
+// Extend the global object to include prisma property
+declare global {
+  var prisma: PrismaClient | undefined;
+}
+
 let prisma: PrismaClient;
 
 if (process.env.NODE_ENV === 'production') {

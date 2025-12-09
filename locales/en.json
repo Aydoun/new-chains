@@ -1,0 +1,12 @@
+{
+  "navigation": {
+    "home": "Home",
+    "inbox": "Inbox",
+    "settings": "Settings"
+  },
+  "carousel": {
+    "previous": "Previous",
+    "next": "Next",
+    "frame": "Frame"
+  }
+}

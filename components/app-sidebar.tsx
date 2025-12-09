@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Search, Settings, Link } from "lucide-react";
+import { Home, Inbox, Settings, Link } from "lucide-react";
 
 import {
   Sidebar,
@@ -10,30 +10,21 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { translate } from "@/lib/i18n";
 
 const items = [
   {
-    title: "Home",
+    titleKey: "home",
     url: "#",
     icon: Home,
   },
   {
-    title: "Inbox",
+    titleKey: "inbox",
     url: "#",
     icon: Inbox,
   },
   {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
-  },
-  {
-    title: "Search",
-    url: "#",
-    icon: Search,
-  },
-  {
-    title: "Settings",
+    titleKey: "settings",
     url: "#",
     icon: Settings,
   },
@@ -50,11 +41,11 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
+                <SidebarMenuItem key={item.titleKey}>
                   <SidebarMenuButton asChild>
                     <a href={item.url} className="text-white">
                       <item.icon />
-                      <span>{item.title}</span>
+                      <span>{translate(`navigation.${item.titleKey}`)}</span>
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

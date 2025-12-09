@@ -2,7 +2,7 @@
 
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { store } from "./store";
 import { Provider } from "react-redux";
@@ -30,10 +30,7 @@ export default function RootLayout({
         <Provider store={store}>
           <SidebarProvider>
             <AppSidebar />
-            <main className="bg-gray-900 w-full text-white">
-              <SidebarTrigger />
-              {children}
-            </main>
+            <main className="bg-gray-900 w-full text-white">{children}</main>
           </SidebarProvider>
         </Provider>
       </body>

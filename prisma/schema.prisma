@@ -1,10 +1,9 @@
 datasource db {
   provider = "postgresql"
-  url      = env("POSTGRES_URL")
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
 }
 
 model User {
@@ -19,9 +18,7 @@ model User {
   Collection      Collection[]
   BrowsingHistory BrowsingHistory[]
   UserLibrary     UserLibrary[]
-  Report          Report[]
   Like            Like[]
-  Comment         Comment[]
 }
 
 model Collection {
@@ -32,7 +29,7 @@ model Collection {
   url             String
   userId          Int
   user            User              @relation(fields: [userId], references: [id])
-  mediaOrder      Int[]
+  FrameOrder      Int[]
   engine          Engine            @default(CHESS)
   isDeleted       Boolean           @default(false)
   visibility      Visibility        @default(PUBLIC)
@@ -46,22 +43,19 @@ model Collection {
   @@index([title, tags])
 }
 
-model Media {
-  id              Int               @id @default(autoincrement())
-  type            MediaType
-  url             String
-  description     String?
-  thumbnailUrl    String?
-  altText         String?
-  reportedCount   Int               @default(0)
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  BrowsingHistory BrowsingHistory[]
-  UserLibrary     UserLibrary[]
-  Report          Report[]
-  likes           Int
-  views           Int
-  Comment         Comment[]
+model Frame {
+  id            Int           @id @default(autoincrement())
+  type          FrameType
+  url           String
+  description   String?
+  reportedCount Int           @default(0)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  UserLibrary   UserLibrary[]
+  Report        Report[]
+  likes         Int
+  views         Int
+  Comment       Comment[]
 
   @@index([type, createdAt])
 }
@@ -69,68 +63,47 @@ model Media {
 model BrowsingHistory {
   id           Int         @id @default(autoincrement())
   userId       Int
-  mediaId      Int?
-  collectionId Int?
   viewedAt     DateTime    @default(now())
   user         User        @relation(fields: [userId], references: [id])
-  media        Media?      @relation(fields: [mediaId], references: [id])
   collection   Collection? @relation(fields: [collectionId], references: [id])
 
-  @@index([userId, mediaId, collectionId])
+  @@index([userId, collectionId])
 }
 
 model UserLibrary {
   id      Int      @id @default(autoincrement())
   userId  Int
-  mediaId Int
   savedAt DateTime @default(now())
   user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  media   Media    @relation(fields: [mediaId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, mediaId])
+  @@unique([userId])
 }
 
 model Like {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  mediaId   Int
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  collectionId Int
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId, mediaId])
+  @@index([userId, collectionId])
 }
 
-model Comment {
-  id        Int       @id @default(autoincrement())
-  content   String    @db.Text
-  userId    Int
-  mediaId   Int
-  parentId  Int? // Support nested comments
-  createdAt DateTime  @default(now())
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  media     Media     @relation(fields: [mediaId], references: [id], onDelete: Cascade)
-  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: SetNull)
-  replies   Comment[] @relation("CommentReplies")
+// model Report {
+//   id         Int          @id @default(autoincrement())
+//   reporterId Int
+//   mediaId    Int?
+//   reason     ReportReason
+//   status     ReportStatus @default(PENDING)
+//   resolvedAt DateTime?
+//   createdAt  DateTime     @default(now())
+//   reporter   User         @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+//   media      Media?       @relation(fields: [mediaId], references: [id], onDelete: SetNull)
 
-  @@index([userId, mediaId])
-  @@index([parentId])
-}
+//   @@index([status, createdAt])
+// }
 
-model Report {
-  id         Int          @id @default(autoincrement())
-  reporterId Int
-  mediaId    Int?
-  reason     ReportReason
-  status     ReportStatus @default(PENDING)
-  resolvedAt DateTime?
-  createdAt  DateTime     @default(now())
-  reporter   User         @relation(fields: [reporterId], references: [id], onDelete: Cascade)
-  media      Media?       @relation(fields: [mediaId], references: [id], onDelete: SetNull)
-
-  @@index([status, createdAt])
-}
-
-enum MediaType {
+enum FrameType {
   TEXT
   IMAGE
   VIDEO

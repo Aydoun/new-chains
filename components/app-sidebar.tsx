@@ -25,11 +25,6 @@ const items = [
     icon: Inbox,
   },
   {
-    title: "Search",
-    url: "#",
-    icon: Search,
-  },
-  {
     titleKey: "settings",
     url: "#",
     icon: Settings,
@@ -46,7 +41,7 @@ export function AppSidebar() {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem>
+              <SidebarMenuItem key="search">
                 <SidebarMenuButton asChild>
                   <div className="flex w-full items-center gap-2">
                     <Search className="h-4 w-4 text-white" aria-hidden="true" />

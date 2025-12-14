@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Frame" ALTER COLUMN "url" DROP NOT NULL;

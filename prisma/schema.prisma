@@ -12,7 +12,6 @@ model User {
   id              Int               @id @default(autoincrement())
   username        String            @unique
   email           String            @unique
-  passwordHash    String
   avatarUrl       String?
   role            Role              @default(USER)
   createdAt       DateTime          @default(now())
@@ -23,34 +22,29 @@ model User {
 model Collection {
   id              Int               @id @default(autoincrement())
   title           String
-  description     String?
-  url             String
+  description     String
+  url             String?
   userId          Int
   user            User              @relation(fields: [userId], references: [id])
   FrameOrder      Int[]
-  engine          Engine            @default(CHESS)
   isDeleted       Boolean           @default(false)
   visibility      Visibility        @default(PUBLIC)
-  popularity      Int               @default(0)
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
-  views           Int
 
   @@index([title])
 }
 
 model Frame {
   id            Int           @id @default(autoincrement())
-  type          FrameType
-  url           String
+  type          FrameType     @default(PHRASE)
   description   String?
+  content       String
   reportedCount Int           @default(0)
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
-  likes         Int
-  views         Int
 
-  @@index([type, createdAt])
+  @@index([createdAt])
 }
 
 // model BrowsingHistory {
@@ -97,7 +91,7 @@ model Frame {
 // }
 
 enum FrameType {
-  TEXT
+  PHRASE
   IMAGE
   VIDEO
   AUDIO

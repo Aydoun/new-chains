@@ -2,15 +2,13 @@ import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
 
 type FrameInput = {
-  type: string;
-  url: string;
-  description?: string | null;
+  description?: string;
+  content: string;
 };
 
 const buildFrameData = (frame: FrameInput) => ({
-  type: frame.type,
   description: frame.description || "",
-  reportedCount: 0,
+  content: frame.content,
 });
 
 export default async function handler(
@@ -22,7 +20,7 @@ export default async function handler(
 
   const { frames } = req.body as { frames?: FrameInput[] };
 
-  if (!frames || !Array.isArray(frames) || frames.length === 0) {
+  if (!Array.isArray(frames) || frames.length === 0) {
     return res
       .status(400)
       .json({ message: "frames payload must be a non-empty array" });
@@ -36,7 +34,7 @@ export default async function handler(
     );
 
     const ids = createdFrames.map((frame) => frame.id);
-    res.status(201).json({ ids, frames: createdFrames });
+    res.status(201).json({ ids });
   } catch (error) {
     if (error instanceof Error)
       res

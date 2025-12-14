@@ -1,4 +1,6 @@
-import { render, screen } from "@testing-library/react";
+/// <reference types="@testing-library/jest-dom" />
+
+import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Carousel, CarouselFrame } from "../carousel";
 
@@ -10,29 +12,31 @@ describe("Carousel", () => {
   ];
 
   it("renders the initial frame and counter", () => {
-    render(<Carousel frames={frames} />);
+    const { getByText } = render(<Carousel frames={frames} />);
 
-    expect(screen.getByText("First frame")).toBeInTheDocument();
-    expect(screen.getByText(/Frame 1 of 3/)).toBeInTheDocument();
+    expect(getByText("First frame")).toBeInTheDocument();
+    expect(getByText(/Frame 1 of 3/)).toBeInTheDocument();
   });
 
   it("shows the next frame when Next is clicked", async () => {
     const user = userEvent.setup();
-    render(<Carousel frames={frames} />);
+    const { getByRole, getByText } = render(<Carousel frames={frames} />);
 
-    await user.click(screen.getByRole("button", { name: /next/i }));
+    await user.click(getByRole("button", { name: /next/i }));
 
-    expect(screen.getByText("Second frame")).toBeInTheDocument();
-    expect(screen.getByText(/Frame 2 of 3/)).toBeInTheDocument();
+    expect(getByText("Second frame")).toBeInTheDocument();
+    expect(getByText(/Frame 2 of 3/)).toBeInTheDocument();
   });
 
   it("wraps around to the last frame when Previous is clicked from the start", async () => {
     const user = userEvent.setup();
-    render(<Carousel frames={frames} initialIndex={0} />);
+    const { getByRole, getByText } = render(
+      <Carousel frames={frames} initialIndex={0} />,
+    );
 
-    await user.click(screen.getByRole("button", { name: /previous/i }));
+    await user.click(getByRole("button", { name: /previous/i }));
 
-    expect(screen.getByText("Third frame")).toBeInTheDocument();
-    expect(screen.getByText(/Frame 3 of 3/)).toBeInTheDocument();
+    expect(getByText("Third frame")).toBeInTheDocument();
+    expect(getByText(/Frame 3 of 3/)).toBeInTheDocument();
   });
 });

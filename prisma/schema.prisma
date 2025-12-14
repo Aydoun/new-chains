@@ -4,6 +4,8 @@ datasource db {
 
 generator client {
   provider = "prisma-client"
+  engineType = "client"
+  output     = "../lib/generated/prisma"
 }
 
 model User {
@@ -16,16 +18,12 @@ model User {
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   Collection      Collection[]
-  BrowsingHistory BrowsingHistory[]
-  UserLibrary     UserLibrary[]
-  Like            Like[]
 }
 
 model Collection {
   id              Int               @id @default(autoincrement())
   title           String
   description     String?
-  tags            String[]          @default([])
   url             String
   userId          Int
   user            User              @relation(fields: [userId], references: [id])
@@ -37,10 +35,8 @@ model Collection {
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   views           Int
-  likes           Int
-  BrowsingHistory BrowsingHistory[]
 
-  @@index([title, tags])
+  @@index([title])
 }
 
 model Frame {
@@ -51,43 +47,40 @@ model Frame {
   reportedCount Int           @default(0)
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
-  UserLibrary   UserLibrary[]
-  Report        Report[]
   likes         Int
   views         Int
-  Comment       Comment[]
 
   @@index([type, createdAt])
 }
 
-model BrowsingHistory {
-  id           Int         @id @default(autoincrement())
-  userId       Int
-  viewedAt     DateTime    @default(now())
-  user         User        @relation(fields: [userId], references: [id])
-  collection   Collection? @relation(fields: [collectionId], references: [id])
+// model BrowsingHistory {
+//   id           Int         @id @default(autoincrement())
+//   userId       Int
+//   viewedAt     DateTime    @default(now())
+//   user         User        @relation(fields: [userId], references: [id])
+//   collection   Collection? @relation(fields: [collectionId], references: [id])
 
-  @@index([userId, collectionId])
-}
+//   @@index([userId, collectionId])
+// }
 
-model UserLibrary {
-  id      Int      @id @default(autoincrement())
-  userId  Int
-  savedAt DateTime @default(now())
-  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+// model UserLibrary {
+//   id      Int      @id @default(autoincrement())
+//   userId  Int
+//   savedAt DateTime @default(now())
+//   user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([userId])
-}
+//   @@unique([userId])
+// }
 
-model Like {
-  id           Int      @id @default(autoincrement())
-  userId       Int
-  collectionId Int
-  createdAt    DateTime @default(now())
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+// model Like {
+//   id           Int      @id @default(autoincrement())
+//   userId       Int
+//   collectionId Int
+//   createdAt    DateTime @default(now())
+//   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId, collectionId])
-}
+//   @@index([userId, collectionId])
+// }
 
 // model Report {
 //   id         Int          @id @default(autoincrement())

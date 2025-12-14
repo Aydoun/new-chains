@@ -2,16 +2,19 @@
 
 import { useMemo } from "react";
 import { Carousel, CarouselFrame } from "@/components/ui/carousel";
+import { carouselItems } from "./fixtures/carousel-items";
 
 export default function Home() {
   const frames = useMemo(
-    () => [
-      <CarouselFrame key="frame-1">First brew</CarouselFrame>,
-      <CarouselFrame key="frame-2">Second sip</CarouselFrame>,
-      <CarouselFrame key="frame-3">Third roast</CarouselFrame>,
-      <CarouselFrame key="frame-4">Fourth crema</CarouselFrame>,
-      <CarouselFrame key="frame-5">Fifth aroma</CarouselFrame>,
-    ],
+    () =>
+      carouselItems.map((item) => (
+        <CarouselFrame key={item.id}>
+          <div className="flex flex-col gap-2 text-center">
+            <p className="text-lg font-semibold">{item.title}</p>
+            <p className="text-sm text-muted-foreground">{item.description}</p>
+          </div>
+        </CarouselFrame>
+      )),
     []
   );
 

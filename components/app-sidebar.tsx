@@ -1,4 +1,4 @@
-import { Home, Inbox, Settings, Link } from "lucide-react";
+import { Home, Inbox, Settings, Link, Search } from "lucide-react";
 
 import {
   Sidebar,
@@ -10,6 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { Input } from "@/components/ui/input";
 import { translate } from "@/lib/i18n";
 
 const items = [
@@ -22,6 +23,11 @@ const items = [
     titleKey: "inbox",
     url: "#",
     icon: Inbox,
+  },
+  {
+    title: "Search",
+    url: "#",
+    icon: Search,
   },
   {
     titleKey: "settings",
@@ -40,6 +46,19 @@ export function AppSidebar() {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <div className="flex w-full items-center gap-2">
+                    <Search className="h-4 w-4 text-white" aria-hidden="true" />
+                    <Input
+                      type="search"
+                      placeholder="Search"
+                      aria-label="Search"
+                      className="h-10 border-transparent bg-gray-800 text-white placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0"
+                    />
+                  </div>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
               {items.map((item) => (
                 <SidebarMenuItem key={item.titleKey}>
                   <SidebarMenuButton asChild>

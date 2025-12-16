@@ -1,12 +1,50 @@
 {
+  "common": {
+    "close": "Close"
+  },
   "navigation": {
     "home": "Home",
     "inbox": "Inbox",
-    "settings": "Settings"
+    "settings": "Settings",
+    "search": "Search"
   },
   "carousel": {
     "previous": "Previous",
     "next": "Next",
-    "frame": "Frame"
+    "frameLabel": "Frame {current} of {total}"
+  },
+  "collections": {
+    "loadErrorWithStatus": "Unable to load collections (status {status}).",
+    "loadError": "Unable to load collections at this time.",
+    "noDescription": "No description provided.",
+    "tapToPreview": "Tap to preview",
+    "quickPreview": "Quick preview for future collection actions.",
+    "fallbackTitle": "Untitled collection",
+    "collectionWithoutId": "Collection",
+    "collectionLabel": "Collection #{id}",
+    "visibilityLabel": "Visibility: {visibility}",
+    "visibilityUnknown": "Unknown visibility",
+    "avatarAlt": "{title}",
+    "avatarEnlargedAlt": "{title} avatar enlarged",
+    "modalPlaceholder": "This modal will soon hold more collection details and actions. For now, it provides a placeholder view after selecting a collection card."
+  },
+  "createCollection": {
+    "contentRequired": "Content is required",
+    "contentLabel": "Frame content",
+    "contentPlaceholder": "Add content",
+    "descriptionLabel": "Optional description",
+    "descriptionPlaceholder": "Add a description",
+    "namePlaceholder": "Name your collection",
+    "titleRequired": "A collection title is required",
+    "openForm": "Open page form",
+    "dialogTitle": "Build Your Collection",
+    "cancel": "Cancel",
+    "save": "Save collection",
+    "savedMessage": "Collection saved"
+  },
+  "theme": {
+    "switchLabel": "Switch to {mode} mode",
+    "light": "light",
+    "dark": "dark"
   }
 }

@@ -1,6 +1,6 @@
 "use client";
 import { X } from "lucide-react";
-import * as Dialog from "@radix-ui/react-dialog";
+// import * as Dialog from "@radix-ui/react-dialog";
 import { skipToken } from "@reduxjs/toolkit/query";
 // import { Carousel, CarouselFrame } from "@/components/ui/carousel";
 import { Separator } from "@/components/ui/separator";
@@ -8,161 +8,211 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useGetCollectionsByUserQuery } from "./services/collections";
 import type { Collection } from "./types";
 
-const PLACEHOLDER_IMAGE = "/image-placeholder.svg";
+import { useEffect, useMemo, useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { Carousel, CarouselFrame } from "@/components/ui/carousel";
+import { carouselItems } from "./fixtures/carousel-items";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
-function CollectionCard({ collection }: { collection: Collection }) {
-  const imageSource = collection.url || PLACEHOLDER_IMAGE;
+type PageFormValues = {
+  title: string;
+  pages: {
+    content: string;
+    description?: string;
+  }[];
+};
 
-  return (
-    <Dialog.Root>
-      <Dialog.Trigger asChild>
-        <button className="group flex w-full max-w-md flex-col gap-3 rounded-xl bg-gray-800/70 p-4 text-left shadow-lg ring-1 ring-gray-800 transition hover:-translate-y-0.5 hover:ring-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
-          <div className="flex items-start gap-3">
-            <div className="h-20 w-20 overflow-hidden rounded-lg bg-gray-900">
-              <img
-                src={imageSource}
-                alt={`${collection.title} avatar`}
-                className="h-full w-full object-cover"
-              />
-            </div>
-            <div className="flex flex-1 flex-col gap-1">
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex flex-col">
-                  <span className="text-lg font-semibold text-white">
-                    {collection.title}
-                  </span>
-                  <span className="text-xs uppercase tracking-wide text-gray-400">
-                    #{collection.id}
-                  </span>
-                </div>
-                <span className="rounded-full bg-gray-700 px-3 py-1 text-[11px] font-medium uppercase text-gray-200">
-                  {collection.visibility.replace("_", " ")}
-                </span>
-              </div>
-              <p className="text-sm text-gray-200">
-                {collection.description || "No description provided."}
-              </p>
-            </div>
-          </div>
-          <Separator className="bg-gray-700" />
-          <p className="text-xs text-muted-foreground">Tap to preview</p>
-        </button>
-      </Dialog.Trigger>
-      <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/70 backdrop-blur-sm" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[94vw] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-gray-900 p-6 shadow-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
-          <div className="flex items-start justify-between gap-4">
-            <div className="space-y-2">
-              <Dialog.Title className="text-xl font-semibold text-white">
-                {collection.title}
-              </Dialog.Title>
-              <Dialog.Description className="text-sm text-muted-foreground">
-                Quick preview for future collection actions.
-              </Dialog.Description>
-            </div>
-            <Dialog.Close
-              aria-label="Close"
-              className="rounded-full bg-gray-800 p-2 text-gray-300 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            >
-              <X className="h-4 w-4" />
-            </Dialog.Close>
-          </div>
-          <Separator className="my-4 bg-gray-800" />
-          <div className="flex flex-col gap-4 text-sm text-gray-100">
-            <div className="flex items-center gap-3">
-              <div className="h-12 w-12 overflow-hidden rounded-lg bg-gray-800">
-                <img
-                  src={imageSource}
-                  alt={`${collection.title} avatar enlarged`}
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div className="flex flex-col text-muted-foreground">
-                <span className="text-xs uppercase">
-                  Collection #{collection.id}
-                </span>
-                <span className="text-xs">
-                  Visibility: {collection.visibility}
-                </span>
-              </div>
-            </div>
-            <p>
-              This modal will soon hold more collection details and actions. For
-              now, it provides a placeholder view after selecting a collection
-              card.
-            </p>
-          </div>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
-  );
-}
-
-function CollectionSkeleton() {
-  return (
-    <div className="flex w-full max-w-md flex-col gap-3 rounded-xl bg-gray-800/70 p-4">
-      <div className="flex items-start gap-3">
-        <Skeleton className="h-20 w-20 rounded-lg" />
-        <div className="flex flex-1 flex-col gap-2">
-          <Skeleton className="h-4 w-24" />
-          <Skeleton className="h-4 w-16" />
-          <Skeleton className="h-4 w-full" />
-        </div>
-      </div>
-      <Separator className="bg-gray-700" />
-      <Skeleton className="h-3 w-28" />
-    </div>
-  );
-}
+const createEmptyPage = () => ({
+  content: "",
+  description: "",
+});
 
 export default function Home() {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [activeFrame, setActiveFrame] = useState(0);
+  const frames = useMemo(
+    () =>
+      carouselItems.map((item) => (
+        <CarouselFrame key={item.id}>
+          <div className="flex flex-col gap-2 text-center">
+            <p className="text-lg font-semibold">{item.title}</p>
+            <p className="text-sm text-muted-foreground">{item.description}</p>
+          </div>
+        </CarouselFrame>
+      )),
+    []
+  );
   const {
-    data: collections,
-    isLoading,
-    isFetching,
-    isError,
-    error,
-  } = useGetCollectionsByUserQuery(localStorage.getItem("userId") ?? skipToken);
+    control,
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<PageFormValues>({
+    defaultValues: {
+      title: "",
+      pages: [createEmptyPage()],
+    },
+  });
+  const { fields, append } = useFieldArray({
+    control,
+    name: "pages",
+  });
+  const collectionTitle = watch("title");
 
-  const isPending = isLoading || isFetching;
+  const handleNextFrame = () => {
+    setActiveFrame((index) => {
+      const nextIndex = index + 1;
+      if (nextIndex >= fields.length) {
+        append(createEmptyPage());
+      }
+      return nextIndex;
+    });
+  };
+
+  const handlePreviousFrame = () => {
+    setActiveFrame((index) => Math.max(index - 1, 0));
+  };
+
+  useEffect(() => {
+    if (fields.length === 0) {
+      append(createEmptyPage());
+    }
+    if (activeFrame >= fields.length) {
+      setActiveFrame(Math.max(fields.length - 1, 0));
+    }
+  }, [activeFrame, append, fields.length]);
+
+  const pageFrames = fields.map((field, index) => (
+    <CarouselFrame
+      key={field.id}
+      className="h-auto items-stretch justify-start gap-4 bg-card p-6 text-left shadow-sm"
+    >
+      <div className="flex flex-col gap-4">
+        <div className="space-y-2">
+          <label
+            className="text-sm font-medium text-foreground"
+            htmlFor={`page-${index}-content`}
+          >
+            Frame content
+          </label>
+          <Input
+            id={`page-${index}-content`}
+            placeholder="Add a heading or page title"
+            {...register(`pages.${index}.content`, {
+              required: "Content is required",
+            })}
+          />
+          {errors.pages?.[index]?.content && (
+            <p className="text-sm text-destructive">
+              {errors.pages[index]?.content?.message}
+            </p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <label
+            className="text-sm font-medium text-foreground"
+            htmlFor={`page-${index}-description`}
+          >
+            Optional description
+          </label>
+          <Textarea
+            id={`page-${index}-description`}
+            placeholder="Add supporting details for this frame"
+            {...register(`pages.${index}.description`)}
+          />
+        </div>
+      </div>
+    </CarouselFrame>
+  ));
+
+  const onSubmit = (values: PageFormValues) => {
+    console.info("Collection saved", values);
+    setIsDialogOpen(false);
+  };
+
+  const handleDialogChange = (open: boolean) => {
+    setIsDialogOpen(open);
+    if (open) {
+      setActiveFrame(0);
+    }
+  };
 
   return (
-    <div className="flex flex-col gap-10 p-6 sm:p-8">
-      <section className="flex flex-col gap-4">
-        {isPending && (
-          <div className="flex flex-wrap gap-4">
-            {Array.from({ length: 4 }).map((_, index) => (
-              <CollectionSkeleton key={index} />
-            ))}
-          </div>
-        )}
+    <div className="flex flex-col gap-12 p-8 px-0 sm:items-start">
+      <Carousel frames={frames} />
 
-        {!isPending && isError && (
-          <div className="rounded-lg bg-red-900/40 p-4 text-sm text-red-200">
-            {"status" in (error as Record<string, unknown>)
-              ? `Unable to load collections (status ${
-                  (error as { status?: number }).status
-                }).`
-              : "Unable to load collections at this time."}
+      <Dialog open={isDialogOpen} onOpenChange={handleDialogChange}>
+        <div className="fixed bottom-6 left-1/2 z-20 w-full max-w-3xl -translate-x-1/2 px-4">
+          <div className="flex items-center gap-3 rounded-full border bg-background/90 px-5 py-3 shadow-lg backdrop-blur">
+            <Input
+              placeholder="Name your collection"
+              className="flex-1"
+              {...register("title", {
+                required: "A collection title is required",
+              })}
+            />
+            <DialogTrigger asChild>
+              <Button type="button" size="lg" className="rounded-full px-6">
+                Open page form
+              </Button>
+            </DialogTrigger>
           </div>
-        )}
-
-        {!isPending && !isError && collections && collections.length > 0 && (
-          <div className="flex w-full flex-wrap gap-4">
-            {collections.map((collection) => (
-              <CollectionCard key={collection.id} collection={collection} />
-            ))}
-          </div>
-        )}
-
-        {!isPending &&
-          !isError &&
-          (!collections || collections.length === 0) && (
-            <div className="rounded-lg bg-gray-800/80 p-6 text-center text-sm text-muted-foreground">
-              No collections found for this user yet.
-            </div>
+          {errors.title && (
+            <p className="mt-2 text-sm text-destructive">
+              {errors.title.message}
+            </p>
           )}
-      </section>
+        </div>
+
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Build your collection</DialogTitle>
+            <DialogDescription>
+              {collectionTitle || "Add a title to describe this collection."}
+            </DialogDescription>
+          </DialogHeader>
+          <form
+            className="flex flex-col gap-6"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <div className="space-y-3">
+              <p className="text-sm font-medium text-foreground">Pages</p>
+              <Carousel
+                frames={pageFrames}
+                className="w-full"
+                currentIndex={activeFrame}
+                onIndexChange={setActiveFrame}
+                onNext={handleNextFrame}
+                onPrevious={handlePreviousFrame}
+                loop={false}
+              />
+            </div>
+
+            <DialogFooter className="mt-2">
+              <DialogClose asChild>
+                <Button type="button" variant="secondary">
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button type="submit">Save collection</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

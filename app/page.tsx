@@ -50,7 +50,6 @@ export default function Home() {
       <CreateCollectionForm
         isDialogOpen={isDialogOpen}
         handleDialogChange={(open) => {
-          console.log("called ", open);
           setIsDialogOpen(open);
         }}
       />

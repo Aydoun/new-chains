@@ -46,6 +46,7 @@ export function CreateCollectionForm({
     register,
     handleSubmit,
     watch,
+    setError,
     formState: { errors },
   } = useForm<PageFormValues>({
     defaultValues: {
@@ -59,20 +60,7 @@ export function CreateCollectionForm({
   });
 
   const collectionTitle = watch("title");
-
-  const handleNextFrame = () => {
-    setActiveFrame((index) => {
-      const nextIndex = index + 1;
-      if (nextIndex >= fields.length) {
-        append(createEmptyPage());
-      }
-      return nextIndex;
-    });
-  };
-
-  const handlePreviousFrame = () => {
-    setActiveFrame((index) => Math.max(index - 1, 0));
-  };
+  const pages = watch("pages");
 
   const onDialogChange = (open: boolean) => {
     handleDialogChange(open);
@@ -90,7 +78,22 @@ export function CreateCollectionForm({
     }
   }, [activeFrame, append, fields.length]);
 
-  console.log({ fields });
+  const handleAddFrame = () => {
+    const lastIndex = Math.max(fields.length - 1, 0);
+    const lastPageContent = pages?.[lastIndex]?.content?.trim();
+
+    if (!lastPageContent) {
+      setError(`pages.${lastIndex}.content`, {
+        type: "required",
+        message: "Content is required",
+      });
+      setActiveFrame(lastIndex);
+      return;
+    }
+
+    append(createEmptyPage());
+    setActiveFrame(fields.length);
+  };
 
   const pageFrames = fields.map((field, index) => (
     <CarouselFrame
@@ -180,10 +183,13 @@ export function CreateCollectionForm({
                   className="w-full"
                   currentIndex={activeFrame}
                   onIndexChange={setActiveFrame}
-                  onNext={handleNextFrame}
-                  onPrevious={handlePreviousFrame}
                   loop={false}
                 />
+                <div className="flex justify-end">
+                  <Button type="button" variant="outline" onClick={handleAddFrame}>
+                    Add frame
+                  </Button>
+                </div>
               </div>
               <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:space-x-2 mt-2">
                 <DialogClose asChild>

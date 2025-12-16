@@ -31,7 +31,7 @@ export type PageFormValues = {
   }[];
 };
 
-const createEmptyPage = () => ({
+const createEmptyFrame = () => ({
   content: "",
   description: "",
 });
@@ -46,33 +46,21 @@ export function CreateCollectionForm({
     register,
     handleSubmit,
     watch,
+    setError,
     formState: { errors },
   } = useForm<PageFormValues>({
     defaultValues: {
       title: "",
-      pages: [createEmptyPage()],
+      pages: [createEmptyFrame()],
     },
   });
-  const { fields, append } = useFieldArray({
+  const { append } = useFieldArray({
     control,
     name: "pages",
   });
 
   const collectionTitle = watch("title");
-
-  const handleNextFrame = () => {
-    setActiveFrame((index) => {
-      const nextIndex = index + 1;
-      if (nextIndex >= fields.length) {
-        append(createEmptyPage());
-      }
-      return nextIndex;
-    });
-  };
-
-  const handlePreviousFrame = () => {
-    setActiveFrame((index) => Math.max(index - 1, 0));
-  };
+  const pages = watch("pages");
 
   const onDialogChange = (open: boolean) => {
     handleDialogChange(open);
@@ -81,20 +69,9 @@ export function CreateCollectionForm({
     }
   };
 
-  useEffect(() => {
-    if (fields.length === 0) {
-      append(createEmptyPage());
-    }
-    if (activeFrame >= fields.length) {
-      setActiveFrame(Math.max(fields.length - 1, 0));
-    }
-  }, [activeFrame, append, fields.length]);
-
-  console.log({ fields });
-
-  const pageFrames = fields.map((field, index) => (
+  const pageFrames = pages.map((_, index) => (
     <CarouselFrame
-      key={field.id}
+      key={index}
       className="h-auto items-stretch justify-start gap-4 bg-card p-6 text-left shadow-sm"
     >
       <div className="flex flex-col gap-4 w-full">
@@ -135,10 +112,33 @@ export function CreateCollectionForm({
     </CarouselFrame>
   ));
 
+  const onNextSlide = () => {
+    const lastSlideContent = pages?.[activeFrame]?.content?.trim();
+
+    if (!lastSlideContent) {
+      setError(`pages.${activeFrame}.content`, {
+        type: "required",
+        message: "Content is required",
+      });
+    } else {
+      setActiveFrame((previous) => previous + 1);
+    }
+  };
+
+  const onPreviousSlide = () => {
+    setActiveFrame((previous) => Math.min(previous - 1, 0));
+  };
+
   const onSubmit = (values: PageFormValues) => {
     console.log("Collection saved", values);
     onDialogChange(false);
   };
+
+  useEffect(() => {
+    if (activeFrame > pages.length - 1) {
+      append(createEmptyFrame());
+    }
+  }, [activeFrame, pages.length, append]);
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={onDialogChange}>
@@ -179,10 +179,8 @@ export function CreateCollectionForm({
                   frames={pageFrames}
                   className="w-full"
                   currentIndex={activeFrame}
-                  onIndexChange={setActiveFrame}
-                  onNext={handleNextFrame}
-                  onPrevious={handlePreviousFrame}
-                  loop={false}
+                  onNext={onNextSlide}
+                  onPrevious={onPreviousSlide}
                 />
               </div>
               <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:space-x-2 mt-2">
@@ -190,6 +188,9 @@ export function CreateCollectionForm({
                   <Button type="button" variant="secondary">
                     Cancel
                   </Button>
+                </DialogClose>
+                <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
+                  <X className="h-4 w-4" />
                 </DialogClose>
                 <Button type="submit">Save collection</Button>
               </div>

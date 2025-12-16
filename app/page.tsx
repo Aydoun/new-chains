@@ -1,11 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { useGetCollectionsByUserQuery } from "./services/collections";
 import { CollectionCard } from "@/components/collection-card";
 import { CollectionSkeleton } from "@/components/collection-skeleton";
+import { CreateCollectionForm } from "@/components/ui/create-collection";
 
 export default function Home() {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const {
     data: collections,
     isLoading,
@@ -44,6 +47,13 @@ export default function Home() {
           </div>
         )}
       </section>
+      <CreateCollectionForm
+        isDialogOpen={isDialogOpen}
+        handleDialogChange={(open) => {
+          console.log("called ", open);
+          setIsDialogOpen(open);
+        }}
+      />
     </div>
   );
 }

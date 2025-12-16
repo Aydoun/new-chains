@@ -36,35 +36,79 @@ interface CarouselProps {
   frames: React.ReactNode[];
   initialIndex?: number;
   className?: string;
+  currentIndex?: number;
+  onIndexChange?: (index: number) => void;
+  onNext?: (currentIndex: number) => void;
+  onPrevious?: (currentIndex: number) => void;
+  loop?: boolean;
 }
 
 export function Carousel({
   frames,
   initialIndex = 0,
   className,
+  currentIndex: currentIndexProp,
+  onIndexChange,
+  onNext,
+  onPrevious,
+  loop = true,
 }: CarouselProps) {
   const frameCount = frames.length;
-  const [currentIndex, setCurrentIndex] = React.useState(() => {
+  const [uncontrolledIndex, setUncontrolledIndex] = React.useState(() => {
     if (frameCount === 0) return 0;
     return ((initialIndex % frameCount) + frameCount) % frameCount;
   });
+  const isControlled = currentIndexProp !== undefined;
+  const currentIndex =
+    typeof currentIndexProp === "number"
+      ? Math.min(Math.max(currentIndexProp, 0), Math.max(frameCount - 1, 0))
+      : uncontrolledIndex;
+  const setCurrentIndex = React.useCallback(
+    (nextIndex: number | ((previousIndex: number) => number)) => {
+      if (isControlled) {
+        const computedIndex =
+          typeof nextIndex === "function"
+            ? nextIndex(currentIndex)
+            : nextIndex;
+        onIndexChange?.(computedIndex);
+      } else {
+        setUncontrolledIndex(nextIndex);
+      }
+    },
+    [currentIndex, isControlled, onIndexChange]
+  );
 
   React.useEffect(() => {
-    if (frameCount === 0) return;
-    setCurrentIndex(
-      (previous) => ((previous % frameCount) + frameCount) % frameCount
-    );
-  }, [frameCount]);
+    if (frameCount === 0 || isControlled) return;
+    setUncontrolledIndex((previous) => {
+      if (frameCount === 0) return 0;
+      return Math.min(Math.max(previous, 0), frameCount - 1);
+    });
+  }, [frameCount, isControlled]);
 
   const showPrevious = React.useCallback(() => {
     if (frameCount === 0) return;
-    setCurrentIndex((index) => (index - 1 + frameCount) % frameCount);
-  }, [frameCount]);
+    if (onPrevious) {
+      onPrevious(currentIndex);
+      return;
+    }
+    if (!loop && currentIndex === 0) return;
+    setCurrentIndex((index) =>
+      loop ? (index - 1 + frameCount) % frameCount : Math.max(index - 1, 0)
+    );
+  }, [currentIndex, frameCount, loop, onPrevious, setCurrentIndex]);
 
   const showNext = React.useCallback(() => {
     if (frameCount === 0) return;
-    setCurrentIndex((index) => (index + 1) % frameCount);
-  }, [frameCount]);
+    if (onNext) {
+      onNext(currentIndex);
+      return;
+    }
+    if (!loop && currentIndex === frameCount - 1) return;
+    setCurrentIndex((index) =>
+      loop ? (index + 1) % frameCount : Math.min(index + 1, frameCount - 1)
+    );
+  }, [currentIndex, frameCount, loop, onNext, setCurrentIndex]);
 
   if (frameCount === 0) {
     return null;

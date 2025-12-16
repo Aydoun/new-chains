@@ -8,6 +8,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { store } from "./store";
 import { Provider } from "react-redux";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { defaultLocale } from "@/lib/i18n";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -54,7 +55,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className={theme === "dark" ? "dark" : undefined}>
+    <html lang={defaultLocale} className={theme === "dark" ? "dark" : undefined}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >

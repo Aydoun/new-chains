@@ -2,27 +2,62 @@ import { Collection } from "@/app/types";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Separator } from "@radix-ui/react-separator";
 import { X } from "lucide-react";
+import { translate } from "@/lib/i18n";
+import { cn } from "@/lib/utils";
 
 export interface CollectionCardProps {
-  title: string;
-  description: string;
-  imageSrc: string;
+  collection?: Collection;
+  title?: string;
+  description?: string;
+  imageSrc?: string;
+  visibility?: string;
+  id?: number | string;
   className?: string;
 }
 
-export function CollectionCard({ collection }: { collection: Collection }) {
+export function CollectionCard({
+  collection,
+  title,
+  description,
+  imageSrc,
+  visibility,
+  id,
+  className,
+}: CollectionCardProps) {
   const PLACEHOLDER_IMAGE = "/image-placeholder.svg";
-  const imageSource = collection.url || PLACEHOLDER_IMAGE;
+  const resolvedTitle =
+    collection?.title ?? title ?? translate("collections.fallbackTitle");
+  const resolvedDescription =
+    collection?.description ?? description ?? translate("collections.noDescription");
+  const resolvedId = collection?.id ?? id;
+  const resolvedVisibility = collection?.visibility ?? visibility;
+  const imageSource = collection?.url || imageSrc || PLACEHOLDER_IMAGE;
+  const badgeVisibility =
+    resolvedVisibility?.replaceAll("_", " ") ??
+    translate("collections.visibilityUnknown");
+  const displayId =
+    resolvedId !== undefined && resolvedId !== null
+      ? translate("collections.collectionLabel", {
+          id: resolvedId,
+        })
+      : translate("collections.collectionWithoutId");
 
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <button className="group flex w-full max-w-md flex-col gap-3 rounded-xl bg-gray-800/70 p-4 text-left shadow-lg ring-1 ring-gray-800 transition hover:-translate-y-0.5 hover:ring-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+        <button
+          className={cn(
+            "group flex w-full max-w-md flex-col gap-3 rounded-xl bg-gray-800/70 p-4 text-left shadow-lg ring-1 ring-gray-800 transition hover:-translate-y-0.5 hover:ring-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+            className
+          )}
+        >
           <div className="flex items-start gap-3">
             <div className="h-20 w-20 overflow-hidden rounded-lg bg-gray-900">
               <img
                 src={imageSource}
-                alt={`${collection.title} avatar`}
+                alt={translate("collections.avatarAlt", {
+                  title: resolvedTitle,
+                })}
                 className="h-full w-full object-cover"
               />
             </div>
@@ -30,23 +65,27 @@ export function CollectionCard({ collection }: { collection: Collection }) {
               <div className="flex items-start justify-between gap-2">
                 <div className="flex flex-col">
                   <span className="text-lg font-semibold text-white">
-                    {collection.title}
+                    {resolvedTitle}
                   </span>
                   <span className="text-xs uppercase tracking-wide text-gray-400">
-                    #{collection.id}
+                    {resolvedId !== undefined && resolvedId !== null
+                      ? `#${resolvedId}`
+                      : displayId}
                   </span>
                 </div>
                 <span className="rounded-full bg-gray-700 px-3 py-1 text-[11px] font-medium uppercase text-gray-200">
-                  {collection.visibility.replace("_", " ")}
+                  {badgeVisibility}
                 </span>
               </div>
               <p className="text-sm text-gray-200">
-                {collection.description || "No description provided."}
+                {resolvedDescription}
               </p>
             </div>
           </div>
           <Separator className="bg-gray-700" />
-          <p className="text-xs text-muted-foreground">Tap to preview</p>
+          <p className="text-xs text-muted-foreground">
+            {translate("collections.tapToPreview")}
+          </p>
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
@@ -55,14 +94,14 @@ export function CollectionCard({ collection }: { collection: Collection }) {
           <div className="flex items-start justify-between gap-4">
             <div className="space-y-2">
               <Dialog.Title className="text-xl font-semibold text-white">
-                {collection.title}
+                {resolvedTitle}
               </Dialog.Title>
               <Dialog.Description className="text-sm text-muted-foreground">
-                Quick preview for future collection actions.
+                {translate("collections.quickPreview")}
               </Dialog.Description>
             </div>
             <Dialog.Close
-              aria-label="Close"
+              aria-label={translate("common.close")}
               className="rounded-full bg-gray-800 p-2 text-gray-300 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             >
               <X className="h-4 w-4" />
@@ -74,24 +113,24 @@ export function CollectionCard({ collection }: { collection: Collection }) {
               <div className="h-12 w-12 overflow-hidden rounded-lg bg-gray-800">
                 <img
                   src={imageSource}
-                  alt={`${collection.title} avatar enlarged`}
+                  alt={translate("collections.avatarEnlargedAlt", {
+                    title: resolvedTitle,
+                  })}
                   className="h-full w-full object-cover"
                 />
               </div>
               <div className="flex flex-col text-muted-foreground">
                 <span className="text-xs uppercase">
-                  Collection #{collection.id}
+                  {displayId}
                 </span>
                 <span className="text-xs">
-                  Visibility: {collection.visibility}
+                  {translate("collections.visibilityLabel", {
+                    visibility: badgeVisibility,
+                  })}
                 </span>
               </div>
             </div>
-            <p>
-              This modal will soon hold more collection details and actions. For
-              now, it provides a placeholder view after selecting a collection
-              card.
-            </p>
+            <p>{translate("collections.modalPlaceholder")}</p>
           </div>
         </Dialog.Content>
       </Dialog.Portal>

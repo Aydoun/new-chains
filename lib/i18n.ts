@@ -1,4 +1,6 @@
 import en from "@/locales/en.json";
+import fr from "@/locales/fr.json";
+import nl from "@/locales/nl.json";
 
 type TranslationValue = string | string[] | TranslationDictionary;
 
@@ -8,9 +10,11 @@ type TranslationDictionary = {
 
 const dictionaries: Record<Locale, TranslationDictionary> = {
   en,
+  fr,
+  nl,
 };
 
-export type Locale = "en";
+export type Locale = "en" | "fr" | "nl";
 export const defaultLocale: Locale = "en";
 
 function isDictionary(

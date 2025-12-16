@@ -1,0 +1,50 @@
+{
+  "common": {
+    "close": "Sluiten"
+  },
+  "navigation": {
+    "home": "Startpagina",
+    "inbox": "Postvak IN",
+    "settings": "Instellingen",
+    "search": "Zoeken"
+  },
+  "carousel": {
+    "previous": "Vorige",
+    "next": "Volgende",
+    "frameLabel": "Dia {current} van {total}"
+  },
+  "collections": {
+    "loadErrorWithStatus": "Kan collecties niet laden (status {status}).",
+    "loadError": "Kan collecties momenteel niet laden.",
+    "noDescription": "Geen beschrijving opgegeven.",
+    "tapToPreview": "Tik om te bekijken",
+    "quickPreview": "Snelle preview voor toekomstige collectieacties.",
+    "fallbackTitle": "Naamloze collectie",
+    "collectionWithoutId": "Collectie",
+    "collectionLabel": "Collectie #{id}",
+    "visibilityLabel": "Zichtbaarheid: {visibility}",
+    "visibilityUnknown": "Onbekende zichtbaarheid",
+    "avatarAlt": "{title}",
+    "avatarEnlargedAlt": "Vergrote avatar van {title}",
+    "modalPlaceholder": "Deze modal bevat binnenkort meer collectiedetails en acties. Voor nu biedt hij een tijdelijke weergave na het selecteren van een collectiekaart."
+  },
+  "createCollection": {
+    "contentRequired": "Inhoud is verplicht",
+    "contentLabel": "Inhoud van dia",
+    "contentPlaceholder": "Voeg inhoud toe",
+    "descriptionLabel": "Optionele beschrijving",
+    "descriptionPlaceholder": "Voeg een beschrijving toe",
+    "namePlaceholder": "Geef je collectie een naam",
+    "titleRequired": "Een collectietitel is verplicht",
+    "openForm": "Open paginaformulier",
+    "dialogTitle": "Bouw je collectie",
+    "cancel": "Annuleren",
+    "save": "Collectie opslaan",
+    "savedMessage": "Collectie opgeslagen"
+  },
+  "theme": {
+    "switchLabel": "Schakel over naar {mode}-modus",
+    "light": "licht",
+    "dark": "donker"
+  }
+}

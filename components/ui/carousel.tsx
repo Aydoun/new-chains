@@ -5,7 +5,7 @@ import { translate } from "@/lib/i18n";
 
 import { Button } from "./button";
 import { cn } from "@/lib/utils";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface CarouselFrameProps {
   className?: string;
@@ -28,20 +28,55 @@ export function CarouselFrame({ className, children }: CarouselFrameProps) {
 interface CarouselProps {
   frames: React.ReactNode[];
   className?: string;
-  currentIndex: number;
-  onNext: () => void;
-  onPrevious: () => void;
+  currentIndex?: number;
+  initialIndex?: number;
+  onNext?: () => void;
+  onPrevious?: () => void;
 }
 
 export function Carousel({
   frames,
   className,
+  initialIndex = 0,
   currentIndex: currentIndexProp,
   onNext,
   onPrevious,
 }: CarouselProps) {
   const frameCount = frames.length;
-  const currentMaxIndex = Math.max(currentIndexProp, 0);
+  const [uncontrolledIndex, setUncontrolledIndex] = useState(initialIndex);
+  const isControlled = typeof currentIndexProp === "number";
+  const clampIndex = (index: number) =>
+    Math.min(Math.max(index, 0), Math.max(frameCount - 1, 0));
+  const currentMaxIndex = clampIndex(
+    isControlled ? currentIndexProp : uncontrolledIndex
+  );
+  const disablePrevious = isControlled && currentMaxIndex === 0;
+
+  useEffect(() => {
+    if (!isControlled) {
+      setUncontrolledIndex(clampIndex(initialIndex));
+    }
+  }, [initialIndex, isControlled, frameCount]);
+
+  const handleNext = () => {
+    if (isControlled) {
+      onNext?.();
+      return;
+    }
+
+    setUncontrolledIndex((previous) => (previous + 1) % frameCount);
+  };
+
+  const handlePrevious = () => {
+    if (isControlled) {
+      onPrevious?.();
+      return;
+    }
+
+    setUncontrolledIndex((previous) =>
+      previous === 0 ? frameCount - 1 : previous - 1
+    );
+  };
 
   if (frameCount === 0) return null;
 
@@ -58,17 +93,20 @@ export function Carousel({
 
       <div className="flex items-center justify-between gap-2">
         <Button
-          disabled={currentMaxIndex === 0}
+          disabled={disablePrevious}
           type="button"
           variant="secondary"
-          onClick={onPrevious}
+          onClick={handlePrevious}
         >
           {translate("carousel.previous")}
         </Button>
         <span className="text-sm text-muted-foreground">
-          {translate("carousel.frame")} {currentMaxIndex + 1} of {frameCount}
+          {translate("carousel.frameLabel", {
+            current: currentMaxIndex + 1,
+            total: frameCount,
+          })}
         </span>
-        <Button type="button" variant="secondary" onClick={onNext}>
+        <Button type="button" variant="secondary" onClick={handleNext}>
           {translate("carousel.next")}
         </Button>
       </div>

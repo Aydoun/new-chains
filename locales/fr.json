@@ -1,0 +1,50 @@
+{
+  "common": {
+    "close": "Fermer"
+  },
+  "navigation": {
+    "home": "Accueil",
+    "inbox": "Boîte de réception",
+    "settings": "Paramètres",
+    "search": "Rechercher"
+  },
+  "carousel": {
+    "previous": "Précédent",
+    "next": "Suivant",
+    "frameLabel": "Diapositive {current} sur {total}"
+  },
+  "collections": {
+    "loadErrorWithStatus": "Impossible de charger les collections (statut {status}).",
+    "loadError": "Impossible de charger les collections pour le moment.",
+    "noDescription": "Aucune description fournie.",
+    "tapToPreview": "Appuyez pour prévisualiser",
+    "quickPreview": "Aperçu rapide pour de futures actions sur la collection.",
+    "fallbackTitle": "Collection sans titre",
+    "collectionWithoutId": "Collection",
+    "collectionLabel": "Collection #{id}",
+    "visibilityLabel": "Visibilité : {visibility}",
+    "visibilityUnknown": "Visibilité inconnue",
+    "avatarAlt": "{title}",
+    "avatarEnlargedAlt": "Avatar agrandi de {title}",
+    "modalPlaceholder": "Cette fenêtre contiendra bientôt plus de détails et d'actions pour la collection. Pour l'instant, elle offre une vue de remplacement après la sélection d'une carte de collection."
+  },
+  "createCollection": {
+    "contentRequired": "Le contenu est requis",
+    "contentLabel": "Contenu du cadre",
+    "contentPlaceholder": "Ajouter un contenu",
+    "descriptionLabel": "Description facultative",
+    "descriptionPlaceholder": "Ajouter une description",
+    "namePlaceholder": "Nommez votre collection",
+    "titleRequired": "Un titre de collection est requis",
+    "openForm": "Ouvrir le formulaire de page",
+    "dialogTitle": "Construisez votre collection",
+    "cancel": "Annuler",
+    "save": "Enregistrer la collection",
+    "savedMessage": "Collection enregistrée"
+  },
+  "theme": {
+    "switchLabel": "Passer en mode {mode}",
+    "light": "clair",
+    "dark": "sombre"
+  }
+}

@@ -6,6 +6,7 @@ import { useGetCollectionsByUserQuery } from "./services/collections";
 import { CollectionCard } from "@/components/collection-card";
 import { CollectionSkeleton } from "@/components/collection-skeleton";
 import { CreateCollectionForm } from "@/components/ui/create-collection";
+import { translate } from "@/lib/i18n";
 
 export default function Home() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -29,15 +30,20 @@ export default function Home() {
           </div>
         )}
 
-        {!isPending && isError && (
-          <div className="rounded-lg bg-red-900/40 p-4 text-sm text-red-200">
-            {"status" in (error as Record<string, unknown>)
-              ? `Unable to load collections (status ${
-                  (error as { status?: number }).status
-                }).`
-              : "Unable to load collections at this time."}
-          </div>
-        )}
+        {!isPending &&
+          isError &&
+          (() => {
+            const status = (error as { status?: number }).status;
+            return (
+              <div className="rounded-lg bg-red-900/40 p-4 text-sm text-red-200">
+                {"status" in (error as Record<string, unknown>) && status
+                  ? translate("collections.loadErrorWithStatus", {
+                      status,
+                    })
+                  : translate("collections.loadError")}
+              </div>
+            );
+          })()}
 
         {!isPending && !isError && collections && collections.length > 0 && (
           <div className="flex w-full flex-wrap gap-4">

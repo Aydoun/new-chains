@@ -43,17 +43,17 @@ export function AppSidebar() {
             <SidebarMenu>
               <SidebarMenuItem key="search">
                 <SidebarMenuButton asChild>
-                  <div className="flex w-full items-center gap-2">
-                    <Search className="h-4 w-4 text-white" aria-hidden="true" />
-                    <Input
-                      type="search"
-                      placeholder="Search"
-                      aria-label="Search"
-                      className="h-10 border-transparent bg-gray-800 text-white placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0"
-                    />
-                  </div>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+                      <div className="flex w-full items-center gap-2">
+                        <Search className="h-4 w-4 text-white" aria-hidden="true" />
+                        <Input
+                          type="search"
+                          placeholder={translate("navigation.search")}
+                          aria-label={translate("navigation.search")}
+                          className="h-10 border-transparent bg-gray-800 text-white placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0"
+                        />
+                      </div>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
               {items.map((item) => (
                 <SidebarMenuItem key={item.titleKey}>
                   <SidebarMenuButton asChild>

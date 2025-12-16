@@ -20,3 +20,11 @@ export interface Collection {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface CreateCollectionRequest {
+  title: string;
+  description?: string;
+  url?: string;
+  userId: number | string;
+  frameIds: number[];
+}

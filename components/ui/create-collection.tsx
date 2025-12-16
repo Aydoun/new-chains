@@ -44,10 +44,10 @@ export function CreateCollectionForm({
   const {
     control,
     register,
-    handleSubmit,
     watch,
     setError,
     formState: { errors },
+    reset,
   } = useForm<PageFormValues>({
     defaultValues: {
       title: "",
@@ -64,10 +64,43 @@ export function CreateCollectionForm({
 
   const onDialogChange = (open: boolean) => {
     handleDialogChange(open);
-    if (open) {
-      setActiveFrame(0);
+    if (!open) {
+      reset({
+        pages: [createEmptyFrame()],
+        title: "",
+      });
+    }
+
+    setActiveFrame(0);
+  };
+
+  const onNextSlide = () => {
+    const lastSlideContent = pages?.[activeFrame]?.content?.trim();
+
+    if (!lastSlideContent) {
+      setError(`pages.${activeFrame}.content`, {
+        type: "required",
+        message: "Content is required",
+      });
+    } else {
+      setActiveFrame((previous) => previous + 1);
     }
   };
+
+  const onPreviousSlide = () => {
+    setActiveFrame((previous) => previous - 1);
+  };
+
+  const onSubmit = () => {
+    console.log("Collection saved", { pages, collectionTitle });
+    onDialogChange(false);
+  };
+
+  useEffect(() => {
+    if (activeFrame > pages.length - 1) {
+      append(createEmptyFrame());
+    }
+  }, [activeFrame, pages.length, append]);
 
   const pageFrames = pages.map((_, index) => (
     <CarouselFrame
@@ -112,34 +145,6 @@ export function CreateCollectionForm({
     </CarouselFrame>
   ));
 
-  const onNextSlide = () => {
-    const lastSlideContent = pages?.[activeFrame]?.content?.trim();
-
-    if (!lastSlideContent) {
-      setError(`pages.${activeFrame}.content`, {
-        type: "required",
-        message: "Content is required",
-      });
-    } else {
-      setActiveFrame((previous) => previous + 1);
-    }
-  };
-
-  const onPreviousSlide = () => {
-    setActiveFrame((previous) => Math.min(previous - 1, 0));
-  };
-
-  const onSubmit = (values: PageFormValues) => {
-    console.log("Collection saved", values);
-    onDialogChange(false);
-  };
-
-  useEffect(() => {
-    if (activeFrame > pages.length - 1) {
-      append(createEmptyFrame());
-    }
-  }, [activeFrame, pages.length, append]);
-
   return (
     <Dialog open={isDialogOpen} onOpenChange={onDialogChange}>
       <div className="fixed bottom-6 left-1/2 z-20 w-full max-w-3xl -translate-x-1/2 px-4">
@@ -152,7 +157,12 @@ export function CreateCollectionForm({
             })}
           />
           <DialogTrigger asChild>
-            <Button type="button" size="lg" className="rounded-full px-6">
+            <Button
+              disabled={!collectionTitle}
+              size="lg"
+              type="button"
+              className="rounded-full px-6"
+            >
               Open page form
             </Button>
           </DialogTrigger>
@@ -170,10 +180,7 @@ export function CreateCollectionForm({
               <DialogTitle>Build Your Collection</DialogTitle>
               <DialogDescription>{collectionTitle}</DialogDescription>
             </div>
-            <form
-              className="flex flex-col gap-6"
-              onSubmit={handleSubmit(onSubmit)}
-            >
+            <form className="flex flex-col gap-6">
               <div className="space-y-3">
                 <Carousel
                   frames={pageFrames}
@@ -192,7 +199,7 @@ export function CreateCollectionForm({
                 <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
                   <X className="h-4 w-4" />
                 </DialogClose>
-                <Button type="submit">Save collection</Button>
+                <Button onClick={onSubmit}>Save collection</Button>
               </div>
             </form>
           </DialogContent>

@@ -41,44 +41,7 @@ export function Carousel({
   onPrevious,
 }: CarouselProps) {
   const frameCount = frames.length;
-  const currentIndex = Math.max(currentIndexProp, 0);
-
-  // const setCurrentIndex = useCallback(
-  //   (nextIndex: number | ((previousIndex: number) => number)) => {
-  //     const computedIndex =
-  //         typeof nextIndex === "function" ? nextIndex(currentIndex) : nextIndex;
-  //       onIndexChange?.(computedIndex);
-  //   },
-  //   [currentIndex, onIndexChange]
-  // );
-
-  // const showPrevious = useCallback(() => {
-  //   if (frameCount === 0) return;
-
-  //   if (currentIndex === 0) return;
-
-  //   setCurrentIndex((index) => {
-  //     const newIndex = Math.max(index - 1, 0);
-
-  //     if (onIndexChange) {
-  //       onIndexChange(newIndex);
-  //     }
-
-  //     return newIndex;
-  //   });
-  // }, [currentIndex, frameCount, setCurrentIndex, onIndexChange]);
-
-  // const showNext = useCallback(() => {
-  //   if (frameCount === 0) return;
-  //   setCurrentIndex((index) => {
-  //     const newIndex = index + 1;
-
-  //     if (onIndexChange) {
-  //       onIndexChange(newIndex);
-  //     }
-  //     return newIndex;
-  //   });
-  // }, [frameCount, setCurrentIndex, onIndexChange]);
+  const currentMaxIndex = Math.max(currentIndexProp, 0);
 
   if (frameCount === 0) return null;
 
@@ -89,16 +52,21 @@ export function Carousel({
           className="flex items-center justify-center p-6"
           aria-live="polite"
         >
-          <CarouselFrame>{frames[currentIndex]}</CarouselFrame>
+          <CarouselFrame>{frames[currentMaxIndex]}</CarouselFrame>
         </div>
       </div>
 
       <div className="flex items-center justify-between gap-2">
-        <Button type="button" variant="secondary" onClick={onPrevious}>
+        <Button
+          disabled={currentMaxIndex === 0}
+          type="button"
+          variant="secondary"
+          onClick={onPrevious}
+        >
           {translate("carousel.previous")}
         </Button>
         <span className="text-sm text-muted-foreground">
-          {translate("carousel.frame")} {currentIndex + 1} of {frameCount}
+          {translate("carousel.frame")} {currentMaxIndex + 1} of {frameCount}
         </span>
         <Button type="button" variant="secondary" onClick={onNext}>
           {translate("carousel.next")}

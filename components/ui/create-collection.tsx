@@ -17,6 +17,7 @@ import { Carousel, CarouselFrame } from "@/components/ui/carousel";
 import { Input } from "./input";
 import { Button } from "./button";
 import { Textarea } from "./textarea";
+import { useBulkCreateFramesMutation } from "@/app/services/frames";
 
 interface Props {
   isDialogOpen: boolean;
@@ -41,6 +42,8 @@ export function CreateCollectionForm({
   handleDialogChange,
 }: Props) {
   const [activeFrame, setActiveFrame] = useState(0);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [bulkCreateFrames, { isLoading: isSaving }] = useBulkCreateFramesMutation();
   const {
     control,
     register,
@@ -48,6 +51,7 @@ export function CreateCollectionForm({
     setError,
     formState: { errors },
     reset,
+    handleSubmit,
   } = useForm<PageFormValues>({
     defaultValues: {
       title: "",
@@ -69,6 +73,7 @@ export function CreateCollectionForm({
         pages: [createEmptyFrame()],
         title: "",
       });
+      setSubmitError(null);
     }
 
     setActiveFrame(0);
@@ -91,9 +96,36 @@ export function CreateCollectionForm({
     setActiveFrame((previous) => previous - 1);
   };
 
-  const onSubmit = () => {
-    console.log("Collection saved", { pages, collectionTitle });
-    onDialogChange(false);
+  const onSubmit = async (values: PageFormValues) => {
+    setSubmitError(null);
+
+    const framesPayload = values.pages
+      .map((page) => {
+        const content = page.content.trim();
+        const description = page.description?.trim();
+
+        return {
+          content,
+          description: description || undefined,
+        };
+      })
+      .filter((frame) => frame.content.length > 0);
+
+    if (framesPayload.length === 0) {
+      setActiveFrame(0);
+      setError("pages.0.content", {
+        type: "required",
+        message: "At least one frame must include content",
+      });
+      return;
+    }
+
+    try {
+      await bulkCreateFrames(framesPayload).unwrap();
+      onDialogChange(false);
+    } catch (error) {
+      setSubmitError("Unable to save collection right now. Please try again.");
+    }
   };
 
   useEffect(() => {
@@ -119,7 +151,16 @@ export function CreateCollectionForm({
             id={`page-${index}-content`}
             placeholder="Add a content"
             {...register(`pages.${index}.content`, {
-              required: "Content is required",
+              validate: (value, formValues) => {
+                const isLastFrame =
+                  formValues.pages && index === formValues.pages.length - 1;
+
+                if (!value.trim()) {
+                  return isLastFrame ? true : "Content is required";
+                }
+
+                return true;
+              },
             })}
           />
           {errors.pages?.[index]?.content && (
@@ -180,7 +221,10 @@ export function CreateCollectionForm({
               <DialogTitle>Build Your Collection</DialogTitle>
               <DialogDescription>{collectionTitle}</DialogDescription>
             </div>
-            <form className="flex flex-col gap-6">
+            <form
+              className="flex flex-col gap-6"
+              onSubmit={handleSubmit(onSubmit)}
+            >
               <div className="space-y-3">
                 <Carousel
                   frames={pageFrames}
@@ -199,7 +243,14 @@ export function CreateCollectionForm({
                 <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
                   <X className="h-4 w-4" />
                 </DialogClose>
-                <Button onClick={onSubmit}>Save collection</Button>
+                {submitError && (
+                  <p className="flex-1 text-sm text-destructive text-left">
+                    {submitError}
+                  </p>
+                )}
+                <Button type="submit" disabled={isSaving}>
+                  {isSaving ? "Saving..." : "Save collection"}
+                </Button>
               </div>
             </form>
           </DialogContent>

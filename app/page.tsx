@@ -19,7 +19,6 @@ function CollectionCard({ collection }: { collection: Collection }) {
         <button className="group flex w-full max-w-md flex-col gap-3 rounded-xl bg-gray-800/70 p-4 text-left shadow-lg ring-1 ring-gray-800 transition hover:-translate-y-0.5 hover:ring-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
           <div className="flex items-start gap-3">
             <div className="h-20 w-20 overflow-hidden rounded-lg bg-gray-900">
-              {/* use <Image /> instead !*/}
               <img
                 src={imageSource}
                 alt={`${collection.title} avatar`}
@@ -129,8 +128,6 @@ export default function Home() {
 
   return (
     <div className="flex flex-col gap-10 p-6 sm:p-8">
-      {/* <Carousel frames={frames} /> */}
-
       <section className="flex flex-col gap-4">
         {isPending && (
           <div className="flex flex-wrap gap-4">

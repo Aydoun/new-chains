@@ -3,48 +3,64 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client"
+  provider   = "prisma-client"
   engineType = "client"
   output     = "../lib/generated/prisma"
 }
 
 model User {
-  id              Int               @id @default(autoincrement())
-  username        String            @unique
-  email           String            @unique
-  avatarUrl       String?
-  role            Role              @default(USER)
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  Collection      Collection[]
+  id        Int        @id @default(autoincrement())
+  username  String     @unique
+  email     String     @unique
+  avatarUrl String?
+  role      Role       @default(USER)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Sequences Sequence[]
+  stories   Story[]
 }
 
-model Collection {
-  id              Int               @id @default(autoincrement())
-  title           String
-  description     String
-  url             String?
-  userId          Int
-  user            User              @relation(fields: [userId], references: [id])
-  FrameOrder      Int[]
-  isDeleted       Boolean           @default(false)
-  visibility      Visibility        @default(PUBLIC)
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
+model Sequence {
+  id          Int        @id @default(autoincrement())
+  title       String
+  description String
+  url         String?
+  userId      Int
+  user        User       @relation(fields: [userId], references: [id])
+  FrameOrder  Int[]
+  isDeleted   Boolean    @default(false)
+  visibility  Visibility @default(PUBLIC)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 
-  @@index([title])
+  @@index([title, userId])
 }
 
 model Frame {
-  id            Int           @id @default(autoincrement())
-  type          FrameType     @default(PHRASE)
+  id            Int       @id @default(autoincrement())
+  type          FrameType @default(PHRASE)
   description   String?
   content       String
-  reportedCount Int           @default(0)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  reportedCount Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
   @@index([createdAt])
+}
+
+model Story {
+  id          Int        @id @default(autoincrement())
+  title       String
+  description String
+  userId      Int
+  user        User       @relation(fields: [userId], references: [id])
+  sequences   Int[]
+  isDeleted   Boolean    @default(false)
+  visibility  Visibility @default(PUBLIC)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([title, userId])
 }
 
 // model BrowsingHistory {
@@ -52,9 +68,7 @@ model Frame {
 //   userId       Int
 //   viewedAt     DateTime    @default(now())
 //   user         User        @relation(fields: [userId], references: [id])
-//   collection   Collection? @relation(fields: [collectionId], references: [id])
 
-//   @@index([userId, collectionId])
 // }
 
 // model UserLibrary {
@@ -69,11 +83,9 @@ model Frame {
 // model Like {
 //   id           Int      @id @default(autoincrement())
 //   userId       Int
-//   collectionId Int
 //   createdAt    DateTime @default(now())
 //   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-//   @@index([userId, collectionId])
 // }
 
 // model Report {

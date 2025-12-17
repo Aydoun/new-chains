@@ -12,15 +12,15 @@ export default async function handler(
   const { isDeleted, visibility } = req.body;
 
   try {
-    const updatedCollection = await prisma.collection.update({
+    const updatedSequence = await prisma.sequence.update({
       where: { id: parseInt(id as string, 10) },
       data: { isDeleted, visibility },
     });
-    res.status(200).json(updatedCollection);
+    res.status(200).json(updatedSequence);
   } catch (error) {
     if (error instanceof Error)
       res
         .status(500)
-        .json({ error: "Error updating collection", details: error.message });
+        .json({ error: "Error updating sequence", details: error.message });
   }
 }

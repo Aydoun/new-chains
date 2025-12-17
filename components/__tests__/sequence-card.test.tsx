@@ -3,22 +3,22 @@
 import type { ImgHTMLAttributes } from "react";
 import { render, screen } from "@testing-library/react";
 import { vi } from "vitest";
-import { CollectionCard } from "../collection-card";
+import { SequenceCard } from "../sequence-card";
 
 vi.mock("next/image", () => ({
   __esModule: true,
   default: (props: ImgHTMLAttributes<HTMLImageElement>) => <img {...props} />,
 }));
 
-describe("CollectionCard", () => {
+describe("Sequence Card", () => {
   const baseProps = {
     title: "Daily Brews",
     description: "A curated list of coffee rituals.",
     imageSrc: "/globe.svg",
   };
 
-  it("renders the collection details", () => {
-    render(<CollectionCard {...baseProps} />);
+  it("renders the sequence details", () => {
+    render(<SequenceCard {...baseProps} />);
 
     expect(screen.getByText(baseProps.title)).toBeInTheDocument();
     expect(screen.getByText(baseProps.description)).toBeInTheDocument();
@@ -30,7 +30,7 @@ describe("CollectionCard", () => {
 
   it("applies custom class names", () => {
     const { container } = render(
-      <CollectionCard {...baseProps} className="border-red-500" />
+      <SequenceCard {...baseProps} className="border-red-500" />
     );
 
     expect(container.firstChild).toHaveClass("border-red-500");

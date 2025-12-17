@@ -1,7 +1,7 @@
 import { Skeleton } from "./ui/skeleton";
 import { Separator } from "@radix-ui/react-separator";
 
-function CollectionSkeletonItem() {
+function SequenceSkeletonItem() {
   return (
     <div className="flex w-full max-w-md flex-col gap-3 rounded-xl bg-gray-800/70 p-4">
       <div className="flex items-start gap-3">
@@ -18,8 +18,8 @@ function CollectionSkeletonItem() {
   );
 }
 
-export const CollectionSkeleton = () => {
+export const SequenceSkeleton = () => {
   return Array.from({ length: 4 }).map((_, index) => (
-    <CollectionSkeletonItem key={index} />
+    <SequenceSkeletonItem key={index} />
   ));
 };

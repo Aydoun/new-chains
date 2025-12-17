@@ -17,7 +17,7 @@ export default async function handler(
   }
 
   try {
-    const newCollection = await prisma.collection.create({
+    const newSequence = await prisma.sequence.create({
       data: {
         title,
         description,
@@ -27,11 +27,11 @@ export default async function handler(
       },
     });
 
-    res.status(201).json(newCollection);
+    res.status(201).json(newSequence);
   } catch (error) {
     if (error instanceof Error)
       res
         .status(500)
-        .json({ error: "Error creating a collection", details: error.message });
+        .json({ error: "Error creating a sequence", details: error.message });
   }
 }

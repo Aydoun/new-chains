@@ -1,7 +1,7 @@
 "use client";
 
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { Collection } from "../types";
+import type { Sequence } from "../types";
 
 const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/`;
 
@@ -9,22 +9,22 @@ export type BulkCreateFramesResponse = {
   ids: number[];
 };
 
-export type CollectionInput = {
+export type SequenceInput = {
   frameOrder: number[];
   title: string;
   userId: string;
 };
 
-export const collectionApi = createApi({
-  reducerPath: "collectionApi",
+export const sequenceApi = createApi({
+  reducerPath: "sequenceApi",
   baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL }),
   endpoints: (builder) => ({
-    getCollectionsByUser: builder.query<Collection[], string>({
-      query: (userId) => `collection/read?id=${userId}`,
+    getSequencesByUser: builder.query<Sequence[], string>({
+      query: (userId) => `sequence/read?id=${userId}`,
     }),
-    createCollection: builder.mutation<Collection, CollectionInput>({
+    createSequence: builder.mutation<Sequence, SequenceInput>({
       query: (input) => ({
-        url: "collection/create",
+        url: "sequence/create",
         method: "POST",
         body: input,
       }),
@@ -32,5 +32,5 @@ export const collectionApi = createApi({
   }),
 });
 
-export const { useGetCollectionsByUserQuery, useCreateCollectionMutation } =
-  collectionApi;
+export const { useGetSequencesByUserQuery, useCreateSequenceMutation } =
+  sequenceApi;

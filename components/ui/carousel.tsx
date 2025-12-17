@@ -27,9 +27,9 @@ export function CarouselFrame({ className, children }: CarouselFrameProps) {
 interface CarouselProps {
   frames: React.ReactNode[];
   className?: string;
-  currentIndex: number;
-  onNext: () => void;
-  onPrevious: () => void;
+  currentIndex?: number;
+  onNext?: () => void;
+  onPrevious?: () => void;
 }
 
 export function Carousel({
@@ -40,9 +40,33 @@ export function Carousel({
   onPrevious,
 }: CarouselProps) {
   const frameCount = frames.length;
-  const currentMaxIndex = Math.max(currentIndexProp, 0);
+  const [internalIndex, setInternalIndex] = React.useState(0);
+  const currentMaxIndex = Math.max(currentIndexProp ?? internalIndex, 0) %
+    frameCount;
 
   if (frameCount === 0) return null;
+
+  const handleNext = () => {
+    if (onNext) {
+      onNext();
+      return;
+    }
+
+    setInternalIndex((previous) => (previous + 1) % frameCount);
+  };
+
+  const handlePrevious = () => {
+    if (onPrevious) {
+      onPrevious();
+      return;
+    }
+
+    setInternalIndex((previous) =>
+      previous === 0 ? frameCount - 1 : previous - 1
+    );
+  };
+
+  const isPreviousDisabled = onPrevious ? currentMaxIndex === 0 : false;
 
   return (
     <div className={cn("flex flex-col gap-4", className)}>
@@ -57,17 +81,17 @@ export function Carousel({
 
       <div className="flex items-center justify-between gap-2">
         <Button
-          disabled={currentMaxIndex === 0}
+          disabled={isPreviousDisabled}
           type="button"
           variant="secondary"
-          onClick={onPrevious}
+          onClick={handlePrevious}
         >
           {translate("carousel.previous")}
         </Button>
         <span className="text-sm text-muted-foreground">
           {translate("carousel.frame")} {currentMaxIndex + 1} of {frameCount}
         </span>
-        <Button type="button" variant="secondary" onClick={onNext}>
+        <Button type="button" variant="secondary" onClick={handleNext}>
           {translate("carousel.next")}
         </Button>
       </div>

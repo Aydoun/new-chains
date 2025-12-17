@@ -1,18 +1,11 @@
-import { Collection } from "@/app/types";
+import { Sequence } from "@/app/types";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Separator } from "@radix-ui/react-separator";
 import { X } from "lucide-react";
 
-export interface CollectionCardProps {
-  title: string;
-  description: string;
-  imageSrc: string;
-  className?: string;
-}
-
-export function CollectionCard({ collection }: { collection: Collection }) {
+export function SequenceCard({ sequence }: { sequence: Sequence }) {
   const PLACEHOLDER_IMAGE = "/image-placeholder.svg";
-  const imageSource = collection.url || PLACEHOLDER_IMAGE;
+  const imageSource = sequence.url || PLACEHOLDER_IMAGE;
 
   return (
     <Dialog.Root>
@@ -22,7 +15,7 @@ export function CollectionCard({ collection }: { collection: Collection }) {
             <div className="h-20 w-20 overflow-hidden rounded-lg bg-gray-900">
               <img
                 src={imageSource}
-                alt={`${collection.title} avatar`}
+                alt={`${sequence.title} avatar`}
                 className="h-full w-full object-cover"
               />
             </div>
@@ -30,18 +23,18 @@ export function CollectionCard({ collection }: { collection: Collection }) {
               <div className="flex items-start justify-between gap-2">
                 <div className="flex flex-col">
                   <span className="text-lg font-semibold text-white">
-                    {collection.title}
+                    {sequence.title}
                   </span>
                   <span className="text-xs uppercase tracking-wide text-gray-400">
-                    #{collection.id}
+                    #{sequence.id}
                   </span>
                 </div>
                 <span className="rounded-full bg-gray-700 px-3 py-1 text-[11px] font-medium uppercase text-gray-200">
-                  {collection.visibility.replace("_", " ")}
+                  {sequence.visibility.replace("_", " ")}
                 </span>
               </div>
               <p className="text-sm text-gray-200">
-                {collection.description || "No description provided."}
+                {sequence.description || "No description provided."}
               </p>
             </div>
           </div>
@@ -55,10 +48,10 @@ export function CollectionCard({ collection }: { collection: Collection }) {
           <div className="flex items-start justify-between gap-4">
             <div className="space-y-2">
               <Dialog.Title className="text-xl font-semibold text-white">
-                {collection.title}
+                {sequence.title}
               </Dialog.Title>
               <Dialog.Description className="text-sm text-muted-foreground">
-                Quick preview for future collection actions.
+                Quick preview for future sequence actions.
               </Dialog.Description>
             </div>
             <Dialog.Close
@@ -74,22 +67,22 @@ export function CollectionCard({ collection }: { collection: Collection }) {
               <div className="h-12 w-12 overflow-hidden rounded-lg bg-gray-800">
                 <img
                   src={imageSource}
-                  alt={`${collection.title} avatar enlarged`}
+                  alt={`${sequence.title} avatar enlarged`}
                   className="h-full w-full object-cover"
                 />
               </div>
               <div className="flex flex-col text-muted-foreground">
                 <span className="text-xs uppercase">
-                  Collection #{collection.id}
+                  Sequence #{sequence.id}
                 </span>
                 <span className="text-xs">
-                  Visibility: {collection.visibility}
+                  Visibility: {sequence.visibility}
                 </span>
               </div>
             </div>
             <p>
-              This modal will soon hold more collection details and actions. For
-              now, it provides a placeholder view after selecting a collection
+              This modal will soon hold more sequence details and actions. For
+              now, it provides a placeholder view after selecting a sequence
               card.
             </p>
           </div>

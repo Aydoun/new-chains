@@ -1,18 +1,18 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { collectionApi } from "./services/collections";
+import { sequenceApi } from "./services/sequences";
 import { userApi } from "./services/users";
 import { frameApi } from "./services/frames";
 
 export const store = configureStore({
   reducer: {
     [userApi.reducerPath]: userApi.reducer,
-    [collectionApi.reducerPath]: collectionApi.reducer,
+    [sequenceApi.reducerPath]: sequenceApi.reducer,
     [frameApi.reducerPath]: frameApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
       userApi.middleware,
-      collectionApi.middleware,
+      sequenceApi.middleware,
       frameApi.middleware
     ),
 });

@@ -1,37 +1,38 @@
-import handler from "../collection/create";
+import handler from "../sequence/create";
 import { testApiHandler } from "next-test-api-route-handler";
 import prisma from "@/lib/prisma";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/lib/prisma", () => {
-  const collection = { create: vi.fn() };
-  const mockPrisma = { collection };
+  const sequence = { create: vi.fn() };
+  const mockPrisma = { sequence };
   return { prisma: mockPrisma, default: mockPrisma };
 });
 
 const prismaMock = prisma as unknown as {
-  collection: { create: ReturnType<typeof vi.fn> };
+  sequence: { create: ReturnType<typeof vi.fn> };
 };
 
 afterEach(() => {
   vi.clearAllMocks();
 });
 
-describe("POST /api/collection/create", () => {
-  it("creates a collection and returns it", async () => {
+describe("POST /api/sequence/create", () => {
+  it("creates a sequence and returns it", async () => {
     const payload = {
-      title: "Example Collection",
+      title: "Example Sequence",
       description: "Description",
       url: "https://example.com",
       userId: 1,
       frameOrder: [1, 2],
     };
 
-    prismaMock.collection.create.mockResolvedValue({
+    prismaMock.sequence.create.mockResolvedValue({
       id: 1,
       visibility: "PUBLIC",
       ...payload,
       FrameOrder: payload.frameOrder,
+      story: null,
     });
 
     await testApiHandler({
@@ -53,13 +54,16 @@ describe("POST /api/collection/create", () => {
       },
     });
 
-    expect(prismaMock.collection.create).toHaveBeenCalledWith({
+    expect(prismaMock.sequence.create).toHaveBeenCalledWith({
       data: expect.objectContaining({
         title: payload.title,
         url: payload.url,
         userId: payload.userId,
         FrameOrder: payload.frameOrder,
       }),
+      include: {
+        story: true,
+      },
     });
   });
 

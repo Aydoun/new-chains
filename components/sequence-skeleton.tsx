@@ -1,7 +1,8 @@
-import { Skeleton } from "./ui/skeleton";
 import { Separator } from "@radix-ui/react-separator";
+import { cn } from "@/lib/utils";
+import { Skeleton } from "./ui/skeleton";
 
-function CollectionSkeletonItem() {
+function SequenceSkeletonItem() {
   return (
     <div className="flex w-full max-w-md flex-col gap-3 rounded-xl bg-gray-800/70 p-4">
       <div className="flex items-start gap-3">
@@ -18,8 +19,19 @@ function CollectionSkeletonItem() {
   );
 }
 
-export const CollectionSkeleton = () => {
-  return Array.from({ length: 4 }).map((_, index) => (
-    <CollectionSkeletonItem key={index} />
-  ));
+export const SequenceSkeleton = ({
+  className,
+}: {
+  className?: string;
+}) => {
+  return (
+    <div
+      data-testid="sequence-skeleton"
+      className={cn("flex w-full flex-wrap gap-4", className)}
+    >
+      {Array.from({ length: 4 }).map((_, index) => (
+        <SequenceSkeletonItem key={index} />
+      ))}
+    </div>
+  );
 };

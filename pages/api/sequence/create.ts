@@ -8,7 +8,7 @@ export default async function handler(
   if (req.method !== "POST")
     return res.status(405).json({ message: "Method not allowed" });
 
-  const { title, description = "", url = "", userId, frameOrder } = req.body;
+  const { title, description = "", url = "", userId, frameOrder, storyId } = req.body;
 
   if (!title || !userId || !Array.isArray(frameOrder)) {
     return res.status(400).json({
@@ -17,21 +17,25 @@ export default async function handler(
   }
 
   try {
-    const newCollection = await prisma.collection.create({
+    const newSequence = await prisma.sequence.create({
       data: {
         title,
         description,
         url,
         userId: parseInt(userId as string, 10),
         FrameOrder: frameOrder,
+        storyId: storyId ? parseInt(storyId as string, 10) : undefined,
+      },
+      include: {
+        story: true,
       },
     });
 
-    res.status(201).json(newCollection);
+    res.status(201).json(newSequence);
   } catch (error) {
     if (error instanceof Error)
       res
         .status(500)
-        .json({ error: "Error creating a collection", details: error.message });
+        .json({ error: "Error creating a sequence", details: error.message });
   }
 }

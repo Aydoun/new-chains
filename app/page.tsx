@@ -2,20 +2,20 @@
 
 import { useState } from "react";
 import { skipToken } from "@reduxjs/toolkit/query";
-import { useGetCollectionsByUserQuery } from "./services/collections";
-import { CollectionCard } from "@/components/collection-card";
-import { CollectionSkeleton } from "@/components/collection-skeleton";
-import { CreateCollectionForm } from "@/components/ui/create-collection";
+import { useGetSequencesByUserQuery } from "./services/sequences";
+import { SequenceCard } from "@/components/sequence-card";
+import { SequenceSkeleton } from "@/components/sequence-skeleton";
+import { CreateSequenceForm } from "@/components/ui/create-sequence";
 
 export default function Home() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const {
-    data: collections,
+    data: sequences,
     isLoading,
     isFetching,
     isError,
     error,
-  } = useGetCollectionsByUserQuery(localStorage.getItem("userId") ?? skipToken);
+  } = useGetSequencesByUserQuery(localStorage.getItem("userId") ?? skipToken);
   const isPending = isLoading || isFetching;
 
   return (
@@ -23,29 +23,29 @@ export default function Home() {
       <section className="flex flex-col gap-4">
         {isPending && (
           <div className="flex flex-wrap gap-4">
-            <CollectionSkeleton />
+            <SequenceSkeleton />
           </div>
         )}
 
         {!isPending && isError && (
           <div className="rounded-lg bg-red-900/40 p-4 text-sm text-red-200">
             {"status" in (error as Record<string, unknown>)
-              ? `Unable to load collections (status ${
+              ? `Unable to load sequences (status ${
                   (error as { status?: number }).status
                 }).`
-              : "Unable to load collections at this time."}
+              : "Unable to load sequences at this time."}
           </div>
         )}
 
-        {!isPending && !isError && collections && collections.length > 0 && (
+        {!isPending && !isError && sequences && sequences.length > 0 && (
           <div className="flex w-full flex-wrap gap-4">
-            {collections.map((collection) => (
-              <CollectionCard key={collection.id} collection={collection} />
+            {sequences.map((sequence) => (
+              <SequenceCard key={sequence.id} sequence={sequence} />
             ))}
           </div>
         )}
       </section>
-      <CreateCollectionForm
+      <CreateSequenceForm
         isDialogOpen={isDialogOpen}
         handleDialogChange={(open) => {
           setIsDialogOpen(open);

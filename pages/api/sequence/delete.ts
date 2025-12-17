@@ -1,26 +1,24 @@
-import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method !== "PUT")
+  if (req.method !== "DELETE")
     return res.status(405).json({ message: "Method not allowed" });
 
   const { id } = req.query;
-  const { isDeleted, visibility } = req.body;
 
   try {
-    const updatedCollection = await prisma.collection.update({
+    await prisma.sequence.delete({
       where: { id: parseInt(id as string, 10) },
-      data: { isDeleted, visibility },
     });
-    res.status(200).json(updatedCollection);
+    res.status(200).json({ message: "Sequence deleted successfully" });
   } catch (error) {
     if (error instanceof Error)
       res
         .status(500)
-        .json({ error: "Error updating collection", details: error.message });
+        .json({ error: "Error deleting sequence", details: error.message });
   }
 }

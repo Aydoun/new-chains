@@ -23,9 +23,7 @@ export default function Home() {
       <section className="flex flex-col gap-4">
         {isPending && (
           <div className="flex flex-wrap gap-4">
-            {Array.from({ length: 4 }).map((_, index) => (
-              <CollectionSkeleton key={index} />
-            ))}
+            <CollectionSkeleton />
           </div>
         )}
 

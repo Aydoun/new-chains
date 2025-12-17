@@ -5,7 +5,6 @@ import { translate } from "@/lib/i18n";
 
 import { Button } from "./button";
 import { cn } from "@/lib/utils";
-import { useCallback, useEffect, useState } from "react";
 
 interface CarouselFrameProps {
   className?: string;

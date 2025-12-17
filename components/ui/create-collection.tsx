@@ -1,6 +1,6 @@
 "use client";
 
-import { X } from "lucide-react";
+import { X, CircleArrowUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
   Dialog,
@@ -17,6 +17,9 @@ import { Carousel, CarouselFrame } from "@/components/ui/carousel";
 import { Input } from "./input";
 import { Button } from "./button";
 import { Textarea } from "./textarea";
+import { Spinner } from "./spinner";
+import { useBulkCreateFramesMutation } from "@/app/services/frames";
+import { useCreateCollectionMutation } from "@/app/services/collections";
 
 interface Props {
   isDialogOpen: boolean;
@@ -41,6 +44,10 @@ export function CreateCollectionForm({
   handleDialogChange,
 }: Props) {
   const [activeFrame, setActiveFrame] = useState(0);
+  const [bulkCreateFrames, { isLoading: isSaving }] =
+    useBulkCreateFramesMutation();
+  const [createCollectionMutation, { isLoading: isCollectionSaving }] =
+    useCreateCollectionMutation();
   const {
     control,
     register,
@@ -48,6 +55,7 @@ export function CreateCollectionForm({
     setError,
     formState: { errors },
     reset,
+    handleSubmit,
   } = useForm<PageFormValues>({
     defaultValues: {
       title: "",
@@ -91,9 +99,33 @@ export function CreateCollectionForm({
     setActiveFrame((previous) => previous - 1);
   };
 
-  const onSubmit = () => {
-    console.log("Collection saved", { pages, collectionTitle });
+  const onSubmit = async (values: PageFormValues) => {
+    console.log("Collection saved", values);
+    const framesPayload = values.pages.filter(
+      (frame) => frame.content.length > 0
+    );
+
+    if (framesPayload.length === 0) {
+      console.error("pages.0.content", {
+        type: "required",
+        message: "At least one frame must include content",
+      });
+    }
+
     onDialogChange(false);
+    try {
+      const result = await bulkCreateFrames(framesPayload);
+
+      if (!result.error) {
+        await createCollectionMutation({
+          frameOrder: result.data?.ids || [],
+          userId: localStorage.getItem("userId") || "",
+          title: values.title,
+        });
+      }
+    } catch {
+      console.error("Unable to save collection right now. Please try again.");
+    }
   };
 
   useEffect(() => {
@@ -157,13 +189,8 @@ export function CreateCollectionForm({
             })}
           />
           <DialogTrigger asChild>
-            <Button
-              disabled={!collectionTitle}
-              size="lg"
-              type="button"
-              className="rounded-full px-6"
-            >
-              Open page form
+            <Button disabled={!collectionTitle} type="button" className="px-6">
+              {isSaving || isCollectionSaving ? <Spinner /> : <CircleArrowUp />}
             </Button>
           </DialogTrigger>
         </div>
@@ -180,7 +207,10 @@ export function CreateCollectionForm({
               <DialogTitle>Build Your Collection</DialogTitle>
               <DialogDescription>{collectionTitle}</DialogDescription>
             </div>
-            <form className="flex flex-col gap-6">
+            <form
+              className="flex flex-col gap-6"
+              onSubmit={handleSubmit(onSubmit)}
+            >
               <div className="space-y-3">
                 <Carousel
                   frames={pageFrames}
@@ -192,14 +222,12 @@ export function CreateCollectionForm({
               </div>
               <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:space-x-2 mt-2">
                 <DialogClose asChild>
-                  <Button type="button" variant="secondary">
-                    Cancel
-                  </Button>
+                  <Button>Cancel</Button>
                 </DialogClose>
                 <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
                   <X className="h-4 w-4" />
                 </DialogClose>
-                <Button onClick={onSubmit}>Save collection</Button>
+                <Button type="submit">Save collection</Button>
               </div>
             </form>
           </DialogContent>

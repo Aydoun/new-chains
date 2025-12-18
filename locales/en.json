@@ -1,12 +1,31 @@
 {
-  "navigation": {
-    "home": "Home",
-    "inbox": "Inbox",
-    "settings": "Settings"
+  "common": {
+    "close": "Close",
+    "required": "Field is Required",
+    "previous": "Previous",
+    "next": "Next"
   },
   "carousel": {
-    "previous": "Previous",
-    "next": "Next",
     "frame": "Frame"
+  },
+  "frame": {
+    "content": "Frame Content",
+    "self": "Frame"
+  },
+  "navigation": {
+    "home": "Home",
+    "profile": "Profile",
+    "search": "Search",
+    "studio": "Studio"
+  },
+  "sequence": {
+    "cta": {
+      "title": "Name your Sequence",
+      "publish": "Publish"
+    },
+    "draft": {
+      "title": "Draft Your Sequence"
+    },
+    "self": "Sequence"
   }
 }

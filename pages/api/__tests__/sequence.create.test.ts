@@ -29,7 +29,6 @@ describe("POST /api/sequence/create", () => {
 
     prismaMock.sequence.create.mockResolvedValue({
       id: 1,
-      visibility: "PUBLIC",
       ...payload,
       FrameOrder: payload.frameOrder,
     });

@@ -20,6 +20,7 @@ import { Textarea } from "./textarea";
 import { Spinner } from "./spinner";
 import { useBulkCreateFramesMutation } from "@/app/services/frames";
 import { useCreateSequenceMutation } from "@/app/services/sequences";
+import { translate } from "@/lib/i18n";
 
 interface Props {
   isDialogOpen: boolean;
@@ -75,7 +76,7 @@ export function CreateSequenceForm({
     if (!open) {
       reset({
         pages: [createEmptyFrame()],
-        title: "",
+        title: SequenceTitle,
       });
     }
 
@@ -88,7 +89,7 @@ export function CreateSequenceForm({
     if (!lastSlideContent) {
       setError(`pages.${activeFrame}.content`, {
         type: "required",
-        message: "Content is required",
+        message: translate("common.required"),
       });
     } else {
       setActiveFrame((previous) => previous + 1);
@@ -100,31 +101,25 @@ export function CreateSequenceForm({
   };
 
   const onSubmit = async (values: PageFormValues) => {
-    console.log("Sequence saved", values);
+    onDialogChange(false);
     const framesPayload = values.pages.filter(
       (frame) => frame.content.length > 0
     );
 
-    if (framesPayload.length === 0) {
-      console.error("pages.0.content", {
-        type: "required",
-        message: "At least one frame must include content",
-      });
-    }
+    if (framesPayload.length > 0) {
+      try {
+        const result = await bulkCreateFrames(framesPayload);
 
-    onDialogChange(false);
-    try {
-      const result = await bulkCreateFrames(framesPayload);
-
-      if (!result.error) {
-        await createSequenceMutation({
-          frameOrder: result.data?.ids || [],
-          userId: localStorage.getItem("userId") || "",
-          title: values.title,
-        });
+        if (!result.error) {
+          await createSequenceMutation({
+            frameOrder: result.data?.ids || [],
+            userId: localStorage.getItem("userId") || "",
+            title: values.title,
+          });
+        }
+      } catch {
+        console.error("Unable to save sequence right now. Please try again.");
       }
-    } catch {
-      console.error("Unable to save sequence right now. Please try again.");
     }
   };
 
@@ -145,13 +140,12 @@ export function CreateSequenceForm({
             className="text-sm font-medium text-foreground"
             htmlFor={`page-${index}-content`}
           >
-            Frame content
+            {translate("frame.content")}
           </label>
           <Input
             id={`page-${index}-content`}
-            placeholder="Add a content"
             {...register(`pages.${index}.content`, {
-              required: "Content is required",
+              required: translate("common.required"),
             })}
           />
           {errors.pages?.[index]?.content && (
@@ -165,11 +159,10 @@ export function CreateSequenceForm({
             className="text-sm font-medium text-foreground"
             htmlFor={`page-${index}-description`}
           >
-            Optional description
+            {translate("frame.description")}
           </label>
           <Textarea
             id={`page-${index}-description`}
-            placeholder="Add a description"
             {...register(`pages.${index}.description`)}
           />
         </div>
@@ -182,11 +175,9 @@ export function CreateSequenceForm({
       <div className="fixed bottom-6 left-1/2 z-20 w-full max-w-3xl -translate-x-1/2 px-4">
         <div className="flex items-center gap-3 rounded-full border bg-background/90 px-5 py-3 shadow-lg backdrop-blur">
           <Input
-            placeholder="Name your sequence"
+            placeholder={translate("sequence.cta.title")}
             className="flex-1"
-            {...register("title", {
-              required: "A sequence title is required",
-            })}
+            {...register("title")}
           />
           <DialogTrigger asChild>
             <Button disabled={!SequenceTitle} type="button" className="px-6">
@@ -204,7 +195,7 @@ export function CreateSequenceForm({
           />
           <DialogContent className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-2xl translate-x-[-50%] translate-y-[-50%] gap-6 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]">
             <div className="flex flex-col space-y-1.5 text-left">
-              <DialogTitle>Build Your Sequence</DialogTitle>
+              <DialogTitle>{translate("sequence.draft.title")}</DialogTitle>
               <DialogDescription>{SequenceTitle}</DialogDescription>
             </div>
             <form
@@ -221,13 +212,15 @@ export function CreateSequenceForm({
                 />
               </div>
               <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:space-x-2 mt-2">
-                <DialogClose asChild>
-                  <Button>Cancel</Button>
-                </DialogClose>
-                <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
+                <DialogClose
+                  aria-label="Close"
+                  className="absolute right-4 top-4 rounded-full bg-gray-800 p-2 text-gray-300 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                >
                   <X className="h-4 w-4" />
                 </DialogClose>
-                <Button type="submit">Save sequence</Button>
+                <Button type="submit">
+                  {translate("sequence.cta.publish")}
+                </Button>
               </div>
             </form>
           </DialogContent>

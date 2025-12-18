@@ -29,7 +29,6 @@ model Sequence {
   user        User       @relation(fields: [userId], references: [id])
   FrameOrder  Int[]
   isDeleted   Boolean    @default(false)
-  visibility  Visibility @default(PUBLIC)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
@@ -56,7 +55,6 @@ model Story {
   user        User       @relation(fields: [userId], references: [id])
   sequences   Int[]
   isDeleted   Boolean    @default(false)
-  visibility  Visibility @default(PUBLIC)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 

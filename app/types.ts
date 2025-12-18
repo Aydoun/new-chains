@@ -5,7 +5,6 @@ export interface User {
   passwordHash: string;
 }
 
-export type Visibility = "PUBLIC" | "PRIVATE" | "FRIENDS_ONLY";
 export type FrameType = "PHRASE" | "IMAGE" | "VIDEO" | "AUDIO" | "DOCUMENT";
 
 export interface Sequence {
@@ -16,7 +15,6 @@ export interface Sequence {
   userId: number;
   FrameOrder: number[];
   isDeleted: boolean;
-  visibility: Visibility;
   createdAt: string;
   updatedAt: string;
 }

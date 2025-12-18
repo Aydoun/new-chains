@@ -55,6 +55,7 @@ export default function RootLayout({
 
   return (
     <html lang="en" className={theme === "dark" ? "dark" : undefined}>
+      <title>Link And Tell</title>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >

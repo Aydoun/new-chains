@@ -2,6 +2,7 @@ import { Sequence } from "@/app/types";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Separator } from "@radix-ui/react-separator";
 import { X } from "lucide-react";
+import { translate } from "@/lib/i18n";
 
 export interface SequenceCardProps {
   title: string;
@@ -36,9 +37,6 @@ export function SequenceCard({ sequence }: { sequence: Sequence }) {
                     #{sequence.id}
                   </span>
                 </div>
-                <span className="rounded-full bg-gray-700 px-3 py-1 text-[11px] font-medium uppercase text-gray-200">
-                  {sequence.visibility.replace("_", " ")}
-                </span>
               </div>
               <p className="text-sm text-gray-200">
                 {sequence.description || "No description provided."}
@@ -80,18 +78,10 @@ export function SequenceCard({ sequence }: { sequence: Sequence }) {
               </div>
               <div className="flex flex-col text-muted-foreground">
                 <span className="text-xs uppercase">
-                  Sequence #{sequence.id}
-                </span>
-                <span className="text-xs">
-                  Visibility: {sequence.visibility}
+                  {translate("sequence.self")} #{sequence.id}
                 </span>
               </div>
             </div>
-            <p>
-              This modal will soon hold more sequence details and actions. For
-              now, it provides a placeholder view after selecting a sequence
-              card.
-            </p>
           </div>
         </Dialog.Content>
       </Dialog.Portal>

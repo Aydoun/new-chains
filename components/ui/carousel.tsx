@@ -1,8 +1,6 @@
 "use client";
 
-import * as React from "react";
 import { translate } from "@/lib/i18n";
-
 import { Button } from "./button";
 import { cn } from "@/lib/utils";
 
@@ -62,13 +60,13 @@ export function Carousel({
           variant="secondary"
           onClick={onPrevious}
         >
-          {translate("carousel.previous")}
+          {translate("common.previous")}
         </Button>
         <span className="text-sm text-muted-foreground">
-          {translate("carousel.frame")} {currentMaxIndex + 1} of {frameCount}
+          {translate("frame.self")} {currentMaxIndex + 1} of {frameCount}
         </span>
         <Button type="button" variant="secondary" onClick={onNext}>
-          {translate("carousel.next")}
+          {translate("common.next")}
         </Button>
       </div>
     </div>

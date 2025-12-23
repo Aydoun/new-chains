@@ -14,6 +14,7 @@ export interface Sequence {
   url?: string | null;
   userId: number;
   FrameOrder: number[];
+  visibility: Visibility;
   isDeleted: boolean;
   createdAt: string;
   updatedAt: string;
@@ -32,3 +33,5 @@ export interface Frame {
 export interface SingleSequence extends Sequence {
   frames: Frame[];
 }
+
+export type Visibility = "PUBLIC" | "PRIVATE" | "FRIENDS_ONLY";

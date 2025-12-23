@@ -40,10 +40,31 @@ export function Carousel({
   const frameCount = frames.length;
   const currentMaxIndex = Math.max(currentIndexProp, 0);
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    const targetTag = (event.target as HTMLElement).tagName;
+    if (targetTag === "INPUT" || targetTag === "TEXTAREA") return;
+
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      onNext();
+    }
+
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      onPrevious();
+    }
+  };
+
   if (frameCount === 0) return null;
 
   return (
-    <div className={cn("flex flex-col gap-4", className)}>
+    <div
+      className={cn("flex flex-col gap-4", className)}
+      tabIndex={0}
+      role="group"
+      aria-label="frames"
+      onKeyDown={handleKeyDown}
+    >
       <div className="overflow-hidden rounded-lg border border-border shadow-sm">
         <div
           className="flex items-center justify-center p-6"

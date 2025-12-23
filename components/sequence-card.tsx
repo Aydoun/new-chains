@@ -1,12 +1,16 @@
-import { FC, useState } from "react";
+import { FC, useMemo, useState, MouseEvent as ReactMouseEvent } from "react";
 import { Sequence } from "@/app/types";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Separator } from "@radix-ui/react-separator";
-import { X } from "lucide-react";
+import { Trash2, X } from "lucide-react";
 import { translate } from "@/lib/i18n";
-import { useLazyGetSequenceByIdQuery } from "@/app/services/sequences";
+import {
+  useDeleteSequenceMutation,
+  useLazyGetSequenceByIdQuery,
+} from "@/app/services/sequences";
 import { Carousel } from "./ui/carousel";
 import { cn } from "@/lib/utils";
+import { Badge, IconButton, Text } from "@radix-ui/themes";
 
 export interface SequenceCardProps {
   title: string;
@@ -15,15 +19,27 @@ export interface SequenceCardProps {
   className?: string;
 }
 
-export function SequenceCard({ sequence }: { sequence: Sequence }) {
+interface Props {
+  sequence: Sequence;
+}
+
+export const SequenceCard: FC<Props> = ({ sequence }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [activeFrame, setActiveFrame] = useState(0);
+  const [deleteSequence, { isLoading: isDeleting }] =
+    useDeleteSequenceMutation();
 
   const PLACEHOLDER_IMAGE = "/image-placeholder.svg";
   const imageSource = sequence.url || PLACEHOLDER_IMAGE;
   const [fetchSequence, { data, isFetching, isError }] =
     useLazyGetSequenceByIdQuery();
   const guardedFrames = data?.frames ?? [];
+
+  const visibilityLabel = useMemo(() => {
+    const visibilityValue = sequence.visibility ?? "PUBLIC";
+    const formatted = visibilityValue.replace(/_/g, " ").toLowerCase();
+    return `${formatted.charAt(0).toUpperCase()}${formatted.slice(1)}`;
+  }, [sequence.visibility]);
 
   const handleDialogChange = (open: boolean) => {
     setIsDialogOpen(open);
@@ -33,11 +49,22 @@ export function SequenceCard({ sequence }: { sequence: Sequence }) {
     }
   };
 
+  const handleDelete = async (event: ReactMouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    event.preventDefault();
+    try {
+      await deleteSequence(sequence.id).unwrap();
+      // setIsDialogOpen(false);
+    } catch (error) {
+      console.error("Unable to delete sequence right now.", error);
+    }
+  };
+
   return (
     <Dialog.Root open={isDialogOpen} onOpenChange={handleDialogChange}>
       <Dialog.Trigger asChild>
-        <button className="group flex w-full max-w-md flex-col gap-3 rounded-xl bg-gray-800/70 p-4 text-left shadow-lg">
-          <div className="flex items-start gap-3">
+        <div className="group flex w-full max-w-md flex-col gap-3 rounded-xl bg-gray-800/70 p-4 text-left shadow-lg">
+          <div className="flex items-start gap-3 relative">
             <div className="h-20 w-20 overflow-hidden rounded-lg bg-gray-900">
               <img
                 src={imageSource}
@@ -47,21 +74,38 @@ export function SequenceCard({ sequence }: { sequence: Sequence }) {
             </div>
             <div className="flex flex-1 flex-col gap-1">
               <div className="flex items-start justify-between gap-2">
-                <div className="flex flex-col">
-                  <span className="text-lg font-semibold text-white">
+                <div className="flex flex-col gap-1">
+                  <Text weight="bold" className="text-white">
                     {sequence.title}
-                  </span>
+                  </Text>
+                  <Badge size="1" variant="soft" color="gray" className="w-fit">
+                    {visibilityLabel}
+                  </Badge>
                   <span className="text-xs uppercase tracking-wide text-gray-400">
                     #{sequence.id}
                   </span>
                 </div>
               </div>
             </div>
+            <IconButton
+              aria-label="Delete sequence"
+              size="1"
+              variant="ghost"
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className={cn(
+                "absolute right-3 top-3 z-10 text-red-600 hover:bg-red-600/15 focus-visible:ring-2 focus-visible:ring-red-600",
+                isDeleting && "opacity-60"
+              )}
+            >
+              <Trash2 className="h-4 w-4" />
+            </IconButton>
           </div>
           <Separator className="bg-gray-700" />
           <p className="text-xs text-muted-foreground">Tap to preview</p>
-        </button>
+        </div>
       </Dialog.Trigger>
+
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/70 backdrop-blur-sm" />
         <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[94vw] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-gray-900 p-6 shadow-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
@@ -86,7 +130,7 @@ export function SequenceCard({ sequence }: { sequence: Sequence }) {
                   {translate("frame.selfs")}
                 </span>
                 <span className="rounded-full bg-amber-900/40 px-3 py-1 text-[11px] font-semibold shadow-sm ring-1 ring-amber-700/60">
-                  {data?.FrameOrder.length} {translate("common.items")}
+                  {data?.FrameOrder.length ?? 0} {translate("common.items")}
                 </span>
               </div>
               <Carousel
@@ -123,7 +167,7 @@ export function SequenceCard({ sequence }: { sequence: Sequence }) {
       </Dialog.Portal>
     </Dialog.Root>
   );
-}
+};
 
 interface SequenceFrameProps {
   text: string;

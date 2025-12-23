@@ -8,10 +8,12 @@ import { SequenceSkeleton } from "@/components/sequence-skeleton";
 import { CreateSequenceForm } from "@/components/ui/create-sequence";
 import { translate } from "@/lib/i18n";
 import { getCookie } from "@/lib/utils";
-import { Text } from "@radix-ui/themes";
+import { Callout, Text } from "@radix-ui/themes";
+import Link from "next/link";
 
 export default function Home() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [showCreationSuccess, setShowCreationSuccess] = useState(false);
   const {
     data: sequences,
     isLoading,
@@ -30,6 +32,20 @@ export default function Home() {
 
   return (
     <div className="flex flex-col gap-10 p-6 sm:p-8">
+      {showCreationSuccess && (
+        <Callout.Root color="green" role="status">
+          <Callout.Text>
+            {translate("sequence.creation-message")}{" "}
+            <Link
+              href="/studio"
+              className="font-semibold underline underline-offset-4"
+            >
+              {translate("navigation.cta.studio-redirect")}
+              Go to Studio
+            </Link>
+          </Callout.Text>
+        </Callout.Root>
+      )}
       <section className="flex flex-col gap-4">
         {!isError ? (
           <>
@@ -53,6 +69,7 @@ export default function Home() {
         handleDialogChange={(open) => {
           setIsDialogOpen(open);
         }}
+        onSequenceCreated={() => setShowCreationSuccess(true)}
       />
     </div>
   );

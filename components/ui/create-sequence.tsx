@@ -14,8 +14,7 @@ import {
 } from "@radix-ui/react-dialog";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Carousel, CarouselFrame } from "@/components/ui/carousel";
-import { Button, TextField } from "@radix-ui/themes";
-import { Textarea } from "./textarea";
+import { Button, TextField, TextArea } from "@radix-ui/themes";
 import { useBulkCreateFramesMutation } from "@/app/services/frames";
 import { useCreateSequenceMutation } from "@/app/services/sequences";
 import { translate } from "@/lib/i18n";
@@ -24,6 +23,7 @@ import { getCookie } from "@/lib/utils";
 interface Props {
   isDialogOpen: boolean;
   handleDialogChange: (open: boolean) => void;
+  onSequenceCreated?: (title: string) => void;
 }
 
 export type PageFormValues = {
@@ -42,6 +42,7 @@ const createEmptyFrame = () => ({
 export function CreateSequenceForm({
   isDialogOpen,
   handleDialogChange,
+  onSequenceCreated,
 }: Props) {
   const [activeFrame, setActiveFrame] = useState(0);
   const [bulkCreateFrames, { isLoading: isSaving }] =
@@ -107,15 +108,15 @@ export function CreateSequenceForm({
 
     if (framesPayload.length > 0) {
       try {
-        const result = await bulkCreateFrames(framesPayload);
+        const frameResult = await bulkCreateFrames(framesPayload).unwrap();
 
-        if (!result.error) {
-          await createSequenceMutation({
-            frameOrder: result.data?.ids || [],
-            userId: getCookie("userId") || "",
-            title: values.title,
-          });
-        }
+        const createdSequence = await createSequenceMutation({
+          frameOrder: frameResult?.ids || [],
+          userId: getCookie("userId") || "",
+          title: values.title,
+        }).unwrap();
+
+        if (onSequenceCreated) onSequenceCreated(createdSequence.title);
       } catch {
         console.error("Unable to save sequence right now. Please try again.");
       }
@@ -141,7 +142,7 @@ export function CreateSequenceForm({
           >
             {translate("frame.content")}
           </label>
-          <TextField.Root
+          {/* <TextField.Root
             id={`page-${index}-content`}
             placeholder={translate("sequence.cta.title")}
             className="flex-1"
@@ -149,7 +150,16 @@ export function CreateSequenceForm({
               required: translate("common.required"),
             })}
             radius="full"
-          />
+          /> */}
+          <TextField.Root radius="full" className="flex-1">
+            <TextField.Input
+              id={`page-${index}-content`}
+              placeholder={translate("sequence.cta.title")}
+              {...register(`pages.${index}.content`, {
+                required: translate("common.required"),
+              })}
+            />
+          </TextField.Root>
           {errors.pages?.[index]?.content && (
             <p className="text-sm text-destructive">
               {errors.pages[index]?.content?.message}
@@ -163,7 +173,7 @@ export function CreateSequenceForm({
           >
             {translate("frame.description")}
           </label>
-          <Textarea
+          <TextArea
             id={`page-${index}-description`}
             {...register(`pages.${index}.description`)}
           />

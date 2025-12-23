@@ -48,7 +48,7 @@ export default function RootLayout({
 
   return (
     <html lang="en" className={theme}>
-      <title>Link And Tell</title>
+      <title>LT</title>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >

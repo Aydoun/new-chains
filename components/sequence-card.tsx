@@ -57,9 +57,6 @@ export function SequenceCard({ sequence }: { sequence: Sequence }) {
                   </span>
                 </div>
               </div>
-              <p className="text-sm text-gray-200">
-                {sequence.description || "No description provided."}
-              </p>
             </div>
           </div>
           <Separator className="bg-gray-700" />

@@ -31,9 +31,6 @@ export default function Home() {
   return (
     <div className="flex flex-col gap-10 p-6 sm:p-8">
       <section className="flex flex-col gap-4">
-        {isPending && (
-          
-        )}
         {!isError ? (
           <>
             <Text data-testid="homepage-title">

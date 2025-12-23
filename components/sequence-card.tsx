@@ -10,13 +10,11 @@ import { cn } from "@/lib/utils";
 import { Spinner } from "@radix-ui/themes";
 
 export interface SequenceCardProps {
-  title: string;
-  description: string;
-  imageSrc: string;
+  sequence: Sequence;
   className?: string;
 }
 
-export function SequenceCard({ sequence }: { sequence: Sequence }) {
+export function SequenceCard({ sequence, className }: SequenceCardProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [activeFrame, setActiveFrame] = useState(0);
 
@@ -37,7 +35,12 @@ export function SequenceCard({ sequence }: { sequence: Sequence }) {
   return (
     <Dialog.Root open={isDialogOpen} onOpenChange={handleDialogChange}>
       <Dialog.Trigger asChild>
-        <button className="group flex w-full max-w-md flex-col gap-3 rounded-xl bg-gray-800/70 p-4 text-left shadow-lg">
+        <button
+          className={cn(
+            "group flex w-full max-w-md flex-col gap-3 rounded-xl bg-gray-800/70 p-4 text-left shadow-lg",
+            className
+          )}
+        >
           <div className="flex items-start gap-3">
             <div className="h-20 w-20 overflow-hidden rounded-lg bg-gray-900">
               <img

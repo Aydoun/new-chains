@@ -50,11 +50,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={theme}>
       <title>Link And Tell</title>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
-      >
-        <Provider store={store}>
-          <Theme appearance={theme} accentColor="blue">
+      <Theme appearance={theme} accentColor="blue" asChild>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
+        >
+          <Provider store={store}>
             <SidebarProvider>
               <AppSidebar />
               <main className="flex w-full flex-col bg-background text-foreground">
@@ -64,9 +64,9 @@ export default function RootLayout({
                 <div className="flex-1">{children}</div>
               </main>
             </SidebarProvider>
-          </Theme>
-        </Provider>
-      </body>
+          </Provider>
+        </body>
+      </Theme>
     </html>
   );
 }

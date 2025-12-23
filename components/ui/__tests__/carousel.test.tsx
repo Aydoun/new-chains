@@ -1,42 +1,56 @@
 /// <reference types="@testing-library/jest-dom" />
 
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Carousel, CarouselFrame } from "../carousel";
 
-describe("Carousel", () => {
+const renderCarousel = (
+  currentIndex = 0,
+  onNext = vi.fn(),
+  onPrevious = vi.fn()
+) => {
   const frames = [
     <CarouselFrame key="frame-1">First frame</CarouselFrame>,
     <CarouselFrame key="frame-2">Second frame</CarouselFrame>,
     <CarouselFrame key="frame-3">Third frame</CarouselFrame>,
   ];
 
+  render(
+    <Carousel
+      frames={frames}
+      currentIndex={currentIndex}
+      onNext={onNext}
+      onPrevious={onPrevious}
+    />
+  );
+
+  return { onNext, onPrevious };
+};
+
+describe("Carousel", () => {
   it("renders the initial frame and counter", () => {
-    const { getByText } = render(<Carousel frames={frames} />);
+    renderCarousel(0);
 
-    expect(getByText("First frame")).toBeInTheDocument();
-    expect(getByText(/Frame 1 of 3/)).toBeInTheDocument();
+    expect(screen.getByText("First frame")).toBeInTheDocument();
+    expect(screen.getByText(/Frame 1 of 3/)).toBeInTheDocument();
   });
 
-  it("shows the next frame when Next is clicked", async () => {
+  it("invokes callbacks when buttons are enabled", async () => {
     const user = userEvent.setup();
-    const { getByRole, getByText } = render(<Carousel frames={frames} />);
+    const { onNext, onPrevious } = renderCarousel(1);
 
-    await user.click(getByRole("button", { name: /next/i }));
+    await user.click(screen.getByRole("button", { name: /Next/i }));
+    await user.click(screen.getByRole("button", { name: /Previous/i }));
 
-    expect(getByText("Second frame")).toBeInTheDocument();
-    expect(getByText(/Frame 2 of 3/)).toBeInTheDocument();
+    expect(onNext).toHaveBeenCalledTimes(1);
+    expect(onPrevious).toHaveBeenCalledTimes(1);
   });
 
-  it("wraps around to the last frame when Previous is clicked from the start", async () => {
-    const user = userEvent.setup();
-    const { getByRole, getByText } = render(
-      <Carousel frames={frames} initialIndex={0} />
-    );
+  it("disables the previous button on the first frame", () => {
+    renderCarousel(0);
 
-    await user.click(getByRole("button", { name: /previous/i }));
-
-    expect(getByText("Third frame")).toBeInTheDocument();
-    expect(getByText(/Frame 3 of 3/)).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Previous/i })
+    ).toBeDisabled();
   });
 });

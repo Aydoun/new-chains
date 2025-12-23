@@ -43,6 +43,13 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
+              <SidebarMenuItem key="icon">
+                <img
+                  src={"/lt-icon.svg"}
+                  alt={`site icon`}
+                  className="h-full w-full object-cover"
+                />
+              </SidebarMenuItem>
               <SidebarMenuItem key="search">
                 <SidebarMenuButton asChild>
                   <div className="flex w-full items-center gap-2">

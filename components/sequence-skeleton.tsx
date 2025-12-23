@@ -19,7 +19,11 @@ function SequenceSkeletonItem() {
 }
 
 export const SequenceSkeleton = () => {
-  return Array.from({ length: 4 }).map((_, index) => (
-    <SequenceSkeletonItem key={index} />
-  ));
+  return (
+    <div data-testid="sequence-skeleton" className="flex flex-col gap-4">
+      {Array.from({ length: 4 }).map((_, index) => (
+        <SequenceSkeletonItem key={index} />
+      ))}
+    </div>
+  );
 };

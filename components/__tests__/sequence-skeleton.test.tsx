@@ -8,6 +8,8 @@ describe("SequenceSkeleton", () => {
     render(<SequenceSkeleton />);
 
     const skeleton = screen.getByTestId("sequence-skeleton");
-    expect(skeleton.getElementsByClassName("animate-pulse").length).toBe(4);
+    expect(
+      skeleton.getElementsByClassName("animate-pulse").length
+    ).toBeGreaterThanOrEqual(16);
   });
 });

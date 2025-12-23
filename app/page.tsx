@@ -7,6 +7,7 @@ import { SequenceCard } from "@/components/sequence-card";
 import { SequenceSkeleton } from "@/components/sequence-skeleton";
 import { CreateSequenceForm } from "@/components/ui/create-sequence";
 import { translate } from "@/lib/i18n";
+import { getStorageItem } from "@/lib/utils";
 
 export default function Home() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -15,7 +16,7 @@ export default function Home() {
     isLoading,
     isFetching,
     isError,
-  } = useGetSequencesByUserQuery(localStorage.getItem("userId") ?? skipToken);
+  } = useGetSequencesByUserQuery(getStorageItem("userId") ?? skipToken);
   const isPending = isLoading || isFetching;
 
   if (isPending) {

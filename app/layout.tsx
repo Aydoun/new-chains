@@ -10,6 +10,7 @@ import { store } from "./store";
 import { Provider } from "react-redux";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Theme } from "@radix-ui/themes";
+import { getStorageItem } from "@/lib/utils";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,7 +25,7 @@ const geistMono = Geist_Mono({
 type THEME = "dark" | "light";
 
 const getInitialTheme = (): THEME => {
-  const savedTheme = localStorage.getItem("theme");
+  const savedTheme = getStorageItem("theme");
   if (savedTheme === "light" || savedTheme === "dark") {
     return savedTheme;
   }
@@ -40,7 +41,7 @@ export default function RootLayout({
   const [theme, setTheme] = useState<THEME>(getInitialTheme());
 
   useEffect(() => {
-    localStorage.setItem("theme", theme);
+    // localStorage.setItem("theme", theme);
   }, [theme]);
 
   const handleToggleTheme = () => {

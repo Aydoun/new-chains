@@ -19,6 +19,7 @@ import { Textarea } from "./textarea";
 import { useBulkCreateFramesMutation } from "@/app/services/frames";
 import { useCreateSequenceMutation } from "@/app/services/sequences";
 import { translate } from "@/lib/i18n";
+import { getStorageItem } from "@/lib/utils";
 
 interface Props {
   isDialogOpen: boolean;
@@ -111,7 +112,7 @@ export function CreateSequenceForm({
         if (!result.error) {
           await createSequenceMutation({
             frameOrder: result.data?.ids || [],
-            userId: localStorage.getItem("userId") || "",
+            userId: getStorageItem("userId") || "",
             title: values.title,
           });
         }

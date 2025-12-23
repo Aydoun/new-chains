@@ -99,7 +99,6 @@ export function SequenceCard({ sequence }: { sequence: Sequence }) {
                     ? guardedFrames.map((frame, index) => (
                         <SequenceFrame
                           key={frame?.id ?? index}
-                          index={index}
                           text={frame?.content || "Empty frame"}
                           description={frame?.description || ""}
                         />
@@ -107,7 +106,6 @@ export function SequenceCard({ sequence }: { sequence: Sequence }) {
                     : [
                         <SequenceFrame
                           key="empty"
-                          index={0}
                           text={translate("frame.empty")}
                         />,
                       ]

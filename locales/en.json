@@ -1,6 +1,9 @@
 {
   "common": {
     "close": "Close",
+    "errors": {
+      "home": "Unable to load sequences at this time"
+    },
     "items": "items",
     "required": "Field is Required",
     "previous": "Previous",

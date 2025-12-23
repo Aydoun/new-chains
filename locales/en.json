@@ -19,7 +19,7 @@
   },
   "frame": {
     "content": "Frame Content",
-    "description": "Optional description",
+    "description": "Optional note",
     "empty": "No frames found",
     "self": "Frame",
     "selfs": "Frames"

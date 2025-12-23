@@ -7,7 +7,6 @@ import { translate } from "@/lib/i18n";
 import { useLazyGetSequenceByIdQuery } from "@/app/services/sequences";
 import { Carousel } from "./ui/carousel";
 import { cn } from "@/lib/utils";
-import { Spinner } from "@radix-ui/themes";
 
 export interface SequenceCardProps {
   title: string;

@@ -12,6 +12,11 @@
   "carousel": {
     "frame": "Frame"
   },
+  "contact": {
+    "mail": "e-mail",
+    "email-value": "mohamed.amine.aydoun@gmail.com",
+    "self": "Contact"
+  },
   "frame": {
     "content": "Frame Content",
     "description": "Optional description",
@@ -20,6 +25,7 @@
     "selfs": "Frames"
   },
   "navigation": {
+    "contact": "Contact",
     "home": "Home",
     "profile": "Profile",
     "search": "Search",

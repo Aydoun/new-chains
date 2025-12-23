@@ -19,7 +19,7 @@ function SequenceSkeletonItem() {
 }
 
 export const SequenceSkeleton = () => {
-  return Array.from({ length: 4 }).map((_, index) => (
+  return Array.from({ length: 1 }).map((_, index) => (
     <SequenceSkeletonItem key={index} />
   ));
 };

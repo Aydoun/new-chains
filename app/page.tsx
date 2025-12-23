@@ -7,7 +7,7 @@ import { SequenceCard } from "@/components/sequence-card";
 import { SequenceSkeleton } from "@/components/sequence-skeleton";
 import { CreateSequenceForm } from "@/components/ui/create-sequence";
 import { translate } from "@/lib/i18n";
-import { getStorageItem } from "@/lib/utils";
+import { getCookie } from "@/lib/utils";
 import { Text } from "@radix-ui/themes";
 
 export default function Home() {
@@ -17,12 +17,12 @@ export default function Home() {
     isLoading,
     isFetching,
     isError,
-  } = useGetSequencesByUserQuery(getStorageItem("userId") ?? skipToken);
+  } = useGetSequencesByUserQuery(getCookie("userId") ?? skipToken);
   const isPending = isLoading || isFetching;
 
   if (isPending) {
     return (
-      <div className="flex flex-wrap gap-4 p-6 sm:p-8">
+      <div className="flex flex-col gap-10 p-6 sm:p-8">
         <SequenceSkeleton />
       </div>
     );
@@ -31,6 +31,9 @@ export default function Home() {
   return (
     <div className="flex flex-col gap-10 p-6 sm:p-8">
       <section className="flex flex-col gap-4">
+        {isPending && (
+          
+        )}
         {!isError ? (
           <>
             <Text data-testid="homepage-title">

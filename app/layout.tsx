@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -9,7 +9,7 @@ import { store } from "./store";
 import { Provider } from "react-redux";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Theme } from "@radix-ui/themes";
-import { getStorageItem } from "@/lib/utils";
+import { getCookie, setCookie } from "@/lib/utils";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,7 +24,7 @@ const geistMono = Geist_Mono({
 type THEME = "dark" | "light";
 
 const getInitialTheme = (): THEME => {
-  const savedTheme = getStorageItem("theme");
+  const savedTheme = getCookie("theme");
   if (savedTheme === "light" || savedTheme === "dark") {
     return savedTheme;
   }
@@ -39,12 +39,11 @@ export default function RootLayout({
 }>) {
   const [theme, setTheme] = useState<THEME>(getInitialTheme());
 
-  useEffect(() => {
-    // localStorage.setItem("theme", theme);
-  }, [theme]);
-
   const handleToggleTheme = () => {
-    setTheme((current) => (current === "dark" ? "light" : "dark"));
+    const newTheme = theme === "dark" ? "light" : "dark";
+
+    setTheme(newTheme);
+    setCookie("theme", newTheme);
   };
 
   return (

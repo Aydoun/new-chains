@@ -142,7 +142,7 @@ export function CreateSequenceForm({
           >
             {translate("frame.content")}
           </label>
-          {/* <TextField.Root
+          <TextField.Root
             id={`page-${index}-content`}
             placeholder={translate("sequence.cta.title")}
             className="flex-1"
@@ -150,16 +150,7 @@ export function CreateSequenceForm({
               required: translate("common.required"),
             })}
             radius="full"
-          /> */}
-          <TextField.Root radius="full" className="flex-1">
-            <TextField.Input
-              id={`page-${index}-content`}
-              placeholder={translate("sequence.cta.title")}
-              {...register(`pages.${index}.content`, {
-                required: translate("common.required"),
-              })}
-            />
-          </TextField.Root>
+          />
           {errors.pages?.[index]?.content && (
             <p className="text-sm text-destructive">
               {errors.pages[index]?.content?.message}
@@ -229,6 +220,7 @@ export function CreateSequenceForm({
                   currentIndex={activeFrame}
                   onNext={onNextSlide}
                   onPrevious={onPreviousSlide}
+                  isEditMode
                 />
               </div>
               <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:space-x-2 mt-2">

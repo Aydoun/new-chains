@@ -1,4 +1,4 @@
-import { FC, useMemo, useState, MouseEvent as ReactMouseEvent } from "react";
+import { FC, useState, MouseEvent as ReactMouseEvent } from "react";
 import { Sequence } from "@/app/types";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Separator } from "@radix-ui/react-separator";
@@ -35,12 +35,6 @@ export const SequenceCard: FC<Props> = ({ sequence }) => {
     useLazyGetSequenceByIdQuery();
   const guardedFrames = data?.frames ?? [];
 
-  const visibilityLabel = useMemo(() => {
-    const visibilityValue = sequence.visibility ?? "PUBLIC";
-    const formatted = visibilityValue.replace(/_/g, " ").toLowerCase();
-    return `${formatted.charAt(0).toUpperCase()}${formatted.slice(1)}`;
-  }, [sequence.visibility]);
-
   const handleDialogChange = (open: boolean) => {
     setIsDialogOpen(open);
     if (open) {
@@ -54,7 +48,6 @@ export const SequenceCard: FC<Props> = ({ sequence }) => {
     event.preventDefault();
     try {
       await deleteSequence(sequence.id).unwrap();
-      // setIsDialogOpen(false);
     } catch (error) {
       console.error("Unable to delete sequence right now.", error);
     }
@@ -79,7 +72,7 @@ export const SequenceCard: FC<Props> = ({ sequence }) => {
                     {sequence.title}
                   </Text>
                   <Badge size="1" variant="soft" color="gray" className="w-fit">
-                    {visibilityLabel}
+                    {sequence.visibility}
                   </Badge>
                   <span className="text-xs uppercase tracking-wide text-gray-400">
                     #{sequence.id}
@@ -105,7 +98,6 @@ export const SequenceCard: FC<Props> = ({ sequence }) => {
           <p className="text-xs text-muted-foreground">Tap to preview</p>
         </div>
       </Dialog.Trigger>
-
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/70 backdrop-blur-sm" />
         <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[94vw] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-gray-900 p-6 shadow-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
@@ -153,9 +145,14 @@ export const SequenceCard: FC<Props> = ({ sequence }) => {
                 className="w-full"
                 currentIndex={activeFrame}
                 onNext={() =>
-                  setActiveFrame((current) =>
-                    Math.min(current + 1, Math.max(guardedFrames.length - 1, 0))
-                  )
+                  setActiveFrame((current) => {
+                    if (current === guardedFrames.length - 1) return 0;
+
+                    return Math.min(
+                      current + 1,
+                      Math.max(guardedFrames.length - 1, 0)
+                    );
+                  })
                 }
                 onPrevious={() =>
                   setActiveFrame((current) => Math.max(current - 1, 0))

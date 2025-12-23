@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { translate } from "@/lib/i18n";
 import { Button } from "./button";
 import { cn } from "@/lib/utils";
@@ -25,6 +26,7 @@ export function CarouselFrame({ className, children }: CarouselFrameProps) {
 interface CarouselProps {
   frames: React.ReactNode[];
   className?: string;
+  isEditMode?: boolean;
   currentIndex: number;
   onNext: () => void;
   onPrevious: () => void;
@@ -33,6 +35,7 @@ interface CarouselProps {
 export function Carousel({
   frames,
   className,
+  isEditMode,
   currentIndex: currentIndexProp,
   onNext,
   onPrevious,
@@ -40,31 +43,30 @@ export function Carousel({
   const frameCount = frames.length;
   const currentMaxIndex = Math.max(currentIndexProp, 0);
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    const targetTag = (event.target as HTMLElement).tagName;
-    if (targetTag === "INPUT" || targetTag === "TEXTAREA") return;
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        onPrevious();
+      }
 
-    if (event.key === "ArrowRight") {
-      event.preventDefault();
-      onNext();
+      if (e.key === "ArrowRight") {
+        onNext();
+      }
+    };
+
+    if (!isEditMode) {
+      document.addEventListener("keydown", handleKeyDown);
     }
 
-    if (event.key === "ArrowLeft") {
-      event.preventDefault();
-      onPrevious();
-    }
-  };
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onPrevious, onNext]);
 
   if (frameCount === 0) return null;
 
   return (
-    <div
-      className={cn("flex flex-col gap-4", className)}
-      tabIndex={0}
-      role="group"
-      aria-label="frames"
-      onKeyDown={handleKeyDown}
-    >
+    <div className={cn("flex flex-col gap-4", className)}>
       <div className="overflow-hidden rounded-lg border border-border shadow-sm">
         <div
           className="flex items-center justify-center p-6"
@@ -74,7 +76,7 @@ export function Carousel({
         </div>
       </div>
 
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center justify-between gap-2 px-6">
         <Button
           disabled={currentMaxIndex === 0}
           type="button"

@@ -6,6 +6,7 @@ import { useGetSequencesByUserQuery } from "./services/sequences";
 import { SequenceCard } from "@/components/sequence-card";
 import { SequenceSkeleton } from "@/components/sequence-skeleton";
 import { CreateSequenceForm } from "@/components/ui/create-sequence";
+import { translate } from "@/lib/i18n";
 
 export default function Home() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -36,6 +37,7 @@ export default function Home() {
   return (
     <div className="flex flex-col gap-10 p-6 sm:p-8">
       <section className="flex flex-col gap-4">
+        <h4 data-testid="homepage-title">{translate("navigation.explore")}</h4>
         <div className="flex w-full flex-wrap gap-4">
           {sequences?.map((sequence) => (
             <SequenceCard key={sequence.id} sequence={sequence} />

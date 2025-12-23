@@ -18,3 +18,17 @@ export interface Sequence {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface Frame {
+  id: number;
+  type: FrameType;
+  description?: string | null;
+  content: string;
+  reportedCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SingleSequence extends Sequence {
+  frames: Frame[];
+}

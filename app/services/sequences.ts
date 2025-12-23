@@ -1,7 +1,7 @@
 "use client";
 
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { Sequence } from "../types";
+import type { Sequence, SingleSequence } from "../types";
 
 const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/`;
 
@@ -20,7 +20,10 @@ export const sequenceApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL }),
   endpoints: (builder) => ({
     getSequencesByUser: builder.query<Sequence[], string>({
-      query: (userId) => `sequence/read?id=${userId}`,
+      query: (userId) => `sequence/fetch?id=${userId}`,
+    }),
+    getSequenceById: builder.query<SingleSequence, number | string>({
+      query: (sequenceId) => `sequence/read?id=${sequenceId}`,
     }),
     createSequence: builder.mutation<Sequence, SequenceInput>({
       query: (input) => ({
@@ -32,5 +35,8 @@ export const sequenceApi = createApi({
   }),
 });
 
-export const { useGetSequencesByUserQuery, useCreateSequenceMutation } =
-  sequenceApi;
+export const {
+  useGetSequencesByUserQuery,
+  useCreateSequenceMutation,
+  useLazyGetSequenceByIdQuery,
+} = sequenceApi;

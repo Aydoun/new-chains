@@ -1,6 +1,7 @@
 {
   "common": {
     "close": "Close",
+    "items": "items",
     "required": "Field is Required",
     "previous": "Previous",
     "next": "Next"
@@ -10,13 +11,17 @@
   },
   "frame": {
     "content": "Frame Content",
-    "self": "Frame"
+    "description": "Optional description",
+    "empty": "No frames found",
+    "self": "Frame",
+    "selfs": "Frames"
   },
   "navigation": {
     "home": "Home",
     "profile": "Profile",
     "search": "Search",
-    "studio": "Studio"
+    "studio": "Studio",
+    "explore": "Explore"
   },
   "sequence": {
     "cta": {

@@ -8,21 +8,17 @@ export default async function handler(
   if (req.method !== "GET")
     return res.status(405).json({ message: "Method not allowed" });
 
-  const { id } = req.query;
-  const sequenceId = parseInt(id as string, 10);
+  const { id: dbId } = req.query;
+  const userId = parseInt(dbId as string, 10);
 
   try {
-    const sequence = await prisma.sequence.findFirst({
-      where: id ? { id: sequenceId } : undefined,
+    const sequences = await prisma.sequence.findMany({
+      where: userId ? { userId } : undefined,
     });
-    if (!sequence)
-      return res.status(404).json({ message: "Sequence not found" });
+    if (!Array.isArray(sequences))
+      return res.status(404).json({ message: "Sequences not found" });
 
-    const frames = await prisma.frame.findMany({
-      where: { id: { in: sequence.FrameOrder } },
-    });
-
-    res.status(200).json({ ...sequence, frames });
+    res.status(200).json(sequences);
   } catch (error) {
     if (error instanceof Error)
       res

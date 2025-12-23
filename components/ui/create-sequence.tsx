@@ -14,10 +14,8 @@ import {
 } from "@radix-ui/react-dialog";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Carousel, CarouselFrame } from "@/components/ui/carousel";
-import { Input } from "./input";
-import { Button } from "./button";
+import { Button, TextField } from "@radix-ui/themes";
 import { Textarea } from "./textarea";
-import { Spinner } from "./spinner";
 import { useBulkCreateFramesMutation } from "@/app/services/frames";
 import { useCreateSequenceMutation } from "@/app/services/sequences";
 import { translate } from "@/lib/i18n";
@@ -142,11 +140,14 @@ export function CreateSequenceForm({
           >
             {translate("frame.content")}
           </label>
-          <Input
+          <TextField.Root
             id={`page-${index}-content`}
+            placeholder={translate("sequence.cta.title")}
+            className="flex-1"
             {...register(`pages.${index}.content`, {
               required: translate("common.required"),
             })}
+            radius="full"
           />
           {errors.pages?.[index]?.content && (
             <p className="text-sm text-destructive">
@@ -173,15 +174,23 @@ export function CreateSequenceForm({
   return (
     <Dialog open={isDialogOpen} onOpenChange={onDialogChange}>
       <div className="fixed bottom-6 left-1/2 z-20 w-full max-w-3xl -translate-x-1/2 px-4">
-        <div className="flex items-center gap-3 rounded-full border bg-background/90 px-5 py-3 shadow-lg backdrop-blur">
-          <Input
+        <div className="flex items-center gap-3 rounded-full border bg-gray-500 px-5 py-3 shadow-lg backdrop-blur">
+          <TextField.Root
             placeholder={translate("sequence.cta.title")}
             className="flex-1"
             {...register("title")}
+            radius="full"
           />
           <DialogTrigger asChild>
-            <Button disabled={!SequenceTitle} type="button" className="px-6">
-              {isSaving || isSequenceSaving ? <Spinner /> : <CircleArrowUp />}
+            <Button
+              variant="solid"
+              disabled={!SequenceTitle}
+              type="button"
+              className="px-6"
+              radius="full"
+              loading={isSaving || isSequenceSaving}
+            >
+              <CircleArrowUp />
             </Button>
           </DialogTrigger>
         </div>

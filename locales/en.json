@@ -1,6 +1,9 @@
 {
   "common": {
     "close": "Close",
+    "errors": {
+      "home": "Unable to load sequences at this time"
+    },
     "items": "items",
     "required": "Field is Required",
     "previous": "Previous",
@@ -9,14 +12,20 @@
   "carousel": {
     "frame": "Frame"
   },
+  "contact": {
+    "mail": "e-mail",
+    "email-value": "mohamed.amine.aydoun@gmail.com",
+    "self": "Contact"
+  },
   "frame": {
     "content": "Frame Content",
-    "description": "Optional description",
+    "description": "Optional note",
     "empty": "No frames found",
     "self": "Frame",
     "selfs": "Frames"
   },
   "navigation": {
+    "contact": "Contact",
     "home": "Home",
     "profile": "Profile",
     "search": "Search",

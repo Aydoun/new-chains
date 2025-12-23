@@ -7,7 +7,6 @@ import { translate } from "@/lib/i18n";
 import { useLazyGetSequenceByIdQuery } from "@/app/services/sequences";
 import { Carousel } from "./ui/carousel";
 import { cn } from "@/lib/utils";
-import { Spinner } from "@radix-ui/themes";
 
 export interface SequenceCardProps {
   title: string;
@@ -57,9 +56,6 @@ export function SequenceCard({ sequence }: { sequence: Sequence }) {
                   </span>
                 </div>
               </div>
-              <p className="text-sm text-gray-200">
-                {sequence.description || "No description provided."}
-              </p>
             </div>
           </div>
           <Separator className="bg-gray-700" />

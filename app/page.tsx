@@ -7,7 +7,7 @@ import { SequenceCard } from "@/components/sequence-card";
 import { SequenceSkeleton } from "@/components/sequence-skeleton";
 import { CreateSequenceForm } from "@/components/ui/create-sequence";
 import { translate } from "@/lib/i18n";
-import { getCookie } from "@/lib/utils";
+import { getUserIdWithFallback } from "@/lib/utils";
 import { Callout, Text } from "@radix-ui/themes";
 import Link from "next/link";
 
@@ -19,7 +19,7 @@ export default function Home() {
     isLoading,
     isFetching,
     isError,
-  } = useGetSequencesByUserQuery(getCookie("userId") ?? skipToken);
+  } = useGetSequencesByUserQuery(getUserIdWithFallback() ?? skipToken);
   const isPending = isLoading || isFetching;
 
   if (isPending) {

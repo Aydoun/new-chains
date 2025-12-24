@@ -18,7 +18,7 @@ import { Button, TextField, TextArea } from "@radix-ui/themes";
 import { useBulkCreateFramesMutation } from "@/app/services/frames";
 import { useCreateSequenceMutation } from "@/app/services/sequences";
 import { translate } from "@/lib/i18n";
-import { getCookie } from "@/lib/utils";
+import { getUserIdWithFallback } from "@/lib/utils";
 
 interface Props {
   isDialogOpen: boolean;
@@ -112,7 +112,7 @@ export function CreateSequenceForm({
 
         const createdSequence = await createSequenceMutation({
           frameOrder: frameResult?.ids || [],
-          userId: getCookie("userId") || "",
+          userId: getUserIdWithFallback(),
           title: values.title,
         }).unwrap();
 

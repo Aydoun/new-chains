@@ -28,6 +28,7 @@ model Sequence {
   userId      Int
   user        User       @relation(fields: [userId], references: [id])
   FrameOrder  Int[]
+  visibility  Visibility @default(PUBLIC)
   isDeleted   Boolean    @default(false)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
@@ -48,15 +49,15 @@ model Frame {
 }
 
 model Story {
-  id          Int        @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   title       String
   description String
   userId      Int
-  user        User       @relation(fields: [userId], references: [id])
+  user        User     @relation(fields: [userId], references: [id])
   sequences   Int[]
-  isDeleted   Boolean    @default(false)
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  isDeleted   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@index([title, userId])
 }

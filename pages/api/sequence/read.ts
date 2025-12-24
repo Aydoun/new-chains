@@ -13,7 +13,7 @@ export default async function handler(
 
   try {
     const sequence = await prisma.sequence.findFirst({
-      where: id ? { id: sequenceId } : undefined,
+      where: id ? { id: sequenceId, isDeleted: false } : { isDeleted: false },
     });
     if (!sequence)
       return res.status(404).json({ message: "Sequence not found" });

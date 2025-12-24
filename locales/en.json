@@ -25,6 +25,9 @@
     "selfs": "Frames"
   },
   "navigation": {
+    "cta": {
+      "studio-redirect": "Go To Studio"
+    },
     "contact": "Contact",
     "home": "Home",
     "profile": "Profile",
@@ -35,7 +38,8 @@
   "sequence": {
     "cta": {
       "title": "Name your Sequence",
-      "publish": "Publish"
+      "publish": "Publish",
+      "creation-message": "Sequence created successfully."
     },
     "draft": {
       "title": "Draft Your Sequence"

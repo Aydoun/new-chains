@@ -32,6 +32,12 @@ export const sequenceApi = createApi({
         body: input,
       }),
     }),
+    deleteSequence: builder.mutation<{ message: string }, number | string>({
+      query: (sequenceId) => ({
+        url: `sequence/delete?id=${sequenceId}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
@@ -39,4 +45,5 @@ export const {
   useGetSequencesByUserQuery,
   useCreateSequenceMutation,
   useLazyGetSequenceByIdQuery,
+  useDeleteSequenceMutation,
 } = sequenceApi;

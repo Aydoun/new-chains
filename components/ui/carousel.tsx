@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { translate } from "@/lib/i18n";
 import { Button } from "./button";
 import { cn } from "@/lib/utils";
@@ -25,6 +26,7 @@ export function CarouselFrame({ className, children }: CarouselFrameProps) {
 interface CarouselProps {
   frames: React.ReactNode[];
   className?: string;
+  isEditMode?: boolean;
   currentIndex: number;
   onNext: () => void;
   onPrevious: () => void;
@@ -33,12 +35,33 @@ interface CarouselProps {
 export function Carousel({
   frames,
   className,
+  isEditMode,
   currentIndex: currentIndexProp,
   onNext,
   onPrevious,
 }: CarouselProps) {
   const frameCount = frames.length;
   const currentMaxIndex = Math.max(currentIndexProp, 0);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        onPrevious();
+      }
+
+      if (e.key === "ArrowRight") {
+        onNext();
+      }
+    };
+
+    if (!isEditMode) {
+      document.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onPrevious, onNext]);
 
   if (frameCount === 0) return null;
 
@@ -53,7 +76,7 @@ export function Carousel({
         </div>
       </div>
 
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center justify-between gap-2 px-6">
         <Button
           disabled={currentMaxIndex === 0}
           type="button"

@@ -13,7 +13,7 @@ import Link from "next/link";
 
 export default function Home() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [showCreationSuccess, setShowCreationSuccess] = useState(false);
+  const [showCreationSuccess, setShowCreationSuccess] = useState(true);
   const {
     data: sequences,
     isLoading,
@@ -35,13 +35,12 @@ export default function Home() {
       {showCreationSuccess && (
         <Callout.Root color="green" role="status">
           <Callout.Text>
-            {translate("sequence.creation-message")}{" "}
+            {translate("sequence.cta.creation-message")}{" "}
             <Link
               href="/studio"
               className="font-semibold underline underline-offset-4"
             >
               {translate("navigation.cta.studio-redirect")}
-              Go to Studio
             </Link>
           </Callout.Text>
         </Callout.Root>

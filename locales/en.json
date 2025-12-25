@@ -17,6 +17,9 @@
     "message": "Sign in with Google to keep your drafts private and share with attribution.",
     "cta": {
       "google": "Continue with Google"
+    },
+    "error": {
+      "email": "No email address found"
     }
   },
   "carousel": {

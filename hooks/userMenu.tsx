@@ -3,15 +3,7 @@ import { Button, DropdownMenu } from "@radix-ui/themes";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 export function UserMenu() {
-  const { data: session, status } = useSession();
-
-  if (status === "loading") {
-    return (
-      <Button variant="ghost" disabled>
-        {translate("common.loading") ?? "Loading"}
-      </Button>
-    );
-  }
+  const { data: session } = useSession();
 
   if (!session?.user) return null;
 
@@ -24,11 +16,11 @@ export function UserMenu() {
       </DropdownMenu.Trigger>
       <DropdownMenu.Content align="end">
         <DropdownMenu.Label>
-          {session.user.email ?? translate("auth.me")}
+          {session.user.email ?? translate("auth.error.email")}
         </DropdownMenu.Label>
         <DropdownMenu.Separator />
         <DropdownMenu.Item onClick={() => signOut({ callbackUrl: "/login" })}>
-          {translate("auth.logout") ?? "Log out"}
+          {translate("auth.logout")}
         </DropdownMenu.Item>
       </DropdownMenu.Content>
     </DropdownMenu.Root>

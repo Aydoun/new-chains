@@ -38,17 +38,13 @@ const items = [
 
 export function AppSidebar() {
   return (
-    <Sidebar className="bg-gray-900">
+    <Sidebar className="bg-background border-r border-gray-600">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem key="icon">
-                <img
-                  src={"/lt-icon.svg"}
-                  alt={`site icon`}
-                  className="h-full w-full object-cover"
-                />
+                <img src={"/lt-icon-64.svg"} alt={`site icon`} />
               </SidebarMenuItem>
               <SidebarMenuItem key="search">
                 <SidebarMenuButton asChild>

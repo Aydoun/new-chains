@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="24"
+     height="24"
+     viewBox="0 0 24 24"
+     role="img"
+     aria-label="LT logo">
+
+  <g fill="#F87171">
+    <!-- L -->
+    <path d="M3 3 h4.5 v12 h7.5 v4.5 H3z"/>
+    <!-- T -->
+    <path d="M12 3 h9 v4.5 h-3 v12 h-4.5 V7.5 H12z"/>
+  </g>
+
+</svg>

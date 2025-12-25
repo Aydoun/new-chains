@@ -9,6 +9,9 @@
     "previous": "Previous",
     "next": "Next"
   },
+  "auth": {
+    "login": "Login"
+  },
   "carousel": {
     "frame": "Frame"
   },

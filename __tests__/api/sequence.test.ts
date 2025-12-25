@@ -108,7 +108,9 @@ describe("api/sequence endpoints", () => {
     expect(store.status).toBe(200);
     const json = store.body as Array<{ userId: number }>;
     expect(json[0].userId).toBe(99);
-    expect(mocks.findManyMock).toHaveBeenCalledWith({ where: { userId: 99 } });
+    expect(mocks.findManyMock).toHaveBeenCalledWith({
+      where: { userId: 99, isDeleted: false },
+    });
   });
 
   it("reads a sequence and hydrates frames", async () => {
@@ -122,7 +124,9 @@ describe("api/sequence endpoints", () => {
     expect(store.status).toBe(200);
     const json = store.body as { frames: unknown[] };
     expect(json.frames).toHaveLength(2);
-    expect(mocks.findFirstMock).toHaveBeenCalledWith({ where: { id: 5 } });
+    expect(mocks.findFirstMock).toHaveBeenCalledWith({
+      where: { id: 5, isDeleted: false },
+    });
     expect(mocks.findManyFramesMock).toHaveBeenCalledTimes(1);
   });
 });

@@ -8,8 +8,9 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { store } from "./store";
 import { Provider } from "react-redux";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Theme } from "@radix-ui/themes";
+import { Button, Theme } from "@radix-ui/themes";
 import { getCookie, setCookie } from "@/lib/utils";
+import { translate } from "@/lib/i18n";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -58,7 +59,9 @@ export default function RootLayout({
               <AppSidebar />
               <main className="flex w-full flex-col bg-background text-foreground">
                 <header className="flex items-center justify-end border-b border-border px-6 py-4">
-                  <ThemeToggle theme={theme} onToggle={handleToggleTheme} />
+                  <Button data-testid="app-login">
+                    {translate("auth.login")}
+                  </Button>
                 </header>
                 <div className="flex-1">{children}</div>
               </main>

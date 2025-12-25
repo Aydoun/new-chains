@@ -56,7 +56,8 @@ export const SequenceCard: FC<Props> = ({ sequence }) => {
   return (
     <Dialog.Root open={isDialogOpen} onOpenChange={handleDialogChange}>
       <Dialog.Trigger asChild>
-        <div className="group flex w-full max-w-md flex-col gap-3 rounded-xl bg-gray-800/70 p-4 text-left shadow-lg">
+        {/* group flex w-full max-w-md flex-col gap-3 rounded-xl bg-card/70 p-4 text-left shadow-lg transition-transform transition-shadow duration-200 hover:-translate-y-0.5 hover:shadow-2xl hover:shadow-primary/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer */}
+        <div className="group flex w-full max-w-md flex-col gap-3 rounded-xl bg-gray-800/70 p-4 text-left shadow-lg hover:shadow-xl cursor-pointer">
           <div className="flex items-start gap-3 relative">
             <div className="h-20 w-20 overflow-hidden rounded-lg bg-gray-900">
               <img

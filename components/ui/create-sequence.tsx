@@ -174,7 +174,7 @@ export function CreateSequenceForm({
             {...register("title")}
             radius="full"
           />
-          <Dialog.Trigger asChild>
+          <Dialog.Trigger>
             <Button
               variant="solid"
               disabled={!SequenceTitle}

@@ -9,8 +9,8 @@ export default async function handler(
   if (req.method !== "POST")
     return res.status(405).json({ message: "Method not allowed" });
 
-  const _sessionResult = await requireApiSession(req, res);
-  if (!_sessionResult) return;
+  const sessionResult = await requireApiSession(req, res);
+  if (!sessionResult) return;
 
   const { content, description = "" } = req.body;
 

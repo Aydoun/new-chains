@@ -9,8 +9,8 @@ export default async function handler(
   if (req.method !== "POST")
     return res.status(405).json({ message: "Method not allowed" });
 
-  const _sessionResult = await requireApiSession(req, res);
-  if (!_sessionResult) return;
+  const sessionResult = await requireApiSession(req, res);
+  if (!sessionResult) return;
 
   const { title, description = "", url = "", userId, frameOrder } = req.body;
 
@@ -20,7 +20,7 @@ export default async function handler(
     });
   }
 
-  if (_sessionResult.userId !== parseInt(userId as string, 10)) {
+  if (sessionResult.userId !== parseInt(userId as string, 10)) {
     return res.status(403).json({ message: "Forbidden" });
   }
 

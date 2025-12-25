@@ -9,8 +9,8 @@ export default async function handler(
   if (req.method !== "DELETE")
     return res.status(405).json({ message: "Method not allowed" });
 
-  const _sessionResult = await requireApiSession(req, res);
-  if (!_sessionResult) return;
+  const sessionResult = await requireApiSession(req, res);
+  if (!sessionResult) return;
 
   const { id } = req.query;
   const sequenceId = parseInt(id as string, 10);
@@ -26,7 +26,7 @@ export default async function handler(
     if (
       !existingSequence ||
       existingSequence.isDeleted ||
-      existingSequence.userId !== _sessionResult.userId
+      existingSequence.userId !== sessionResult.userId
     ) {
       return res.status(404).json({ message: "Sequence not found" });
     }

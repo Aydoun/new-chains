@@ -1,5 +1,18 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Authentication
+
+Google OAuth via NextAuth powers sign-in, and protected routes redirect unauthenticated users to `/login`. Configure the following environment variables before running the app locally:
+
+```
+GOOGLE_CLIENT_ID=<your-google-client-id>
+GOOGLE_CLIENT_SECRET=<your-google-client-secret>
+NEXTAUTH_SECRET=<a-random-string>
+DATABASE_URL=<postgres-connection-string>
+```
+
+Sessions are backed by JWT cookies and API routes validate the active session for every request.
+
 ## Getting Started
 
 First, run the development server:

@@ -17,7 +17,7 @@ export type SequenceInput = {
 
 export const sequenceApi = createApi({
   reducerPath: "sequenceApi",
-  baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL }),
+  baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL, credentials: "include" }),
   endpoints: (builder) => ({
     getSequencesByUser: builder.query<Sequence[], string>({
       query: (userId) => `sequence/fetch?id=${userId}`,

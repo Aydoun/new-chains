@@ -1,5 +1,6 @@
 {
   "common": {
+    "loading": "Loading",
     "close": "Close",
     "errors": {
       "home": "Unable to load sequences at this time"
@@ -10,7 +11,10 @@
     "next": "Next"
   },
   "auth": {
-    "login": "Login"
+    "login": "Login",
+    "logout": "Logout",
+    "me": "My account",
+    "message": "Sign in with Google to keep your drafts private and share with attribution."
   },
   "carousel": {
     "frame": "Frame"

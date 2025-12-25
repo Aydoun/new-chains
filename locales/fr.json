@@ -1,6 +1,19 @@
 {
-    "common": {
-        "close": "Fermer",
-        "required": ""
-    }
+  "common": {
+    "loading": "Chargement",
+    "close": "Fermer",
+    "required": "",
+    "errors": {
+      "home": "Impossible de charger les séquences pour le moment"
+    },
+    "items": "éléments",
+    "previous": "Précédent",
+    "next": "Suivant"
+  },
+  "auth": {
+    "login": "Connexion",
+    "logout": "Déconnexion",
+    "me": "Mon compte",
+    "message": "Connectez-vous avec Google pour garder vos brouillons privés et les partager en toute sécurité."
+  }
 }

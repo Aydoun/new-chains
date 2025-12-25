@@ -7,10 +7,11 @@ export const userApi = createApi({
   reducerPath: "userApi",
   baseQuery: fetchBaseQuery({
     baseUrl: `/api/`,
+    credentials: "include",
   }),
   endpoints: (builder) => ({
-    getUserById: builder.query<User, string | void>({
-      query: () => `user/read?id=1`,
+    getUserById: builder.query<User, string>({
+      query: (id) => `user/read?id=${id}`,
     }),
   }),
 });

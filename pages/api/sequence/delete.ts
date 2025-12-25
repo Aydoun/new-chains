@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
+import { requireApiSession } from "@/lib/api/auth";
 
 export default async function handler(
   req: NextApiRequest,
@@ -7,6 +8,9 @@ export default async function handler(
 ) {
   if (req.method !== "DELETE")
     return res.status(405).json({ message: "Method not allowed" });
+
+  const sessionResult = await requireApiSession(req, res);
+  if (!sessionResult) return;
 
   const { id } = req.query;
   const sequenceId = parseInt(id as string, 10);
@@ -19,7 +23,11 @@ export default async function handler(
       where: { id: sequenceId },
     });
 
-    if (!existingSequence || existingSequence.isDeleted) {
+    if (
+      !existingSequence ||
+      existingSequence.isDeleted ||
+      existingSequence.userId !== sessionResult.userId
+    ) {
       return res.status(404).json({ message: "Sequence not found" });
     }
 

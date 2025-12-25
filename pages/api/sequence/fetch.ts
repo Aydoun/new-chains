@@ -12,11 +12,15 @@ export default async function handler(
   const sessionResult = await requireApiSession(req, res);
   if (!sessionResult) return;
 
-  const { userId } = sessionResult;
+  const { userId: clientId } = sessionResult;
 
   try {
     const sequences = await prisma.sequence.findMany({
-      where: { userId, isDeleted: false, visibility: "PUBLIC" },
+      where: {
+        ...(clientId ? { userId: { not: clientId } } : {}),
+        isDeleted: false,
+        visibility: "PUBLIC",
+      },
     });
     if (!Array.isArray(sequences))
       return res.status(404).json({ message: "Sequences not found" });

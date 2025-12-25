@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
+import { requireApiSession } from "@/lib/api/auth";
 
 export default async function handler(
   req: NextApiRequest,
@@ -7,6 +8,9 @@ export default async function handler(
 ) {
   if (req.method !== "POST")
     return res.status(405).json({ message: "Method not allowed" });
+
+  const sessionResult = await requireApiSession(req, res);
+  if (!sessionResult) return;
 
   const { content, description = "" } = req.body;
 

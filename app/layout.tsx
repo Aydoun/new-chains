@@ -7,10 +7,12 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { store } from "./store";
 import { Provider } from "react-redux";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { Button, Theme } from "@radix-ui/themes";
+// import { ThemeToggle } from "@/components/theme-toggle";
+import { Theme } from "@radix-ui/themes";
 import { getCookie, setCookie } from "@/lib/utils";
-import { translate } from "@/lib/i18n";
+import { SessionProvider } from "next-auth/react";
+import { UserMenu } from "@/hooks/userMenu";
+import { AuthStateSync } from "@/hooks/authStateSync";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,12 +42,12 @@ export default function RootLayout({
 }>) {
   const [theme, setTheme] = useState<THEME>(getInitialTheme());
 
-  const handleToggleTheme = () => {
-    const newTheme = theme === "dark" ? "light" : "dark";
+  // const handleToggleTheme = () => {
+  //   const newTheme = theme === "dark" ? "light" : "dark";
 
-    setTheme(newTheme);
-    setCookie("theme", newTheme);
-  };
+  //   setTheme(newTheme);
+  //   setCookie("theme", newTheme);
+  // };
 
   return (
     <html lang="en" className={theme}>
@@ -53,21 +55,23 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
-        <Provider store={store}>
-          <Theme appearance={theme} accentColor="blue">
-            <SidebarProvider>
-              <AppSidebar />
-              <main className="flex w-full flex-col bg-background text-foreground">
-                <header className="flex items-center justify-end border-b border-border px-6 py-4">
-                  <Button data-testid="app-login">
-                    {translate("auth.login")}
-                  </Button>
-                </header>
-                <div className="flex-1">{children}</div>
-              </main>
-            </SidebarProvider>
-          </Theme>
-        </Provider>
+        <SessionProvider>
+          <Provider store={store}>
+            <Theme appearance={theme} accentColor="blue">
+              <SidebarProvider>
+                <AppSidebar />
+                <main className="flex w-full flex-col bg-background text-foreground">
+                  <header className="flex items-center justify-end border-b border-border px-6 py-4 gap-3">
+                    {/* <ThemeToggle theme={theme} onToggle={handleToggleTheme} /> */}
+                    <UserMenu />
+                  </header>
+                  <AuthStateSync />
+                  <div className="flex-1">{children}</div>
+                </main>
+              </SidebarProvider>
+            </Theme>
+          </Provider>
+        </SessionProvider>
       </body>
     </html>
   );

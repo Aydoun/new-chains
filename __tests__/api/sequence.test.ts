@@ -109,7 +109,7 @@ describe("api/sequence endpoints", () => {
     const json = store.body as Array<{ userId: number }>;
     expect(json[0].userId).toBe(99);
     expect(mocks.findManyMock).toHaveBeenCalledWith({
-      where: { userId: 99, isDeleted: false },
+      where: { userId: 99, isDeleted: false, visibility: "PUBLIC" },
     });
   });
 

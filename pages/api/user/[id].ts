@@ -9,7 +9,6 @@ export default async function handler(
     return res.status(405).json({ message: "Method not allowed" });
 
   const { id } = req.query;
-  console.log("id: ", id);
   try {
     const user = await prisma.user.findUnique({
       where: { id: parseInt(id as string, 10) },

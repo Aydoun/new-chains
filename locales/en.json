@@ -5,12 +5,16 @@
       "home": "Unable to load sequences at this time"
     },
     "items": "items",
-    "required": "Field is Required",
+    "loading": "Loading",
+    "next": "Next",
     "previous": "Previous",
-    "next": "Next"
+    "required": "Field is Required"
   },
   "auth": {
-    "login": "Login"
+    "login": "Login",
+    "logout": "Logout",
+    "me": "My account",
+    "message": "Sign in with Google to keep your drafts private and share with attribution."
   },
   "carousel": {
     "frame": "Frame"

@@ -13,7 +13,9 @@ export default async function handler(
 
   try {
     const sequences = await prisma.sequence.findMany({
-      where: userId ? { userId, isDeleted: false } : { isDeleted: false },
+      where: userId
+        ? { userId, isDeleted: false, visibility: "PUBLIC" }
+        : { isDeleted: false, visibility: "PUBLIC" },
     });
     if (!Array.isArray(sequences))
       return res.status(404).json({ message: "Sequences not found" });

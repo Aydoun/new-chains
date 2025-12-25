@@ -1,7 +1,8 @@
 "use client";
 
-import { X, CircleArrowUp } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { X, CircleArrowUp } from "lucide-react";
 import { Dialog } from "@radix-ui/themes";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Carousel, CarouselFrame } from "@/components/ui/carousel";
@@ -9,7 +10,6 @@ import { Button, TextField, TextArea } from "@radix-ui/themes";
 import { useBulkCreateFramesMutation } from "@/app/services/frames";
 import { useCreateSequenceMutation } from "@/app/services/sequences";
 import { translate } from "@/lib/i18n";
-import { getUserIdWithFallback } from "@/lib/utils";
 
 interface Props {
   isDialogOpen: boolean;
@@ -35,6 +35,7 @@ export function CreateSequenceForm({
   handleDialogChange,
   onSequenceCreated,
 }: Props) {
+  const { data: session } = useSession();
   const [activeFrame, setActiveFrame] = useState(0);
   const [bulkCreateFrames, { isLoading: isSaving }] =
     useBulkCreateFramesMutation();
@@ -102,8 +103,8 @@ export function CreateSequenceForm({
         const frameResult = await bulkCreateFrames(framesPayload).unwrap();
 
         const createdSequence = await createSequenceMutation({
-          frameOrder: frameResult?.ids || [],
-          userId: getUserIdWithFallback(),
+          frameOrder: frameResult?.ids ?? [],
+          userId: session?.user?.id ?? "",
           title: values.title,
         }).unwrap();
 
@@ -163,6 +164,8 @@ export function CreateSequenceForm({
       </div>
     </CarouselFrame>
   ));
+
+  if (!session?.user?.id) return null;
 
   return (
     <Dialog.Root open={isDialogOpen} onOpenChange={onDialogChange}>

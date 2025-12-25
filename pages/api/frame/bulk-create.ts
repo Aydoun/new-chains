@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
+import { requireApiSession } from "@/lib/api/auth";
 
 type FrameInput = {
   description?: string;
@@ -17,6 +18,9 @@ export default async function handler(
 ) {
   if (req.method !== "POST")
     return res.status(405).json({ message: "Method not allowed" });
+
+  const _sessionResult = await requireApiSession(req, res);
+  if (!_sessionResult) return;
 
   const { frames } = req.body as { frames?: FrameInput[] };
 

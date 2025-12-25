@@ -1,3 +1,8 @@
+import { clearAuth, setAuth } from "@/app/features/auth/authSlice";
+import { useAppDispatch } from "@/app/hooks";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
+
 export function AuthStateSync() {
   const { data: session, status } = useSession();
   const dispatch = useAppDispatch();
@@ -15,18 +20,12 @@ export function AuthStateSync() {
           },
         })
       );
-    } else if (status === "loading") {
+    }
+    if (status === "loading") {
       dispatch(
         setAuth({
           status,
-          user: session?.user
-            ? {
-                id: session.user.id ?? "",
-                name: session.user.name ?? "",
-                email: session.user.email ?? "",
-                image: session.user.image ?? undefined,
-              }
-            : undefined,
+          user: undefined,
         })
       );
     } else if (status === "unauthenticated") {
@@ -36,3 +35,14 @@ export function AuthStateSync() {
 
   return null;
 }
+
+/* 
+session?.user
+? {
+    id: session.user.id ?? "",
+    name: session.user.name ?? "",
+    email: session.user.email ?? "",
+    image: session.user.image ?? undefined,
+    }
+: 
+*/

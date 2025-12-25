@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
+import { requireApiSession } from "@/lib/api/auth";
 
 export default async function handler(
   req: NextApiRequest,
@@ -8,14 +9,14 @@ export default async function handler(
   if (req.method !== "GET")
     return res.status(405).json({ message: "Method not allowed" });
 
-  const { id: dbId } = req.query;
-  const userId = parseInt(dbId as string, 10);
+  const _sessionResult = await requireApiSession(req, res);
+  if (!_sessionResult) return;
+
+  const { userId } = _sessionResult;
 
   try {
     const sequences = await prisma.sequence.findMany({
-      where: userId
-        ? { userId, isDeleted: false, visibility: "PUBLIC" }
-        : { isDeleted: false, visibility: "PUBLIC" },
+      where: { userId, isDeleted: false, visibility: "PUBLIC" },
     });
     if (!Array.isArray(sequences))
       return res.status(404).json({ message: "Sequences not found" });

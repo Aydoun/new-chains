@@ -43,9 +43,3 @@ export function deleteCookie(name: string, path = "/") {
 
   document.cookie = `${name}=; Max-Age=0; path=${path}`;
 }
-
-export function getUserIdWithFallback(defaultId = "1") {
-  const cookieUserId = getCookie("userId");
-
-  return cookieUserId ?? defaultId;
-}

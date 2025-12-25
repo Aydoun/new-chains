@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
+import { requireApiSession } from "@/lib/api/auth";
 
 export default async function handler(
   req: NextApiRequest,
@@ -8,10 +9,17 @@ export default async function handler(
   if (req.method !== "GET")
     return res.status(405).json({ message: "Method not allowed" });
 
+  const sessionResult = await requireApiSession(req, res);
+  if (!sessionResult) return;
+
   const { id } = req.query;
   const sequenceId = parseInt(id as string, 10);
 
   try {
+    if (Number.isNaN(sequenceId)) {
+      return res.status(400).json({ message: "Sequence id is required" });
+    }
+
     const sequence = await prisma.sequence.findFirst({
       where: id ? { id: sequenceId, isDeleted: false } : { isDeleted: false },
     });

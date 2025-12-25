@@ -1,25 +1,27 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { useGetSequencesByUserQuery } from "./services/sequences";
 import { SequenceCard } from "@/components/sequence-card";
 import { SequenceSkeleton } from "@/components/sequence-skeleton";
 import { CreateSequenceForm } from "@/components/ui/create-sequence";
 import { translate } from "@/lib/i18n";
-import { getUserIdWithFallback } from "@/lib/utils";
 import { Callout, Text } from "@radix-ui/themes";
 import Link from "next/link";
 
 export default function Home() {
+  const { data: session, status } = useSession();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [showCreationSuccess, setShowCreationSuccess] = useState(false);
+  const userId = session?.user?.id;
   const {
     data: sequences,
     isLoading,
     isFetching,
     isError,
-  } = useGetSequencesByUserQuery(getUserIdWithFallback() ?? skipToken);
+  } = useGetSequencesByUserQuery(userId ?? skipToken);
   const isPending = isLoading || isFetching;
 
   useEffect(() => {
@@ -28,7 +30,7 @@ export default function Home() {
     }
   }, [showCreationSuccess]);
 
-  if (isPending) {
+  if (status === "loading" || isPending) {
     return (
       <div className="flex flex-col gap-4 p-6 sm:p-8">
         <SequenceSkeleton />

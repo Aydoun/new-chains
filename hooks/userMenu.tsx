@@ -1,3 +1,7 @@
+import { translate } from "@/lib/i18n";
+import { Button, DropdownMenu } from "@radix-ui/themes";
+import { signIn, signOut, useSession } from "next-auth/react";
+
 export function UserMenu() {
   const { data: session, status } = useSession();
 

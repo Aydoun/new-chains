@@ -7,7 +7,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { store } from "./store";
 import { Provider } from "react-redux";
-import { ThemeToggle } from "@/components/theme-toggle";
+// import { ThemeToggle } from "@/components/theme-toggle";
 import { Theme } from "@radix-ui/themes";
 import { getCookie, setCookie } from "@/lib/utils";
 import { SessionProvider } from "next-auth/react";

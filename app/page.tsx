@@ -31,9 +31,7 @@ export default function Home() {
     }
   }, [showCreationSuccess]);
 
-  if (status === "loading" || isPending) {
-    return <SessionLoader />;
-  }
+  if (status === "loading" || isPending) return <SessionLoader />;
 
   return (
     <div className="flex flex-col gap-4 px-6 py-0 sm:px-6">

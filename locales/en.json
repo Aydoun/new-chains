@@ -14,7 +14,10 @@
     "login": "Login",
     "logout": "Logout",
     "me": "My account",
-    "message": "Sign in with Google to keep your drafts private and share with attribution."
+    "message": "Sign in with Google to keep your drafts private and share with attribution.",
+    "cta": {
+      "google": "Continue with Google"
+    }
   },
   "carousel": {
     "frame": "Frame"

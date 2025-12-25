@@ -9,7 +9,6 @@ export function SessionLoader() {
           drop-shadow-[0_0_12px_rgba(168,85,247,0.7)]
         "
       >
-        {/* inner cut-out */}
         <div className="absolute inset-[6px] rounded-full bg-[#0b0b0f]" />
       </div>
     </div>

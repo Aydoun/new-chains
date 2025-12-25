@@ -15,7 +15,7 @@ const API_BASE_URL = `/api/`;
 
 export const frameApi = createApi({
   reducerPath: "frameApi",
-  baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL }),
+  baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL, credentials: "include" }),
   endpoints: (builder) => ({
     bulkCreateFrames: builder.mutation<BulkCreateFramesResponse, FrameInput[]>({
       query: (frames) => ({

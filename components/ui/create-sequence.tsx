@@ -9,7 +9,7 @@ import { Button, TextField, TextArea } from "@radix-ui/themes";
 import { useBulkCreateFramesMutation } from "@/app/services/frames";
 import { useCreateSequenceMutation } from "@/app/services/sequences";
 import { translate } from "@/lib/i18n";
-import { getUserIdWithFallback } from "@/lib/utils";
+import { useSession } from "next-auth/react";
 
 interface Props {
   isDialogOpen: boolean;
@@ -36,6 +36,7 @@ export function CreateSequenceForm({
   onSequenceCreated,
 }: Props) {
   const [activeFrame, setActiveFrame] = useState(0);
+  const { data: session } = useSession();
   const [bulkCreateFrames, { isLoading: isSaving }] =
     useBulkCreateFramesMutation();
   const [createSequenceMutation, { isLoading: isSequenceSaving }] =
@@ -92,18 +93,24 @@ export function CreateSequenceForm({
   };
 
   const onSubmit = async (values: PageFormValues) => {
-    onDialogChange(false);
+    if (!session?.user?.id) {
+      console.error("User must be authenticated to create a sequence.");
+      return;
+    }
+
     const framesPayload = values.pages.filter(
       (frame) => frame.content.length > 0
     );
 
     if (framesPayload.length > 0) {
+      onDialogChange(false);
+
       try {
         const frameResult = await bulkCreateFrames(framesPayload).unwrap();
 
         const createdSequence = await createSequenceMutation({
           frameOrder: frameResult?.ids || [],
-          userId: getUserIdWithFallback(),
+          userId: session.user.id,
           title: values.title,
         }).unwrap();
 

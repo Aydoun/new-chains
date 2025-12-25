@@ -2,9 +2,11 @@ import { configureStore } from "@reduxjs/toolkit";
 import { sequenceApi } from "./services/sequences";
 import { userApi } from "./services/users";
 import { frameApi } from "./services/frames";
+import authReducer from "./features/auth/authSlice";
 
 export const store = configureStore({
   reducer: {
+    auth: authReducer,
     [userApi.reducerPath]: userApi.reducer,
     [sequenceApi.reducerPath]: sequenceApi.reducer,
     [frameApi.reducerPath]: frameApi.reducer,

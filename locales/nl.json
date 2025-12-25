@@ -1,5 +1,19 @@
 {
-    "common": {
-        "close": "Fermer"
-    }
+  "common": {
+    "loading": "Laden",
+    "close": "Sluiten",
+    "required": "Verplicht",
+    "errors": {
+      "home": "Kan de sequenties momenteel niet laden"
+    },
+    "items": "items",
+    "previous": "Vorige",
+    "next": "Volgende"
+  },
+  "auth": {
+    "login": "Inloggen",
+    "logout": "Uitloggen",
+    "me": "Mijn account",
+    "message": "Log in met Google om je concepten privé te houden en veilig te delen."
+  }
 }

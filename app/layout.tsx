@@ -42,12 +42,12 @@ export default function RootLayout({
 }>) {
   const [theme, setTheme] = useState<THEME>(getInitialTheme());
 
-  const handleToggleTheme = () => {
-    const newTheme = theme === "dark" ? "light" : "dark";
+  // const handleToggleTheme = () => {
+  //   const newTheme = theme === "dark" ? "light" : "dark";
 
-    setTheme(newTheme);
-    setCookie("theme", newTheme);
-  };
+  //   setTheme(newTheme);
+  //   setCookie("theme", newTheme);
+  // };
 
   return (
     <html lang="en" className={theme}>
@@ -62,7 +62,7 @@ export default function RootLayout({
                 <AppSidebar />
                 <main className="flex w-full flex-col bg-background text-foreground">
                   <header className="flex items-center justify-end border-b border-border px-6 py-4 gap-3">
-                    <ThemeToggle theme={theme} onToggle={handleToggleTheme} />
+                    {/* <ThemeToggle theme={theme} onToggle={handleToggleTheme} /> */}
                     <UserMenu />
                   </header>
                   <AuthStateSync />

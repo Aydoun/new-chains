@@ -75,11 +75,6 @@ const SidebarProvider = React.forwardRef<
         } else {
           _setOpen(openState);
         }
-
-        // localStorage.setItem(
-        //   SIDEBAR_STORAGE_KEY,
-        //   openState ? "opened" : "closed"
-        // );
       },
       [setOpenProp, open]
     );

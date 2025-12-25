@@ -1,6 +1,14 @@
-import { Home, Search, Blend, Mail, UserRound } from "lucide-react";
+import {
+  Home,
+  Search,
+  Blend,
+  Mail,
+  UserRound,
+  type LucideIcon,
+} from "lucide-react";
 import Link from "next/link";
 
+import { ReactNode } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -12,31 +20,48 @@ import {
 } from "@/components/ui/sidebar";
 import { Input } from "@/components/ui/input";
 import { translate } from "@/lib/i18n";
+import { useSession } from "next-auth/react";
 
-const items = [
+type NavigationItem = {
+  icon: LucideIcon;
+  isProtected: boolean;
+  titleKey: string;
+  url: string;
+};
+
+const items: NavigationItem[] = [
   {
     titleKey: "home",
     url: "/",
     icon: Home,
+    isProtected: false,
   },
   {
     titleKey: "studio",
     url: "/studio",
     icon: Blend,
+    isProtected: true,
   },
   {
     titleKey: "profile",
     url: "/profile",
     icon: UserRound,
+    isProtected: true,
   },
   {
     titleKey: "contact",
     url: "/contact",
     icon: Mail,
+    isProtected: true,
   },
 ];
 
 export function AppSidebar() {
+  const { data: session } = useSession();
+  const isAuthenticated = Boolean(session?.user?.id);
+
+  if (!isAuthenticated) return null;
+
   return (
     <Sidebar className="bg-background border-r border-gray-600">
       <SidebarContent>

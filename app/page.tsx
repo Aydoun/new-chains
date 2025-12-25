@@ -10,6 +10,7 @@ import { CreateSequenceForm } from "@/components/ui/create-sequence";
 import { translate } from "@/lib/i18n";
 import { Callout, Text } from "@radix-ui/themes";
 import Link from "next/link";
+import { SessionLoader } from "@/components/ui/spinner";
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -31,11 +32,7 @@ export default function Home() {
   }, [showCreationSuccess]);
 
   if (status === "loading" || isPending) {
-    return (
-      <div className="flex flex-col gap-4 p-6 sm:p-8">
-        <SequenceSkeleton />
-      </div>
-    );
+    return <SessionLoader />;
   }
 
   return (

@@ -44,13 +44,12 @@ export const authOptions: NextAuthOptions = {
           const user = await prisma.user.upsert({
             where: { email },
             update: {
-              username,
-              avatarUrl,
+              avatarUrl: avatarUrl as string,
             },
             create: {
               email,
               username,
-              avatarUrl,
+              avatarUrl: avatarUrl as string,
             },
           });
 

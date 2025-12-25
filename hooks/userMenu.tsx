@@ -13,13 +13,7 @@ export function UserMenu() {
     );
   }
 
-  if (!session?.user) {
-    return (
-      <Button data-testid="app-login" onClick={() => signIn("google")}>
-        {translate("auth.login")}
-      </Button>
-    );
-  }
+  if (!session?.user) return null;
 
   return (
     <DropdownMenu.Root>

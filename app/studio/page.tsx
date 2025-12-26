@@ -16,7 +16,6 @@ type StudioPageProps = {
 
 export default function StudioPage({ searchParams }: StudioPageProps) {
   const { data: session, status } = useSession();
-  console.log({ session });
   const {
     data: sequences,
     isLoading,
@@ -27,8 +26,6 @@ export default function StudioPage({ searchParams }: StudioPageProps) {
   const studioOwnerName = session?.user?.name;
 
   if (isBusy) return <SessionLoader />;
-
-  console.log({ sequences });
 
   return (
     <div className="p-6 sm:p-8 flex flex-col gap-4">

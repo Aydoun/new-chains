@@ -35,8 +35,7 @@ export const SequenceCard: FC<Props> = ({ sequence, userId }) => {
   const [fetchSequence, { data, isFetching, isError }] =
     useLazyGetSequenceByIdQuery();
   const guardedFrames = data?.frames ?? [];
-  console.log({ type: typeof sequence.userId, id: sequence.userId });
-  const isOwner = userId === sequence.userId.toString();
+  const isOwner = userId === `${sequence.userId}`;
 
   const handleDialogChange = (open: boolean) => {
     setIsDialogOpen(open);

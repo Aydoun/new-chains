@@ -14,8 +14,6 @@ export default async function handler(
 
   const { userId: clientId } = sessionResult;
 
-  console.log({ clientId });
-
   try {
     const sequences = await prisma.sequence.findMany({
       where: {

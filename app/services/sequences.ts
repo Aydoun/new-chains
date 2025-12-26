@@ -15,12 +15,19 @@ export type SequenceInput = {
   userId: string;
 };
 
+export type SequenceUpdateInput = {
+  title?: string;
+  description?: string;
+  visibility?: Sequence["visibility"];
+};
+
 export const sequenceApi = createApi({
   reducerPath: "sequenceApi",
   baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL, credentials: "include" }),
   endpoints: (builder) => ({
-    getSequencesByUser: builder.query<Sequence[], string>({
-      query: (userId) => `sequence/fetch?id=${userId}`,
+    getSequencesByUser: builder.query<Sequence[], string | void>({
+      query: (userId) =>
+        userId ? `sequence/fetch?id=${userId}` : `sequence/fetch`,
     }),
     getSequenceById: builder.query<SingleSequence, number | string>({
       query: (sequenceId) => `sequence/read?id=${sequenceId}`,
@@ -38,6 +45,16 @@ export const sequenceApi = createApi({
         method: "DELETE",
       }),
     }),
+    updateSequence: builder.mutation<
+      Sequence,
+      { id: number | string; updates: SequenceUpdateInput }
+    >({
+      query: ({ id, updates }) => ({
+        url: `sequence/update?id=${id}`,
+        method: "PUT",
+        body: updates,
+      }),
+    }),
   }),
 });
 
@@ -46,4 +63,5 @@ export const {
   useCreateSequenceMutation,
   useLazyGetSequenceByIdQuery,
   useDeleteSequenceMutation,
+  useUpdateSequenceMutation,
 } = sequenceApi;

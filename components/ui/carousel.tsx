@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
-import { translate } from "@/lib/i18n";
 import { Button } from "./button";
 import { cn } from "@/lib/utils";
+import { CircleArrowRight, CircleArrowLeft } from "lucide-react";
 
 interface CarouselFrameProps {
   className?: string;
@@ -83,13 +83,13 @@ export function Carousel({
           variant="secondary"
           onClick={onPrevious}
         >
-          {translate("common.previous")}
+          <CircleArrowLeft />
         </Button>
         <span className="text-sm text-muted-foreground">
-          {translate("frame.self")} {currentMaxIndex + 1} of {frameCount}
+          {`${currentMaxIndex + 1} / ${frameCount}`}
         </span>
         <Button type="button" variant="secondary" onClick={onNext}>
-          {translate("common.next")}
+          <CircleArrowRight />
         </Button>
       </div>
     </div>

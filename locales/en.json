@@ -23,7 +23,8 @@
     }
   },
   "carousel": {
-    "frame": "Frame"
+    "frame": "Frame",
+    "progress": "Frame {{current}} of {{total}}"
   },
   "contact": {
     "mail": "e-mail",

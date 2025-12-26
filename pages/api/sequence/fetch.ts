@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
 import { requireApiSession } from "@/lib/api/auth";
+import shuffle from "lodash.shuffle";
 
 export default async function handler(
   req: NextApiRequest,
@@ -21,11 +22,16 @@ export default async function handler(
         isDeleted: false,
         visibility: "PUBLIC",
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
-    if (!Array.isArray(sequences))
+    if (!Array.isArray(sequences) || sequences.length === 0)
       return res.status(404).json({ message: "Sequences not found" });
 
-    res.status(200).json(sequences);
+    const shuffledSequences = shuffle(sequences);
+
+    res.status(200).json(shuffledSequences);
   } catch (error) {
     if (error instanceof Error)
       res

@@ -36,7 +36,6 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, profile }) {
       if (profile?.email) {
-        console.log("called: ", profile);
         const email = profile.email;
         const avatarUrl = "picture" in profile ? profile.picture : undefined;
         const username = profile.name ?? email.split("@")[0];

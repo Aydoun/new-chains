@@ -59,7 +59,11 @@ export default function Home() {
 
             <div className="flex w-full flex-wrap gap-4">
               {sequences?.map((sequence) => (
-                <SequenceCard key={sequence.id} sequence={sequence} />
+                <SequenceCard
+                  key={sequence.id}
+                  userId={userId}
+                  sequence={sequence}
+                />
               ))}
             </div>
           </>

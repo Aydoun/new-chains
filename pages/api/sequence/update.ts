@@ -13,12 +13,13 @@ export default async function handler(
   if (!sessionResult) return;
 
   const { id } = req.query;
-  const { isDeleted } = req.body;
+  // description, visibility
+  const { isDeleted, title } = req.body;
 
   try {
     const updatedSequence = await prisma.sequence.update({
       where: { id: parseInt(id as string, 10) },
-      data: { isDeleted },
+      data: { isDeleted, ...(title ? { title } : {}) },
     });
     res.status(200).json(updatedSequence);
   } catch (error) {

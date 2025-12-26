@@ -7,8 +7,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
-
-import { ReactNode } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -21,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { translate } from "@/lib/i18n";
 import { useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
 
 type NavigationItem = {
   icon: LucideIcon;
@@ -58,6 +57,7 @@ const items: NavigationItem[] = [
 
 export function AppSidebar() {
   const { data: session } = useSession();
+  const pathname = usePathname();
   const isAuthenticated = Boolean(session?.user?.id);
 
   if (!isAuthenticated) return null;
@@ -86,7 +86,7 @@ export function AppSidebar() {
               </SidebarMenuItem>
               {items.map((item) => (
                 <SidebarMenuItem key={item.titleKey}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild isActive={pathname === item.url}>
                     <Link href={item.url} className="text-white">
                       <item.icon />
                       <span>{translate(`navigation.${item.titleKey}`)}</span>

@@ -47,10 +47,15 @@ const baseSequence = {
   updatedAt: "",
 };
 
+const userId = "1";
+
 const renderCard = (overrides?: Partial<typeof baseSequence>) =>
   render(
     <Theme appearance="dark">
-      <SequenceCard sequence={{ ...baseSequence, ...overrides }} />
+      <SequenceCard
+        userId={userId}
+        sequence={{ ...baseSequence, ...overrides }}
+      />
     </Theme>
   );
 

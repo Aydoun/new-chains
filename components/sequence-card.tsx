@@ -2,7 +2,7 @@ import { FC, useState, MouseEvent as ReactMouseEvent } from "react";
 import { Sequence } from "@/app/types";
 import { Dialog } from "@radix-ui/themes";
 import { Separator } from "@radix-ui/react-separator";
-import { Trash2, X } from "lucide-react";
+import { Pencil, Share2, Trash2, X } from "lucide-react";
 import { translate } from "@/lib/i18n";
 import {
   useDeleteSequenceMutation,
@@ -21,9 +21,10 @@ export interface SequenceCardProps {
 
 interface Props {
   sequence: Sequence;
+  userId: string | undefined;
 }
 
-export const SequenceCard: FC<Props> = ({ sequence }) => {
+export const SequenceCard: FC<Props> = ({ sequence, userId }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [activeFrame, setActiveFrame] = useState(0);
   const [deleteSequence, { isLoading: isDeleting }] =
@@ -34,6 +35,8 @@ export const SequenceCard: FC<Props> = ({ sequence }) => {
   const [fetchSequence, { data, isFetching, isError }] =
     useLazyGetSequenceByIdQuery();
   const guardedFrames = data?.frames ?? [];
+  console.log({ type: typeof sequence.userId, id: sequence.userId });
+  const isOwner = userId === sequence.userId.toString();
 
   const handleDialogChange = (open: boolean) => {
     setIsDialogOpen(open);
@@ -80,19 +83,48 @@ export const SequenceCard: FC<Props> = ({ sequence }) => {
                 </div>
               </div>
             </div>
-            <IconButton
-              aria-label="Delete sequence"
-              size="1"
-              variant="ghost"
-              onClick={handleDelete}
-              disabled={isDeleting}
-              className={cn(
-                "absolute right-3 top-3 z-10 text-red-600 hover:bg-red-600/15 focus-visible:ring-2 focus-visible:ring-red-600",
-                isDeleting && "opacity-60"
+            <div className="absolute right-3 top-3 z-10 flex items-center gap-2">
+              <IconButton
+                aria-label="Share sequence"
+                size="1"
+                variant="ghost"
+                onClick={console.log}
+                className="text-blue-400 hover:bg-blue-600/15 focus-visible:ring-2 focus-visible:ring-blue-600"
+              >
+                <Share2 className="h-4 w-4" />
+              </IconButton>
+              {isOwner && (
+                <>
+                  <IconButton
+                    aria-label="Edit sequence"
+                    size="1"
+                    variant="ghost"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      event.preventDefault();
+                      // setIsEditOpen(true);
+                      setIsDialogOpen(false);
+                    }}
+                    className="text-amber-300 hover:bg-amber-500/15 focus-visible:ring-2 focus-visible:ring-amber-500"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </IconButton>
+                  <IconButton
+                    aria-label="Delete sequence"
+                    size="1"
+                    variant="ghost"
+                    onClick={handleDelete}
+                    disabled={isDeleting}
+                    className={cn(
+                      "text-red-600 hover:bg-red-600/15 focus-visible:ring-2 focus-visible:ring-red-600",
+                      isDeleting && "opacity-60"
+                    )}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </IconButton>
+                </>
               )}
-            >
-              <Trash2 className="h-4 w-4" />
-            </IconButton>
+            </div>
           </div>
           <Separator className="bg-gray-700" />
           <p className="text-xs text-muted-foreground">Tap to preview</p>

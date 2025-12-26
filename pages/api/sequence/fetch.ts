@@ -13,13 +13,33 @@ export default async function handler(
   if (!sessionResult) return;
 
   const { userId: clientId } = sessionResult;
+  const { id } = req.query;
+  const requestedUserId = id ? parseInt(id as string, 10) : undefined;
+
+  if (id && Number.isNaN(requestedUserId)) {
+    return res.status(400).json({ message: "Sequence id is required" });
+  }
 
   try {
     const sequences = await prisma.sequence.findMany({
       where: {
-        ...(clientId ? { userId: { not: clientId } } : {}),
         isDeleted: false,
-        visibility: "PUBLIC",
+        ...(requestedUserId
+          ? {
+              userId: requestedUserId,
+              ...(requestedUserId !== clientId
+                ? { visibility: "PUBLIC" }
+                : {}),
+            }
+          : {
+              visibility: "PUBLIC",
+              ...(clientId ? { userId: { not: clientId } } : {}),
+            }),
+      },
+      include: {
+        user: {
+          select: { id: true, username: true, avatarUrl: true },
+        },
       },
     });
     if (!Array.isArray(sequences))

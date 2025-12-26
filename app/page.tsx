@@ -16,13 +16,12 @@ export default function Home() {
   const { data: session, status } = useSession();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [showCreationSuccess, setShowCreationSuccess] = useState(false);
-  const userId = session?.user?.id;
   const {
     data: sequences,
     isLoading,
     isFetching,
     isError,
-  } = useGetSequencesByUserQuery(userId ?? skipToken);
+  } = useGetSequencesByUserQuery(session?.user?.id ? undefined : skipToken);
   const isPending = isLoading || isFetching;
 
   useEffect(() => {

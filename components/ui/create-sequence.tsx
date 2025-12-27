@@ -10,6 +10,7 @@ import { Button, TextField, TextArea } from "@radix-ui/themes";
 import { useBulkCreateFramesMutation } from "@/app/services/frames";
 import { useCreateSequenceMutation } from "@/app/services/sequences";
 import { translate } from "@/lib/i18n";
+import { FrameContainer } from "../sequence-card";
 
 interface Props {
   isDialogOpen: boolean;
@@ -122,10 +123,7 @@ export function CreateSequenceForm({
   }, [activeFrame, pages.length, append]);
 
   const pageFrames = pages.map((_, index) => (
-    <CarouselFrame
-      key={index}
-      className="h-auto items-stretch justify-start gap-4 bg-card p-6 text-left shadow-sm"
-    >
+    <FrameContainer className="h-auto items-stretch justify-start gap-4 bg-card p-6 text-left shadow-sm">
       <div className="flex flex-col gap-4 w-full">
         <div className="space-y-2">
           <label
@@ -162,7 +160,7 @@ export function CreateSequenceForm({
           />
         </div>
       </div>
-    </CarouselFrame>
+    </FrameContainer>
   ));
 
   if (!session?.user?.id) return null;

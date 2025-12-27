@@ -89,36 +89,3 @@ body {
     border: none;
   }
 }
-
-.login-animated-bg {
-  background: linear-gradient(-45deg, #0f172a, #1b2436, #0c1624, #0f172a);
-  background-size: 400% 400%;
-  animation: login-gradient 18s ease infinite;
-}
-
-.login-blob {
-  filter: blur(80px);
-  opacity: 0.35;
-}
-
-@keyframes login-gradient {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-@keyframes login-float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-12px);
-  }
-}

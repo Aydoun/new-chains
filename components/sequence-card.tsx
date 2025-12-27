@@ -182,7 +182,6 @@ export const SequenceCard: FC<Props> = ({
             <X className="h-4 w-4" />
           </Dialog.Close>
         </div>
-        <Separator className="my-4 bg-gray-800" />
         {!isFetching && !isError && (
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between text-xs text-amber-100">
@@ -238,25 +237,46 @@ interface SequenceFrameProps {
   description?: string | undefined | null;
 }
 
+interface FrameContainerProps {
+  className?: string;
+  children: React.ReactNode;
+}
+
 export const SequenceFrame: FC<SequenceFrameProps> = ({
   text,
   description,
 }) => {
   return (
-    <div
-      className={cn(
-        "flex h-48 w-full flex-col items-center justify-center gap-2 rounded-2xl bg-[radial-gradient(circle_at_20%_20%,#5b3a2a,#2b1810)] text-center text-amber-50 shadow-xl ring-1 ring-amber-900/40 backdrop-blur-sm",
-        "bg-blend-overlay"
-      )}
-    >
-      <p className="px-6 text-xl font-black leading-tight drop-shadow-sm">
-        {text}
-      </p>
-      {description && (
-        <p className="px-8 text-sm font-medium text-amber-100/80">
-          {description}
-        </p>
-      )}
-    </div>
+    <FrameContainer>
+      <div
+        className={cn(
+          "flex h-48 w-full flex-col items-center justify-center gap-2 text-center text-amber-50"
+        )}
+      >
+        <blockquote className="max-w-2xl text-center text-gray-800">
+          <p className="font-serif text-1xl md:text-2xl leading-tight">
+            {text}
+          </p>
+        </blockquote>
+        {description && (
+          <p className="px-8 text-sm font-medium text-zinc-800">
+            {description}
+          </p>
+        )}
+      </div>
+    </FrameContainer>
   );
 };
+
+export function FrameContainer({ className, children }: FrameContainerProps) {
+  return (
+    <div
+      className={cn(
+        "flex h-48 w-full items-center justify-center bg-[#fff7ed] text-center font-[400]",
+        className
+      )}
+    >
+      {children}
+    </div>
+  );
+}

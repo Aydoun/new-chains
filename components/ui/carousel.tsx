@@ -5,24 +5,7 @@ import { cn } from "@/lib/utils";
 import { CircleArrowRight, CircleArrowLeft } from "lucide-react";
 import { translate } from "@/lib/i18n";
 import { Button } from "@radix-ui/themes";
-
-interface CarouselFrameProps {
-  className?: string;
-  children: React.ReactNode;
-}
-
-export function CarouselFrame({ className, children }: CarouselFrameProps) {
-  return (
-    <div
-      className={cn(
-        "flex h-48 w-full items-center justify-center rounded-lg bg-[#6f4e37] text-center text-black font-[400]",
-        className
-      )}
-    >
-      {children}
-    </div>
-  );
-}
+import { FrameContainer } from "../sequence-card";
 
 interface CarouselProps {
   frames: React.ReactNode[];
@@ -73,7 +56,7 @@ export function Carousel({
           className="flex items-center justify-center p-6"
           aria-live="polite"
         >
-          <CarouselFrame>{frames[currentMaxIndex]}</CarouselFrame>
+          <FrameContainer>{frames[currentMaxIndex]}</FrameContainer>
         </div>
       </div>
 

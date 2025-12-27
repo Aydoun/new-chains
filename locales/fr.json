@@ -1,6 +1,32 @@
 {
     "common": {
         "close": "Fermer",
-        "required": ""
+        "required": "",
+        "loading": "Chargement"
+    },
+    "auth": {
+        "login": "Connexion",
+        "logout": "Déconnexion",
+        "me": "Mon compte",
+        "message": "Connectez-vous avec Google pour garder vos brouillons privés et les partager avec attribution.",
+        "welcome": "Content de vous revoir",
+        "subtitle": "Connectez-vous pour accéder à vos dépôts de code et à vos séquences de documentation.",
+        "continueWithEmail": "Ou continuer avec l'e-mail",
+        "emailLabel": "Adresse e-mail",
+        "passwordLabel": "Mot de passe",
+        "emailPlaceholder": "nom@entreprise.com",
+        "passwordPlaceholder": "••••••••",
+        "forgotPassword": "Mot de passe oublié ?",
+        "status": {
+            "label": "Statut du système",
+            "operational": "Opérationnel"
+        },
+        "cta": {
+            "google": "Continuer avec Google",
+            "signIn": "Se connecter"
+        },
+        "error": {
+            "email": "Aucune adresse e-mail trouvée"
+        }
     }
 }

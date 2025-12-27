@@ -1,5 +1,31 @@
 {
     "common": {
-        "close": "Fermer"
+        "close": "Fermer",
+        "loading": "Bezig met laden"
+    },
+    "auth": {
+        "login": "Inloggen",
+        "logout": "Uitloggen",
+        "me": "Mijn account",
+        "message": "Log in met Google om je concepten privé te houden en ze met naamsvermelding te delen.",
+        "welcome": "Welkom terug",
+        "subtitle": "Meld u aan om toegang te krijgen tot uw coderepositories en documentatiesequenties.",
+        "continueWithEmail": "Of ga verder met e-mail",
+        "emailLabel": "E-mailadres",
+        "passwordLabel": "Wachtwoord",
+        "emailPlaceholder": "naam@bedrijf.com",
+        "passwordPlaceholder": "••••••••",
+        "forgotPassword": "Wachtwoord vergeten?",
+        "status": {
+            "label": "Systeemstatus",
+            "operational": "Operationeel"
+        },
+        "cta": {
+            "google": "Doorgaan met Google",
+            "signIn": "Inloggen"
+        },
+        "error": {
+            "email": "Geen e-mailadres gevonden"
+        }
     }
 }

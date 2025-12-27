@@ -2,7 +2,7 @@ import { FC, useState, MouseEvent as ReactMouseEvent } from "react";
 import { Sequence } from "@/app/types";
 import { Dialog } from "@radix-ui/themes";
 import { Separator } from "@radix-ui/react-separator";
-import { Pencil, Share2, Trash2, X } from "lucide-react";
+import { Pencil, Share2, Trash2, X, Check } from "lucide-react";
 import { translate } from "@/lib/i18n";
 import {
   useDeleteSequenceMutation,
@@ -22,11 +22,17 @@ export interface SequenceCardProps {
 interface Props {
   sequence: Sequence;
   userId: string | undefined;
+  openDialog: boolean;
 }
 
-export const SequenceCard: FC<Props> = ({ sequence, userId }) => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+export const SequenceCard: FC<Props> = ({
+  sequence,
+  userId,
+  openDialog = false,
+}) => {
+  const [isDialogOpen, setIsDialogOpen] = useState(openDialog);
   const [activeFrame, setActiveFrame] = useState(0);
+  const [isLinkCopied, setIsLinkCopied] = useState(false);
   const [deleteSequence, { isLoading: isDeleting }] =
     useDeleteSequenceMutation();
 
@@ -52,6 +58,24 @@ export const SequenceCard: FC<Props> = ({ sequence, userId }) => {
       await deleteSequence(sequence.id).unwrap();
     } catch (error) {
       console.error("Unable to delete sequence right now.", error);
+    }
+  };
+
+  const handleShareLink = async (event: ReactMouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    event.preventDefault();
+    if (isLinkCopied) return;
+
+    const canonicalLink = `${window.location.origin}/?sequence=${sequence.id}`;
+
+    try {
+      if (navigator.clipboard) {
+        await navigator.clipboard.writeText(canonicalLink);
+      }
+      setIsLinkCopied(true);
+      setTimeout(() => setIsLinkCopied(false), 2000);
+    } catch (error) {
+      console.error("Unable to share sequence", error);
     }
   };
 
@@ -87,10 +111,15 @@ export const SequenceCard: FC<Props> = ({ sequence, userId }) => {
                 aria-label="Share sequence"
                 size="1"
                 variant="ghost"
-                onClick={console.log}
-                className="text-blue-400 hover:bg-blue-600/15 focus-visible:ring-2 focus-visible:ring-blue-600"
+                onClick={handleShareLink}
               >
-                <Share2 className="h-4 w-4" />
+                {isLinkCopied ? (
+                  <Text size="1">
+                    {translate("sequence.cta.url-copied", { mama: "hey" })}
+                  </Text>
+                ) : (
+                  <Share2 className="text-blue-400 h-4 w-4" />
+                )}
               </IconButton>
               {isOwner && (
                 <>

@@ -24,7 +24,7 @@
   },
   "carousel": {
     "frame": "Frame",
-    "progress": "Frame {{current}} of {{total}}"
+    "progress": "Frame {current} of {total}"
   },
   "contact": {
     "mail": "e-mail",
@@ -53,7 +53,8 @@
     "cta": {
       "title": "Name your Sequence",
       "publish": "Publish",
-      "creation-message": "Sequence created successfully."
+      "creation-message": "Sequence created successfully.",
+      "url-copied": "URL is copied"
     },
     "draft": {
       "title": "Draft Your Sequence"

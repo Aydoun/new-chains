@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { Button } from "./button";
 import { cn } from "@/lib/utils";
 import { CircleArrowRight, CircleArrowLeft } from "lucide-react";
+import { translate } from "@/lib/i18n";
 
 interface CarouselFrameProps {
   className?: string;
@@ -86,7 +87,10 @@ export function Carousel({
           <CircleArrowLeft />
         </Button>
         <span className="text-sm text-muted-foreground">
-          {`${currentMaxIndex + 1} / ${frameCount}`}
+          {translate("carousel.progress", {
+            current: currentMaxIndex + 1,
+            total: frameCount,
+          })}
         </span>
         <Button type="button" variant="secondary" onClick={onNext}>
           <CircleArrowRight />

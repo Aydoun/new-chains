@@ -1,7 +1,7 @@
 "use client";
 
+import { Button } from "@radix-ui/themes";
 import { Moon, Sun } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 type Theme = "light" | "dark";
 

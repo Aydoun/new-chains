@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import { Button } from "./button";
 import { cn } from "@/lib/utils";
 import { CircleArrowRight, CircleArrowLeft } from "lucide-react";
 import { translate } from "@/lib/i18n";
+import { Button } from "@radix-ui/themes";
 
 interface CarouselFrameProps {
   className?: string;
@@ -81,7 +81,7 @@ export function Carousel({
         <Button
           disabled={currentMaxIndex === 0}
           type="button"
-          variant="secondary"
+          // variant="secondary"
           onClick={onPrevious}
         >
           <CircleArrowLeft />
@@ -92,7 +92,7 @@ export function Carousel({
             total: frameCount,
           })}
         </span>
-        <Button type="button" variant="secondary" onClick={onNext}>
+        <Button type="button" onClick={onNext}>
           <CircleArrowRight />
         </Button>
       </div>

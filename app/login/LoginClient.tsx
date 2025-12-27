@@ -2,15 +2,9 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Manrope } from "next/font/google";
 import { signIn, useSession } from "next-auth/react";
 import { translate } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
-
-const manrope = Manrope({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-});
 
 export default function LoginClient({ callbackUrl }: { callbackUrl: string }) {
   const router = useRouter();

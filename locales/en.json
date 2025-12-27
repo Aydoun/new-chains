@@ -8,7 +8,8 @@
     "loading": "Loading",
     "next": "Next",
     "previous": "Previous",
-    "required": "Field is Required"
+    "required": "Field is Required",
+    "send": "Send"
   },
   "app": {
     "name": "Link & Tell",
@@ -44,9 +45,27 @@
     "progress": "Frame {current} of {total}"
   },
   "contact": {
+    "channel": {
+      "email": "Email",
+      "linkedin": "LinkedIn"
+    },
+    "directChannels": "Direct Channels",
+    "directChannelsDescription": "Connect with us on social platforms or send an email directly.",
+    "form": {
+      "email": "Email Address",
+      "name": "Name",
+      "namePlaceholder": "Your Name",
+      "messageLabel": "Message",
+      "messagePlaceholder": "Your Message..."
+    },
     "mail": "e-mail",
     "email-value": "mohamed.amine.aydoun@gmail.com",
-    "self": "Contact"
+    "linked-profile": "https://www.linkedin.com/in/mohamed-amine-aydoun-5799b481",
+    "self": "Contact",
+    "sendMessage": "Send a Message",
+    "replyTime": "We will get back to you ASAP",
+    "welcomeMessage": "Get in Touch",
+    "welcomeDescription": "Have questions about the sequence explorer, encountering issues, or just want to say hello? Reach out directly or send a message below."
   },
   "frame": {
     "content": "Frame Content",

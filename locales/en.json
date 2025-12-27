@@ -15,8 +15,21 @@
     "logout": "Logout",
     "me": "My account",
     "message": "Sign in with Google to keep your drafts private and share with attribution.",
+    "welcome": "Welcome back",
+    "subtitle": "Sign in to access your code repositories and documentation sequences.",
+    "continueWithEmail": "Or continue with email",
+    "emailLabel": "Email address",
+    "passwordLabel": "Password",
+    "emailPlaceholder": "name@company.com",
+    "passwordPlaceholder": "••••••••",
+    "forgotPassword": "Forgot your password?",
+    "status": {
+      "label": "System Status",
+      "operational": "Operational"
+    },
     "cta": {
-      "google": "Continue with Google"
+      "google": "Continue with Google",
+      "signIn": "Sign In"
     },
     "error": {
       "email": "No email address found"

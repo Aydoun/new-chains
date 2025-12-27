@@ -1,22 +1,29 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { skipToken } from "@reduxjs/toolkit/query";
-import { useGetSequencesByUserQuery } from "./services/sequences";
+import {
+  useDeleteSequenceMutation,
+  useGetSequencesByUserQuery,
+} from "./services/sequences";
 import { SequenceCard } from "@/components/sequence-card";
 import { CreateSequenceForm } from "@/components/ui/create-sequence";
 import { translate } from "@/lib/i18n";
 import { Callout, Text } from "@radix-ui/themes";
 import Link from "next/link";
 import { SessionLoader } from "@/components/ui/spinner";
+import { ViewSequence } from "@/components/ui/view-sequence";
+import { Sequence } from "./types";
 // import { useSearchParams } from "next/navigation";
 
 export default function Home() {
   // const searchParams = useSearchParams();
   const { data: session, status } = useSession();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [showCreationSuccess, setShowCreationSuccess] = useState(false);
+  const currentDisplayedSequence = useRef<Sequence | null>(null);
   const userId = session?.user?.id;
   const {
     data: sequences,
@@ -24,6 +31,8 @@ export default function Home() {
     isFetching,
     isError,
   } = useGetSequencesByUserQuery(userId ?? skipToken);
+  const [deleteSequence, { isLoading: isDeleting }] =
+    useDeleteSequenceMutation();
   const isPending = isLoading || isFetching;
   // const sequenceIdParam = searchParams?.get("sequence");
 
@@ -32,6 +41,14 @@ export default function Home() {
       setTimeout(() => setShowCreationSuccess(false), 3000);
     }
   }, [showCreationSuccess]);
+
+  const handleDelete = async (sequenceId: string | number) => {
+    try {
+      await deleteSequence(sequenceId).unwrap();
+    } catch (error) {
+      console.error("Unable to delete sequence right now.", error);
+    }
+  };
 
   // useEffect(() => {
   //   if (sequenceIdParam) {
@@ -70,10 +87,11 @@ export default function Home() {
                   key={sequence.id}
                   userId={userId}
                   sequence={sequence}
-                  // openDialog={Boolean(
-                  //   sequenceIdParam &&
-                  //     sequence.id.toString() === sequenceIdParam
-                  // )}
+                  onClick={() => {
+                    setIsViewDialogOpen(true);
+                    currentDisplayedSequence.current = sequence;
+                  }}
+                  handleDelete={handleDelete}
                 />
               ))}
             </div>
@@ -91,6 +109,12 @@ export default function Home() {
         }}
         onSequenceCreated={() => setShowCreationSuccess(true)}
       />
+      {isViewDialogOpen && (
+        <ViewSequence
+          sequence={currentDisplayedSequence.current}
+          onClose={() => setIsViewDialogOpen(false)}
+        />
+      )}
     </div>
   );
 }

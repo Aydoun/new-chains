@@ -5,12 +5,11 @@ import { useSession } from "next-auth/react";
 import { X, CircleArrowUp } from "lucide-react";
 import { Dialog } from "@radix-ui/themes";
 import { useFieldArray, useForm } from "react-hook-form";
-import { Carousel, CarouselFrame } from "@/components/ui/carousel";
+import { Carousel } from "@/components/ui/carousel";
 import { Button, TextField, TextArea } from "@radix-ui/themes";
 import { useBulkCreateFramesMutation } from "@/app/services/frames";
 import { useCreateSequenceMutation } from "@/app/services/sequences";
 import { translate } from "@/lib/i18n";
-import { FrameContainer } from "../sequence-card";
 
 interface Props {
   isDialogOpen: boolean;
@@ -123,44 +122,42 @@ export function CreateSequenceForm({
   }, [activeFrame, pages.length, append]);
 
   const pageFrames = pages.map((_, index) => (
-    <FrameContainer className="h-auto items-stretch justify-start gap-4 bg-card p-6 text-left shadow-sm">
-      <div className="flex flex-col gap-4 w-full">
-        <div className="space-y-2">
-          <label
-            className="text-sm font-medium text-foreground"
-            htmlFor={`page-${index}-content`}
-          >
-            {translate("frame.content")}
-          </label>
-          <TextField.Root
-            id={`page-${index}-content`}
-            placeholder={translate("sequence.cta.title")}
-            className="flex-1"
-            {...register(`pages.${index}.content`, {
-              required: translate("common.required"),
-            })}
-            radius="full"
-          />
-          {errors.pages?.[index]?.content && (
-            <p className="text-sm text-destructive">
-              {errors.pages[index]?.content?.message}
-            </p>
-          )}
-        </div>
-        <div className="space-y-2">
-          <label
-            className="text-sm font-medium text-foreground"
-            htmlFor={`page-${index}-description`}
-          >
-            {translate("frame.description")}
-          </label>
-          <TextArea
-            id={`page-${index}-description`}
-            {...register(`pages.${index}.description`)}
-          />
-        </div>
+    <div className="flex flex-col gap-4 w-full">
+      <div className="space-y-2">
+        <label
+          className="text-sm font-medium text-foreground"
+          htmlFor={`page-${index}-content`}
+        >
+          {translate("frame.content")}
+        </label>
+        <TextField.Root
+          id={`page-${index}-content`}
+          placeholder={translate("sequence.cta.title")}
+          className="flex-1"
+          {...register(`pages.${index}.content`, {
+            required: translate("common.required"),
+          })}
+          radius="full"
+        />
+        {errors.pages?.[index]?.content && (
+          <p className="text-sm text-destructive">
+            {errors.pages[index]?.content?.message}
+          </p>
+        )}
       </div>
-    </FrameContainer>
+      <div className="space-y-2">
+        <label
+          className="text-sm font-medium text-foreground"
+          htmlFor={`page-${index}-description`}
+        >
+          {translate("frame.description")}
+        </label>
+        <TextArea
+          id={`page-${index}-description`}
+          {...register(`pages.${index}.description`)}
+        />
+      </div>
+    </div>
   ));
 
   if (!session?.user?.id) return null;
@@ -208,7 +205,7 @@ export function CreateSequenceForm({
           <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:space-x-2 mt-2">
             <Dialog.Close
               aria-label="Close"
-              className="absolute right-4 top-4 rounded-full bg-gray-800 p-2 text-gray-300 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              className="absolute right-4 top-4 rounded-full bg-gray-800 p-2 text-gray-300 transition"
             >
               <X className="h-4 w-4" />
             </Dialog.Close>

@@ -7,10 +7,11 @@ import {
   Linkedin,
   Mail,
   Send,
+  Copy,
   type LucideIcon,
 } from "lucide-react";
 import { translate } from "@/lib/i18n";
-import { Button, TextArea, TextField } from "@radix-ui/themes";
+import { Button, TextArea } from "@radix-ui/themes";
 
 type DirectChannel = {
   icon: LucideIcon;
@@ -75,11 +76,11 @@ export default function ContactPage() {
               {translate("contact.directChannelsDescription")}
             </p>
           </header>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-1">
             {directChannels.map((channel) => (
               <article
                 key={channel.title}
-                className="group flex cursor-pointer items-start gap-4 rounded-xl border border-border bg-card/70 p-5 shadow-sm transition-colors hover:border-primary/60"
+                className="relative mt-3 flex items-start gap-4 rounded-xl border border-[#d1d5db] dark:border-[#324867] bg-white dark:bg-[#192433] p-5 hover:border-primary/50 transition-colors group cursor-pointer shadow-sm"
               >
                 <div className="rounded-lg bg-primary/10 p-2 text-primary">
                   <channel.icon className="h-5 w-5" aria-hidden="true" />
@@ -105,15 +106,14 @@ export default function ContactPage() {
                 ) : (
                   <Button
                     aria-label={`Copy ${channel.description}`}
-                    size="1"
                     variant="ghost"
-                    className="text-muted-foreground transition-colors hover:text-primary"
+                    className="text-muted-foreground absolute right-4 top-4 transition-colors hover:text-primary"
                     onClick={handleCopyEmail}
                   >
                     {copiedEmail ? (
                       <Check className="h-4 w-4" aria-hidden="true" />
                     ) : (
-                      <Mail className="h-4 w-4" aria-hidden="true" />
+                      <Copy className="h-4 w-4" aria-hidden="true" />
                     )}
                   </Button>
                 )}
@@ -122,8 +122,11 @@ export default function ContactPage() {
           </div>
         </section>
         <section className="lg:col-span-7">
-          <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
-            <div className="border-b border-border px-6 py-5 sm:px-8">
+          <div className="flex flex-col h-full rounded-2xl border border-[#d1d5db] dark:border-[#324867] bg-white dark:bg-[#192433] overflow-hidden shadow-lg">
+            <div
+              style={{ borderBottom: "1px solid #09090b" }}
+              className="px-6 py-5 sm:px-8"
+            >
               <h2 className="text-xl font-semibold text-foreground">
                 {translate("contact.sendMessage")}
               </h2>
@@ -131,12 +134,12 @@ export default function ContactPage() {
                 {translate("contact.replyTime")}
               </p>
             </div>
-
+            {/* <Separator /> */}
             <form
               className="flex flex-col gap-6 px-6 py-6 sm:px-8 sm:py-8"
               onSubmit={(event) => event.preventDefault()}
             >
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {/* <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <label className="flex flex-col gap-2">
                   <span className="text-sm font-medium text-foreground">
                     {translate("contact.form.name")}
@@ -165,7 +168,7 @@ export default function ContactPage() {
                     // })}
                   />
                 </label>
-              </div>
+              </div> */}
               <label className="flex flex-col gap-2">
                 <span className="text-sm font-medium text-foreground">
                   {translate("contact.form.messageLabel")}

@@ -2,7 +2,7 @@ import { FC, useState, MouseEvent as ReactMouseEvent } from "react";
 import { Sequence } from "@/app/types";
 import { Dialog } from "@radix-ui/themes";
 import { Separator } from "@radix-ui/react-separator";
-import { Pencil, Share2, Trash2, X, Check } from "lucide-react";
+import { Pencil, Share2, Trash2, X } from "lucide-react";
 import { translate } from "@/lib/i18n";
 import {
   useDeleteSequenceMutation,

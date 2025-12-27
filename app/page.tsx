@@ -10,10 +10,10 @@ import { translate } from "@/lib/i18n";
 import { Callout, Text } from "@radix-ui/themes";
 import Link from "next/link";
 import { SessionLoader } from "@/components/ui/spinner";
-import { useSearchParams } from "next/navigation";
+// import { useSearchParams } from "next/navigation";
 
 export default function Home() {
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
   const { data: session, status } = useSession();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [showCreationSuccess, setShowCreationSuccess] = useState(false);
@@ -25,7 +25,7 @@ export default function Home() {
     isError,
   } = useGetSequencesByUserQuery(userId ?? skipToken);
   const isPending = isLoading || isFetching;
-  const sequenceIdParam = searchParams?.get("sequence");
+  // const sequenceIdParam = searchParams?.get("sequence");
 
   useEffect(() => {
     if (showCreationSuccess) {
@@ -33,10 +33,10 @@ export default function Home() {
     }
   }, [showCreationSuccess]);
 
-  useEffect(() => {
-    if (sequenceIdParam) {
-    }
-  }, [sequenceIdParam]);
+  // useEffect(() => {
+  //   if (sequenceIdParam) {
+  //   }
+  // }, [sequenceIdParam]);
 
   if (status === "loading" || isPending) return <SessionLoader />;
 
@@ -70,10 +70,10 @@ export default function Home() {
                   key={sequence.id}
                   userId={userId}
                   sequence={sequence}
-                  openDialog={Boolean(
-                    sequenceIdParam &&
-                      sequence.id.toString() === sequenceIdParam
-                  )}
+                  // openDialog={Boolean(
+                  //   sequenceIdParam &&
+                  //     sequence.id.toString() === sequenceIdParam
+                  // )}
                 />
               ))}
             </div>

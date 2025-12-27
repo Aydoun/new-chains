@@ -16,7 +16,6 @@ export function ThemeToggle({ theme, onToggle }: ThemeToggleProps) {
   return (
     <Button
       type="button"
-      size="icon"
       variant="ghost"
       aria-label={`Switch to ${isDarkMode ? "light" : "dark"} mode`}
       onClick={onToggle}

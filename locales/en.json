@@ -95,11 +95,16 @@
       "title": "Name your Sequence",
       "publish": "Publish",
       "creation-message": "Sequence created successfully.",
-      "url-copied": "URL is copied"
+      "url-copied": "Link is copied"
     },
     "draft": {
       "title": "Draft Your Sequence"
     },
     "self": "Sequence"
+  },
+  "studio": {
+    "total": "Total Sequences",
+    "lastEdit": "Last Edited",
+    "greetings": "Hello {name}"
   }
 }

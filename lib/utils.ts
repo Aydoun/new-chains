@@ -16,9 +16,11 @@ export function getStorageItem(key: string) {
 }
 
 export function timeAgo(
-  isoDate: string,
+  isoDate: string | undefined,
   { locale = "en", nowThresholdSeconds = 5 }: RelativeTimeOptions = {}
 ): string {
+  if (!isoDate) return "";
+
   const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
 
   const date = new Date(isoDate);

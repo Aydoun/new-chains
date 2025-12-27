@@ -69,7 +69,11 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem key="icon">
-                <img src={"/lt-icon-64.svg"} alt={`site icon`} />
+                <div className="flex m-4 mx-2 h-10 w-10 items-center justify-center rounded-xl bg-[#F87171] ring-1 ring-white/10">
+                  <span className="text-1xl font-extrabold text-white">
+                    {translate("app.nameShortcut")}
+                  </span>
+                </div>
               </SidebarMenuItem>
               <SidebarMenuItem key="search">
                 <SidebarMenuButton asChild>

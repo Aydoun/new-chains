@@ -10,16 +10,33 @@
     "previous": "Previous",
     "required": "Field is Required"
   },
+  "app": {
+    "name": "Link & Tell",
+    "nameShortcut": "L&T"
+  },
   "auth": {
     "login": "Login",
     "logout": "Logout",
     "me": "My account",
     "message": "Sign in with Google to keep your drafts private and share with attribution.",
     "cta": {
-      "google": "Continue with Google"
+      "google": "Continue with Google",
+      "signIn": "Sign In"
     },
     "error": {
       "email": "No email address found"
+    },
+    "welcome": "Welcome back",
+    "subtitle": "Sign in to access the beta",
+    "continueWithEmail": "Or continue with email",
+    "emailLabel": "Email address",
+    "passwordLabel": "Password",
+    "emailPlaceholder": "name@company.com",
+    "passwordPlaceholder": "••••••••",
+    "forgotPassword": "Forgot your password?",
+    "status": {
+      "label": "System Status",
+      "operational": "Operational"
     }
   },
   "carousel": {
@@ -37,6 +54,11 @@
     "empty": "No frames found",
     "self": "Frame",
     "selfs": "Frames"
+  },
+  "footer": {
+    "privacyPolicy": "Privacy Policy",
+    "terms": "Terms Of Service",
+    "rights": "All rights reserved"
   },
   "navigation": {
     "cta": {

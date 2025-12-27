@@ -63,7 +63,7 @@ export function AppSidebar() {
   if (!isAuthenticated) return null;
 
   return (
-    <Sidebar className="bg-background border-r border-gray-600">
+    <Sidebar className="bg-[#0f1723] border-r border-gray-600">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>

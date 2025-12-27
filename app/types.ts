@@ -18,6 +18,7 @@ export interface Sequence {
     username: string;
     avatarUrl?: string | null;
   };
+  firstFrame: Frame | null;
   FrameOrder: number[];
   visibility: Visibility;
   isDeleted: boolean;

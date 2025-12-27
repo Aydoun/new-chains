@@ -29,7 +29,27 @@ export default async function handler(
     if (!Array.isArray(sequences) || sequences.length === 0)
       return res.status(404).json({ message: "Sequences not found" });
 
-    const shuffledSequences = shuffle(sequences);
+    const firstFrameIds = sequences
+      .map((sequence) => sequence.FrameOrder?.[0])
+      .filter(Boolean);
+
+    console.log({ firstFrameIds });
+
+    const frames = firstFrameIds.length
+      ? await prisma.frame.findMany({ where: { id: { in: firstFrameIds } } })
+      : [];
+
+    const framesById = new Map(frames.map((frame) => [frame.id, frame]));
+
+    const sequencesWithFirstFrame = sequences.map((sequence) => ({
+      ...sequence,
+      firstFrame:
+        typeof sequence.FrameOrder?.[0] === "number"
+          ? framesById.get(sequence.FrameOrder[0]) ?? null
+          : null,
+    }));
+
+    const shuffledSequences = shuffle(sequencesWithFirstFrame);
 
     res.status(200).json(shuffledSequences);
   } catch (error) {

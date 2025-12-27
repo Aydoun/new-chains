@@ -224,11 +224,14 @@ export const SequenceCard: FC<Props> = ({
 };
 
 interface SequenceFrameProps {
-  text: string;
-  description?: string;
+  text: string | undefined;
+  description?: string | undefined | null;
 }
 
-const SequenceFrame: FC<SequenceFrameProps> = ({ text, description }) => {
+export const SequenceFrame: FC<SequenceFrameProps> = ({
+  text,
+  description,
+}) => {
   return (
     <div
       className={cn(

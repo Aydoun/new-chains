@@ -1,6 +1,11 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+type RelativeTimeOptions = {
+  locale?: string;
+  nowThresholdSeconds?: number;
+};
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -10,36 +15,41 @@ export function getStorageItem(key: string) {
   return localStorage.getItem(key);
 }
 
-const hasDocument = typeof document !== "undefined";
+export function timeAgo(
+  isoDate: string,
+  { locale = "en", nowThresholdSeconds = 5 }: RelativeTimeOptions = {}
+): string {
+  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
 
-export function getCookie(name: string) {
-  if (!hasDocument) return null;
+  const date = new Date(isoDate);
+  if (Number.isNaN(date.getTime())) {
+    throw new Error("Invalid ISO date string");
+  }
 
-  const escapedName = name.replace(/[-.*+?^${}()|[\]\\]/g, "\\$&");
-  const match = document.cookie.match(
-    new RegExp(`(?:^|; )${escapedName}=([^;]*)`)
-  );
+  const now = Date.now();
+  const diffSeconds = Math.round((date.getTime() - now) / 1000);
+  const abs = Math.abs(diffSeconds);
 
-  return match ? decodeURIComponent(match[1]) : null;
-}
+  if (abs <= nowThresholdSeconds) {
+    return rtf.format(0, "second"); // "now"
+  }
 
-export function setCookie(
-  name: string,
-  value: string,
-  options: { days?: number; path?: string } = {}
-) {
-  if (!hasDocument) return;
+  const divisions: [Intl.RelativeTimeFormatUnit, number][] = [
+    ["year", 60 * 60 * 24 * 365],
+    ["month", 60 * 60 * 24 * 30],
+    ["week", 60 * 60 * 24 * 7],
+    ["day", 60 * 60 * 24],
+    ["hour", 60 * 60],
+    ["minute", 60],
+    ["second", 1],
+  ];
 
-  const { days = 365, path = "/" } = options;
-  const expires = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
+  for (const [unit, secondsInUnit] of divisions) {
+    if (abs >= secondsInUnit) {
+      const value = Math.round(diffSeconds / secondsInUnit);
+      return rtf.format(value, unit);
+    }
+  }
 
-  document.cookie = `${name}=${encodeURIComponent(
-    value
-  )}; expires=${expires.toUTCString()}; path=${path}`;
-}
-
-export function deleteCookie(name: string, path = "/") {
-  if (!hasDocument) return;
-
-  document.cookie = `${name}=; Max-Age=0; path=${path}`;
+  return rtf.format(0, "second");
 }

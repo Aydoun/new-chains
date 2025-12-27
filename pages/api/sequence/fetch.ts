@@ -33,8 +33,6 @@ export default async function handler(
       .map((sequence) => sequence.FrameOrder?.[0])
       .filter(Boolean);
 
-    console.log({ firstFrameIds });
-
     const frames = firstFrameIds.length
       ? await prisma.frame.findMany({ where: { id: { in: firstFrameIds } } })
       : [];

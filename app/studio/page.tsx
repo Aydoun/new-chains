@@ -95,7 +95,7 @@ export default function StudioPage() {
                         className="leading-tight text-white"
                       >
                         {index === 0
-                          ? sequences?.length
+                          ? sequences?.length ?? 0
                           : timeAgo(sequences?.[0]?.updatedAt)}
                       </Text>
                     </div>

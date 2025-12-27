@@ -98,66 +98,122 @@ export const SequenceCard: FC<Props> = ({ sequence }) => {
           <p className="text-xs text-muted-foreground">Tap to preview</p>
         </div>
       </Dialog.Trigger>
-      <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[94vw] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-gray-900 p-6 shadow-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
-        <div className="flex items-start justify-between gap-4">
-          <div className="space-y-2">
-            <Dialog.Title className="text-xl font-semibold text-white">
-              {sequence.title}
-            </Dialog.Title>
-          </div>
-          <Dialog.Close
-            aria-label="Close"
-            className="rounded-full bg-gray-800 p-2 text-gray-300 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-          >
-            <X className="h-4 w-4" />
-          </Dialog.Close>
-        </div>
-        <Separator className="my-4 bg-gray-800" />
-        {!isFetching && !isError && (
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between text-xs text-amber-100">
-              <span className="font-semibold uppercase tracking-wide">
+      <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[96vw] max-w-5xl -translate-x-1/2 -translate-y-1/2 rounded-3xl bg-gradient-to-b from-slate-950 via-slate-900 to-black p-8 shadow-2xl ring-1 ring-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+        <div className="flex flex-col gap-6">
+          <div className="flex items-start justify-between gap-4">
+            <div className="space-y-2">
+              <Dialog.Title className="text-2xl font-semibold text-white">
+                {sequence.title}
+              </Dialog.Title>
+              <Dialog.Description className="sr-only">
                 {translate("frame.selfs")}
-              </span>
-              <span className="rounded-full bg-amber-900/40 px-3 py-1 text-[11px] font-semibold shadow-sm ring-1 ring-amber-700/60">
-                {data?.FrameOrder.length ?? 0} {translate("common.items")}
-              </span>
+              </Dialog.Description>
             </div>
-            <Carousel
-              frames={
-                guardedFrames.length > 0
-                  ? guardedFrames.map((frame, index) => (
-                      <SequenceFrame
-                        key={frame?.id ?? index}
-                        text={frame?.content || "Empty frame"}
-                        description={frame?.description || ""}
-                      />
-                    ))
-                  : [
-                      <SequenceFrame
-                        key="empty"
-                        text={translate("frame.empty")}
-                      />,
-                    ]
-              }
-              className="w-full"
-              currentIndex={activeFrame}
-              onNext={() =>
-                setActiveFrame((current) => {
-                  if (current === guardedFrames.length - 1) return 0;
-
-                  return Math.min(
-                    current + 1,
-                    Math.max(guardedFrames.length - 1, 0)
-                  );
-                })
-              }
-              onPrevious={() =>
-                setActiveFrame((current) => Math.max(current - 1, 0))
-              }
-            />
+            <Dialog.Close
+              aria-label="Close"
+              className="rounded-full bg-gray-800/80 p-2 text-gray-300 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            >
+              <X className="h-4 w-4" />
+            </Dialog.Close>
           </div>
-        )}
+          {!isFetching && !isError && (() => {
+            const frameCount = guardedFrames.length;
+            const currentFrame =
+              frameCount > 0
+                ? guardedFrames[Math.min(activeFrame, frameCount - 1)]
+                : undefined;
+            const safeCount = frameCount || 1;
+
+            return (
+              <div className="flex flex-col gap-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs font-semibold uppercase tracking-[0.24em] text-gray-400">
+                      {translate("frame.selfs")}
+                    </span>
+                    <span className="rounded-full bg-orange-500/10 px-3 py-1 text-[11px] font-semibold text-orange-100 shadow-sm ring-1 ring-orange-400/30">
+                      {data?.FrameOrder.length ?? 0} {translate("common.items")}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    className="flex items-center gap-2 rounded-xl bg-orange-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
+                  >
+                    <span className="text-base leading-none">+</span>
+                    Add Frame
+                  </button>
+                </div>
+
+                <div className="relative w-full min-h-[320px] md:min-h-[380px] overflow-hidden rounded-2xl border border-orange-500/15 bg-gradient-to-br from-amber-950 via-slate-900 to-slate-950 shadow-inner">
+                  <div className="absolute inset-0 pointer-events-none">
+                    <div className="absolute top-0 left-0 h-20 w-20 bg-gradient-to-br from-orange-400/10 to-transparent" />
+                    <div className="absolute bottom-0 right-0 h-20 w-20 bg-gradient-to-tl from-orange-400/10 to-transparent" />
+                  </div>
+                  <div className="absolute inset-0 bg-black/0 transition-colors duration-300 hover:bg-black/5" />
+                  <div className="relative z-10 flex h-full flex-col items-center justify-center gap-3 px-8 text-center">
+                    <blockquote className="text-3xl font-serif leading-tight text-amber-50">
+                      {currentFrame?.content || translate("frame.empty")}
+                    </blockquote>
+                    {currentFrame?.description && (
+                      <p className="max-w-2xl text-sm text-amber-100/80">
+                        {currentFrame.description}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between rounded-2xl border border-white/5 bg-white/5 p-4 text-white backdrop-blur">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setActiveFrame((current) => {
+                        if (frameCount === 0) return 0;
+                        return Math.max(current - 1, 0);
+                      })
+                    }
+                    className="flex h-12 w-12 items-center justify-center rounded-xl bg-gray-900/60 text-gray-200 transition hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    aria-label={translate("common.previous")}
+                  >
+                    <span className="text-lg font-bold">←</span>
+                  </button>
+                  <div className="flex flex-col items-center gap-2">
+                    <span className="text-sm font-medium text-gray-100">
+                      {translate("frame.self")}{" "}
+                      {Math.min(activeFrame + 1, safeCount)} of {safeCount}
+                    </span>
+                    <div className="flex gap-1.5">
+                      {Array.from({ length: safeCount }).map((_, index) => (
+                        <div
+                          key={index}
+                          className={cn(
+                            "h-1.5 w-1.5 rounded-full transition",
+                            index === Math.min(activeFrame, safeCount - 1)
+                              ? "bg-orange-400"
+                              : "bg-gray-600"
+                          )}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setActiveFrame((current) => {
+                        if (frameCount === 0) return 0;
+                        if (current >= frameCount - 1) return 0;
+                        return current + 1;
+                      })
+                    }
+                    className="flex h-12 w-12 items-center justify-center rounded-xl bg-gray-900/60 text-gray-200 transition hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    aria-label={translate("common.next")}
+                  >
+                    <span className="text-lg font-bold">→</span>
+                  </button>
+                </div>
+              </div>
+            );
+          })()}
+        </div>
       </Dialog.Content>
     </Dialog.Root>
   );

@@ -42,6 +42,7 @@ body {
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    --primary-color: white;
   }
   .dark {
     --background: 240 10% 3.9%;
@@ -76,6 +77,7 @@ body {
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    --primary-color: rgb(248 113 113 / var(--tw-bg-opacity, 1));
   }
 }
 
@@ -85,5 +87,38 @@ body {
   }
   * {
     border: none;
+  }
+}
+
+.login-animated-bg {
+  background: linear-gradient(-45deg, #0f172a, #1b2436, #0c1624, #0f172a);
+  background-size: 400% 400%;
+  animation: login-gradient 18s ease infinite;
+}
+
+.login-blob {
+  filter: blur(80px);
+  opacity: 0.35;
+}
+
+@keyframes login-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes login-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
   }
 }

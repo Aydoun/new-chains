@@ -13,6 +13,12 @@ export interface Sequence {
   description: string;
   url?: string | null;
   userId: number;
+  user?: {
+    id: number;
+    username: string;
+    avatarUrl?: string | null;
+  };
+  firstFrame: Frame | null;
   FrameOrder: number[];
   visibility: Visibility;
   isDeleted: boolean;

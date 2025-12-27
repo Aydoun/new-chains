@@ -7,9 +7,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { store } from "./store";
 import { Provider } from "react-redux";
-// import { ThemeToggle } from "@/components/theme-toggle";
 import { Theme } from "@radix-ui/themes";
-import { getCookie, setCookie } from "@/lib/utils";
 import { SessionProvider } from "next-auth/react";
 import { UserMenu } from "@/hooks/userMenu";
 import { AuthStateSync } from "@/hooks/authStateSync";
@@ -26,28 +24,12 @@ const geistMono = Geist_Mono({
 
 type THEME = "dark" | "light";
 
-const getInitialTheme = (): THEME => {
-  const savedTheme = getCookie("theme");
-  if (savedTheme === "light" || savedTheme === "dark") {
-    return savedTheme;
-  }
-
-  return "dark";
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [theme, setTheme] = useState<THEME>(getInitialTheme());
-
-  // const handleToggleTheme = () => {
-  //   const newTheme = theme === "dark" ? "light" : "dark";
-
-  //   setTheme(newTheme);
-  //   setCookie("theme", newTheme);
-  // };
+  const [theme, _] = useState<THEME>("dark");
 
   return (
     <html lang="en" className={theme}>
@@ -60,7 +42,7 @@ export default function RootLayout({
             <Theme appearance={theme} accentColor="blue">
               <SidebarProvider>
                 <AppSidebar />
-                <main className="flex w-full flex-col bg-background text-foreground">
+                <main className="flex w-full flex-col bg-[#0f1723] text-foreground">
                   <header className="flex items-center justify-end border-b border-border px-6 py-4 gap-3">
                     {/* <ThemeToggle theme={theme} onToggle={handleToggleTheme} /> */}
                     <UserMenu />

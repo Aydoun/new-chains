@@ -7,8 +7,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
-
-import { ReactNode } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -21,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { translate } from "@/lib/i18n";
 import { useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
 
 type NavigationItem = {
   icon: LucideIcon;
@@ -58,18 +57,23 @@ const items: NavigationItem[] = [
 
 export function AppSidebar() {
   const { data: session } = useSession();
+  const pathname = usePathname();
   const isAuthenticated = Boolean(session?.user?.id);
 
   if (!isAuthenticated) return null;
 
   return (
-    <Sidebar className="bg-background border-r border-gray-600">
+    <Sidebar className="bg-[#0f1723] border-r border-gray-600">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem key="icon">
-                <img src={"/lt-icon-64.svg"} alt={`site icon`} />
+                <div className="flex m-4 mx-2 h-10 w-10 items-center justify-center rounded-xl bg-[#F87171] ring-1 ring-white/10">
+                  <span className="text-1xl font-extrabold text-white">
+                    {translate("app.nameShortcut")}
+                  </span>
+                </div>
               </SidebarMenuItem>
               <SidebarMenuItem key="search">
                 <SidebarMenuButton asChild>
@@ -86,7 +90,7 @@ export function AppSidebar() {
               </SidebarMenuItem>
               {items.map((item) => (
                 <SidebarMenuItem key={item.titleKey}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild isActive={pathname === item.url}>
                     <Link href={item.url} className="text-white">
                       <item.icon />
                       <span>{translate(`navigation.${item.titleKey}`)}</span>

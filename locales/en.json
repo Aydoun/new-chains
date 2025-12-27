@@ -8,7 +8,12 @@
     "loading": "Loading",
     "next": "Next",
     "previous": "Previous",
-    "required": "Field is Required"
+    "required": "Field is Required",
+    "send": "Send"
+  },
+  "app": {
+    "name": "Link & Tell",
+    "nameShortcut": "L&T"
   },
   "auth": {
     "login": "Login",
@@ -16,19 +21,51 @@
     "me": "My account",
     "message": "Sign in with Google to keep your drafts private and share with attribution.",
     "cta": {
-      "google": "Continue with Google"
+      "google": "Continue with Google",
+      "signIn": "Sign In"
     },
     "error": {
       "email": "No email address found"
+    },
+    "welcome": "Welcome back",
+    "subtitle": "Sign in to access the beta",
+    "continueWithEmail": "Or continue with email",
+    "emailLabel": "Email address",
+    "passwordLabel": "Password",
+    "emailPlaceholder": "name@company.com",
+    "passwordPlaceholder": "••••••••",
+    "forgotPassword": "Forgot your password?",
+    "status": {
+      "label": "System Status",
+      "operational": "Operational"
     }
   },
   "carousel": {
-    "frame": "Frame"
+    "frame": "Frame",
+    "progress": "Frame {current} of {total}"
   },
   "contact": {
+    "channel": {
+      "email": "Email",
+      "linkedin": "LinkedIn"
+    },
+    "directChannels": "Direct Channels",
+    "directChannelsDescription": "Connect with us on social platforms or send an email directly.",
+    "form": {
+      "email": "Email Address",
+      "name": "Name",
+      "namePlaceholder": "Your Name",
+      "messageLabel": "Message",
+      "messagePlaceholder": "Your Message..."
+    },
     "mail": "e-mail",
     "email-value": "mohamed.amine.aydoun@gmail.com",
-    "self": "Contact"
+    "linked-profile": "https://www.linkedin.com/in/mohamed-amine-aydoun-5799b481",
+    "self": "Contact",
+    "sendMessage": "Send a Message",
+    "replyTime": "We will get back to you ASAP",
+    "welcomeMessage": "Get in Touch",
+    "welcomeDescription": "Have questions about the sequence explorer, encountering issues, or just want to say hello? Reach out directly or send a message below."
   },
   "frame": {
     "content": "Frame Content",
@@ -36,6 +73,11 @@
     "empty": "No frames found",
     "self": "Frame",
     "selfs": "Frames"
+  },
+  "footer": {
+    "privacyPolicy": "Privacy Policy",
+    "terms": "Terms Of Service",
+    "rights": "All rights reserved"
   },
   "navigation": {
     "cta": {
@@ -52,11 +94,17 @@
     "cta": {
       "title": "Name your Sequence",
       "publish": "Publish",
-      "creation-message": "Sequence created successfully."
+      "creation-message": "Sequence created successfully.",
+      "url-copied": "Link is copied"
     },
     "draft": {
       "title": "Draft Your Sequence"
     },
     "self": "Sequence"
+  },
+  "studio": {
+    "total": "Total Sequences",
+    "lastEdit": "Last Edited",
+    "greetings": "Hello {name}"
   }
 }

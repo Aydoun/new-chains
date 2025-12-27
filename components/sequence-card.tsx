@@ -2,15 +2,16 @@ import { FC, useState, MouseEvent as ReactMouseEvent } from "react";
 import { Sequence } from "@/app/types";
 import { Dialog } from "@radix-ui/themes";
 import { Separator } from "@radix-ui/react-separator";
-import { Trash2, X } from "lucide-react";
+import { Clock3, Pencil, Share2, Trash2, User, X } from "lucide-react";
 import { translate } from "@/lib/i18n";
 import {
   useDeleteSequenceMutation,
   useLazyGetSequenceByIdQuery,
 } from "@/app/services/sequences";
 import { Carousel } from "./ui/carousel";
-import { cn } from "@/lib/utils";
-import { Badge, IconButton, Text } from "@radix-ui/themes";
+import { cn, timeAgo } from "@/lib/utils";
+import { IconButton, Text } from "@radix-ui/themes";
+import Link from "next/link";
 
 export interface SequenceCardProps {
   title: string;
@@ -21,19 +22,25 @@ export interface SequenceCardProps {
 
 interface Props {
   sequence: Sequence;
+  userId: string | undefined;
+  openDialog?: boolean;
 }
 
-export const SequenceCard: FC<Props> = ({ sequence }) => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+export const SequenceCard: FC<Props> = ({
+  sequence,
+  userId,
+  openDialog = false,
+}) => {
+  const [isDialogOpen, setIsDialogOpen] = useState(openDialog);
   const [activeFrame, setActiveFrame] = useState(0);
+  const [isLinkCopied, setIsLinkCopied] = useState(false);
   const [deleteSequence, { isLoading: isDeleting }] =
     useDeleteSequenceMutation();
 
-  const PLACEHOLDER_IMAGE = "/image-placeholder.svg";
-  const imageSource = sequence.url || PLACEHOLDER_IMAGE;
   const [fetchSequence, { data, isFetching, isError }] =
     useLazyGetSequenceByIdQuery();
   const guardedFrames = data?.frames ?? [];
+  const isOwner = userId === `${sequence.userId}`;
 
   const handleDialogChange = (open: boolean) => {
     setIsDialogOpen(open);
@@ -53,49 +60,112 @@ export const SequenceCard: FC<Props> = ({ sequence }) => {
     }
   };
 
+  const handleShareLink = async (event: ReactMouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    event.preventDefault();
+    if (isLinkCopied) return;
+
+    const canonicalLink = `${window.location.origin}/?sequence=${sequence.id}`;
+
+    try {
+      if (navigator.clipboard) {
+        await navigator.clipboard.writeText(canonicalLink);
+      }
+      setIsLinkCopied(true);
+      setTimeout(() => setIsLinkCopied(false), 2000);
+    } catch (error) {
+      console.error("Unable to share sequence", error);
+    }
+  };
+
   return (
     <Dialog.Root open={isDialogOpen} onOpenChange={handleDialogChange}>
       <Dialog.Trigger>
-        <div className="group flex w-full max-w-md flex-col gap-3 rounded-xl bg-gray-800/70 p-4 text-left shadow-lg hover:shadow-xl cursor-pointer">
-          <div className="flex items-start gap-3 relative">
-            <div className="h-20 w-20 overflow-hidden rounded-lg bg-gray-900">
-              <img
-                src={imageSource}
-                alt={`${sequence.title} avatar`}
-                className="h-full w-full object-cover"
-              />
-            </div>
-            <div className="flex flex-1 flex-col gap-1">
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex flex-col gap-1">
-                  <Text weight="bold" className="text-white">
+        <div className="">
+          <div>
+            <article
+              key={sequence.title}
+              className="group flex cursor-pointer flex-col overflow-hidden rounded-xl border border-[#233348] bg-[#1a2533] transition-all duration-300 hover:border-[#136dec]/50 hover:shadow-xl hover:shadow-black/20"
+            >
+              <div className="h-44 w-full overflow-hidden">
+                <SequenceFrame text={sequence.firstFrame?.content} />
+              </div>
+              <div className="flex flex-col gap-3 p-5">
+                <div className="space-y-1">
+                  <Text
+                    size="4"
+                    weight="bold"
+                    className="leading-snug text-white transition-colors group-hover:text-[#f87171]"
+                    as="div"
+                  >
                     {sequence.title}
                   </Text>
-                  <Badge size="1" variant="soft" color="gray" className="w-fit">
-                    {sequence.visibility}
-                  </Badge>
-                  <span className="text-xs uppercase tracking-wide text-gray-400">
-                    #{sequence.id}
-                  </span>
+                  <Text size="2" className="text-[#92a9c9]">
+                    {sequence.description}
+                  </Text>
+                </div>
+                <div className="flex items-center gap-1 hover:underline text-[#92a9c9]">
+                  <User className="h-4 w-4" aria-hidden="true" />
+                  <Link href="/">Visit The Author</Link>
+                </div>
+                <div className="mt-auto flex items-center justify-between border-t border-[#233348] pt-2">
+                  <div className="flex items-center gap-1 text-[#92a9c9]">
+                    <Clock3 className="h-4 w-4" aria-hidden="true" />
+                    <Text size="1" weight="medium">
+                      {timeAgo(sequence.createdAt)}
+                    </Text>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {isOwner && (
+                      <>
+                        <IconButton
+                          aria-label="Edit sequence"
+                          size="1"
+                          variant="ghost"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            event.preventDefault();
+                            // setIsEditOpen(true);
+                            setIsDialogOpen(false);
+                          }}
+                          className="text-amber-300 hover:bg-amber-500/15 focus-visible:ring-2 focus-visible:ring-amber-500"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </IconButton>
+                        <IconButton
+                          aria-label="Delete sequence"
+                          size="1"
+                          variant="ghost"
+                          onClick={handleDelete}
+                          disabled={isDeleting}
+                          className={cn(
+                            "text-red-600 hover:bg-red-600/15 focus-visible:ring-2 focus-visible:ring-red-600",
+                            isDeleting && "opacity-60"
+                          )}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </IconButton>
+                      </>
+                    )}
+                    <IconButton
+                      aria-label="Share sequence"
+                      size="1"
+                      variant="ghost"
+                      onClick={handleShareLink}
+                    >
+                      {isLinkCopied ? (
+                        <Text size="1">
+                          {translate("sequence.cta.url-copied")}
+                        </Text>
+                      ) : (
+                        <Share2 className="text-blue-400 h-4 w-4" />
+                      )}
+                    </IconButton>
+                  </div>
                 </div>
               </div>
-            </div>
-            <IconButton
-              aria-label="Delete sequence"
-              size="1"
-              variant="ghost"
-              onClick={handleDelete}
-              disabled={isDeleting}
-              className={cn(
-                "absolute right-3 top-3 z-10 text-red-600 hover:bg-red-600/15 focus-visible:ring-2 focus-visible:ring-red-600",
-                isDeleting && "opacity-60"
-              )}
-            >
-              <Trash2 className="h-4 w-4" />
-            </IconButton>
+            </article>
           </div>
-          <Separator className="bg-gray-700" />
-          <p className="text-xs text-muted-foreground">Tap to preview</p>
         </div>
       </Dialog.Trigger>
       <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[94vw] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-gray-900 p-6 shadow-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
@@ -164,11 +234,14 @@ export const SequenceCard: FC<Props> = ({ sequence }) => {
 };
 
 interface SequenceFrameProps {
-  text: string;
-  description?: string;
+  text: string | undefined;
+  description?: string | undefined | null;
 }
 
-const SequenceFrame: FC<SequenceFrameProps> = ({ text, description }) => {
+export const SequenceFrame: FC<SequenceFrameProps> = ({
+  text,
+  description,
+}) => {
   return (
     <div
       className={cn(

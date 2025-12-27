@@ -5,14 +5,15 @@ import { useSession } from "next-auth/react";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { useGetSequencesByUserQuery } from "./services/sequences";
 import { SequenceCard } from "@/components/sequence-card";
-import { SequenceSkeleton } from "@/components/sequence-skeleton";
 import { CreateSequenceForm } from "@/components/ui/create-sequence";
 import { translate } from "@/lib/i18n";
 import { Callout, Text } from "@radix-ui/themes";
 import Link from "next/link";
 import { SessionLoader } from "@/components/ui/spinner";
+// import { useSearchParams } from "next/navigation";
 
 export default function Home() {
+  // const searchParams = useSearchParams();
   const { data: session, status } = useSession();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [showCreationSuccess, setShowCreationSuccess] = useState(false);
@@ -24,12 +25,18 @@ export default function Home() {
     isError,
   } = useGetSequencesByUserQuery(userId ?? skipToken);
   const isPending = isLoading || isFetching;
+  // const sequenceIdParam = searchParams?.get("sequence");
 
   useEffect(() => {
     if (showCreationSuccess) {
       setTimeout(() => setShowCreationSuccess(false), 3000);
     }
   }, [showCreationSuccess]);
+
+  // useEffect(() => {
+  //   if (sequenceIdParam) {
+  //   }
+  // }, [sequenceIdParam]);
 
   if (status === "loading" || isPending) return <SessionLoader />;
 
@@ -57,9 +64,17 @@ export default function Home() {
               {translate("navigation.explore")}
             </Text>
 
-            <div className="flex w-full flex-wrap gap-4">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {sequences?.map((sequence) => (
-                <SequenceCard key={sequence.id} sequence={sequence} />
+                <SequenceCard
+                  key={sequence.id}
+                  userId={userId}
+                  sequence={sequence}
+                  // openDialog={Boolean(
+                  //   sequenceIdParam &&
+                  //     sequence.id.toString() === sequenceIdParam
+                  // )}
+                />
               ))}
             </div>
           </>

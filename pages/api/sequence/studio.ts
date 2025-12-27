@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
 import { requireApiSession } from "@/lib/api/auth";
-import shuffle from "lodash.shuffle";
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,7 +17,7 @@ export default async function handler(
   try {
     const sequences = await prisma.sequence.findMany({
       where: {
-        ...(clientId ? { userId: { not: clientId } } : {}),
+        userId: clientId,
         isDeleted: false,
         visibility: "PUBLIC",
       },
@@ -26,7 +25,7 @@ export default async function handler(
         createdAt: "desc",
       },
     });
-    if (!Array.isArray(sequences) || sequences.length === 0)
+    if (!Array.isArray(sequences))
       return res.status(404).json({ message: "Sequences not found" });
 
     const firstFrameIds = sequences
@@ -47,9 +46,7 @@ export default async function handler(
           : null,
     }));
 
-    const shuffledSequences = shuffle(sequencesWithFirstFrame);
-
-    res.status(200).json(shuffledSequences);
+    res.status(200).json(sequencesWithFirstFrame);
   } catch (error) {
     if (error instanceof Error)
       res

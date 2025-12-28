@@ -7,6 +7,13 @@ import { translate } from "@/lib/i18n";
 import { Button, Text } from "@radix-ui/themes";
 import { FrameContainer } from "../sequence-card";
 
+export interface CarouselControlsRenderProps {
+  currentIndex: number;
+  frameCount: number;
+  onNext: () => void;
+  onPrevious: () => void;
+}
+
 interface CarouselProps {
   frames: React.ReactNode[];
   className?: string;
@@ -14,6 +21,9 @@ interface CarouselProps {
   currentIndex: number;
   onNext: () => void;
   onPrevious: () => void;
+  renderControls?: (props: CarouselControlsRenderProps) => React.ReactNode;
+  frameContainerClassName?: string;
+  frameInnerClassName?: string;
 }
 
 export function Carousel({
@@ -23,9 +33,17 @@ export function Carousel({
   currentIndex: currentIndexProp,
   onNext,
   onPrevious,
+  renderControls,
+  frameContainerClassName,
+  frameInnerClassName,
 }: CarouselProps) {
   const frameCount = frames.length;
   const currentMaxIndex = Math.max(currentIndexProp, 0);
+  const getProgressLabel = (current: number, total: number) => {
+    const label = translate("carousel.progress", { current, total });
+    if (label === "carousel.progress") return `Frame ${current} of ${total}`;
+    return label;
+  };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -45,26 +63,39 @@ export function Carousel({
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [onPrevious, onNext]);
+  }, [onPrevious, onNext, isEditMode]);
 
   if (frameCount === 0) return null;
 
   return (
     <div className={cn("flex flex-col gap-4", className)}>
-      <div className="overflow-hidden rounded-lg border border-border shadow-sm">
+      <div
+        className={cn(
+          "overflow-hidden rounded-lg border border-border shadow-sm",
+          frameContainerClassName
+        )}
+      >
         <div
           className="flex items-center justify-center py-6"
           aria-live="polite"
         >
-          <FrameContainer className="bg-background">
+          <FrameContainer className={cn("bg-background", frameInnerClassName)}>
             {frames[currentMaxIndex]}
           </FrameContainer>
         </div>
       </div>
-      <div className="flex items-center justify-between gap-2">
-        <Button
-          disabled={currentMaxIndex === 0}
-          type="button"
+      {renderControls ? (
+        renderControls({
+          currentIndex: currentMaxIndex,
+          frameCount,
+          onNext,
+          onPrevious,
+        })
+      ) : (
+        <div className="flex items-center justify-between gap-2">
+          <Button
+            disabled={currentMaxIndex === 0}
+            type="button"
           onClick={onPrevious}
           className="cursor-pointer"
           aria-label="Previous"
@@ -72,20 +103,22 @@ export function Carousel({
           <CircleArrowLeft />
         </Button>
         <Text className="text-sm text-muted-foreground">
-          {translate("carousel.progress", {
-            current: currentMaxIndex + 1,
-            total: frameCount,
-          })}
+          {getProgressLabel(currentMaxIndex + 1, frameCount)}
         </Text>
         <Button
           className="cursor-pointer"
           type="button"
-          onClick={onNext}
-          aria-label="Next"
-        >
-          <CircleArrowRight />
-        </Button>
-      </div>
+            onClick={onNext}
+            aria-label="Next"
+          >
+            <CircleArrowRight />
+          </Button>
+        </div>
+      )}
     </div>
   );
+}
+
+export function CarouselFrame({ children }: { children: React.ReactNode }) {
+  return <div className="w-full">{children}</div>;
 }

@@ -12,6 +12,7 @@ import Link from "next/link";
 import { SessionLoader } from "@/components/ui/spinner";
 import { ViewSequence } from "@/components/ui/view-sequence";
 import { useSearchParams } from "next/navigation";
+import { Filter } from "lucide-react";
 
 export default function Home() {
   const searchParams = useSearchParams();
@@ -49,29 +50,39 @@ export default function Home() {
 
   return (
     <div className="flex flex-col gap-4 px-6 py-0 sm:px-6">
-      <div className="flex gap-6">
-        <Text
-          data-testid="homepage-title"
-          className="self-center"
-          weight="bold"
-          size="6"
-        >
-          {translate("navigation.explore")}
-        </Text>
-        <div className="min-h-[52px]">
-          {showCreationSuccess && (
-            <Callout.Root color="green" role="status">
-              <Callout.Text>
-                {translate("sequence.cta.creation-message")}{" "}
-                <Link
-                  href="/studio"
-                  className="font-semibold underline underline-offset-4"
-                >
-                  {translate("navigation.cta.studio-redirect")}
-                </Link>
-              </Callout.Text>
-            </Callout.Root>
-          )}
+      <div className="flex justify-between gap-6">
+        <div>
+          <Text
+            data-testid="homepage-title"
+            className="self-center"
+            weight="bold"
+            size="6"
+          >
+            {translate("navigation.explore")}
+          </Text>
+          <div className="min-h-[52px]">
+            {showCreationSuccess && (
+              <Callout.Root color="green" role="status">
+                <Callout.Text>
+                  {translate("sequence.cta.creation-message")}{" "}
+                  <Link
+                    href="/studio"
+                    className="font-semibold underline underline-offset-4"
+                  >
+                    {translate("navigation.cta.studio-redirect")}
+                  </Link>
+                </Callout.Text>
+              </Callout.Root>
+            )}
+          </div>
+        </div>
+        <div>
+          <button className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-[#92a9c9] transition hover:bg-[#1a2533] hover:text-white">
+            <Filter className="h-5 w-5" aria-hidden="true" />
+            <Text size="2" weight="medium" className="hidden sm:inline">
+              {translate("common.filter")}
+            </Text>
+          </button>
         </div>
       </div>
       <section className="flex flex-col gap-4 pb-24">

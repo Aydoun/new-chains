@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { translate } from "@/lib/i18n";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
+import { UserMenu } from "@/hooks/userMenu";
 
 type NavigationItem = {
   icon: LucideIcon;
@@ -64,7 +65,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar className="bg-[#0f1723] border-r border-gray-600">
-      <SidebarContent>
+      <SidebarContent className="relative">
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -91,7 +92,10 @@ export function AppSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.titleKey}>
                   <SidebarMenuButton asChild isActive={pathname === item.url}>
-                    <Link href={item.url} className="text-white">
+                    <Link
+                      href={item.url}
+                      className="text-white hover:font-bold"
+                    >
                       <item.icon />
                       <span>{translate(`navigation.${item.titleKey}`)}</span>
                     </Link>
@@ -101,6 +105,9 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        <div className="absolute bottom-3 left-3 z-20">
+          <UserMenu />
+        </div>
       </SidebarContent>
     </Sidebar>
   );

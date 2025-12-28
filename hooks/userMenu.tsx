@@ -10,9 +10,25 @@ export function UserMenu() {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
-        <Button variant="soft">
-          {session.user.name ?? session.user.email ?? translate("auth.me")}
-        </Button>
+        <div className="p-4 rounded-2xl bg-gray-50 bg-white/5 cursor-pointer">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div
+                className="rounded-full bg-cover bg-center shadow-xl"
+                style={{
+                  backgroundImage: `url(${session?.user?.image})`,
+                  width: "2rem",
+                  height: "2rem",
+                }}
+              />
+              <div className="flex flex-col">
+                <span className="text-sm font-medium dark:text-white leading-none">
+                  {session?.user?.name}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content align="end">
         <DropdownMenu.Label>

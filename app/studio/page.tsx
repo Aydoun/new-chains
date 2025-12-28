@@ -19,6 +19,8 @@ import { SequenceCard } from "@/components/sequence-card";
 import { translate } from "@/lib/i18n";
 import { ViewSequence } from "@/components/ui/view-sequence";
 import { useRef, useState } from "react";
+import { SequenceErrorState } from "@/components/sequence-error-state";
+import { SequenceEmptyState } from "@/components/sequence-empty-state";
 
 type StatCard = {
   icon: LucideIcon;
@@ -141,20 +143,30 @@ export default function StudioPage() {
                   </button>
                 </div>
               </div>
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {sequences?.map((sequence) => (
-                  <SequenceCard
-                    key={sequence.id}
-                    userId={session?.user?.id}
-                    sequence={sequence}
-                    handleDelete={handleDelete}
-                    onClick={() => {
-                      currentSequenceId.current = sequence.id;
-                      setIsViewDialogOpen(true);
-                    }}
-                  />
-                ))}
-              </div>
+              {!isError ? (
+                <>
+                  {Array.isArray(sequences) && sequences.length > 0 ? (
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                      {sequences?.map((sequence) => (
+                        <SequenceCard
+                          key={sequence.id}
+                          userId={session?.user?.id}
+                          sequence={sequence}
+                          handleDelete={handleDelete}
+                          onClick={() => {
+                            currentSequenceId.current = sequence.id;
+                            setIsViewDialogOpen(true);
+                          }}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <SequenceEmptyState />
+                  )}
+                </>
+              ) : (
+                <SequenceErrorState />
+              )}
             </div>
           </div>
         </div>

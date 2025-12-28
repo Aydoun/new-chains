@@ -153,6 +153,7 @@ export default function StudioPage() {
                           userId={session?.user?.id}
                           sequence={sequence}
                           handleDelete={handleDelete}
+                          omitAuthor
                           onClick={() => {
                             currentSequenceId.current = sequence.id;
                             setIsViewDialogOpen(true);

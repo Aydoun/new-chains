@@ -18,6 +18,7 @@ interface Props {
   userId: string | undefined;
   onClick: () => void;
   handleDelete?: (sequenceId: string | number) => void;
+  omitAuthor?: boolean;
 }
 
 export const SequenceCard: FC<Props> = ({
@@ -25,6 +26,7 @@ export const SequenceCard: FC<Props> = ({
   userId,
   onClick,
   handleDelete,
+  omitAuthor = false,
 }) => {
   const [isLinkCopied, setIsLinkCopied] = useState(false);
   const isOwner = userId === `${sequence.userId}`;
@@ -77,12 +79,14 @@ export const SequenceCard: FC<Props> = ({
               {sequence.description}
             </Text>
           </div>
-          <div className="flex items-center gap-1 hover:underline text-[#92a9c9]">
-            <User className="h-4 w-4" aria-hidden="true" />
-            <Link href={`/explore/${sequence.userId}`}>
-              {sequence.user?.username}
-            </Link>
-          </div>
+          {!omitAuthor && (
+            <div className="flex items-center gap-1 hover:underline text-[#92a9c9]">
+              <User className="h-4 w-4" aria-hidden="true" />
+              <Link href={`/explore/${sequence.userId}`}>
+                {sequence.user?.username}
+              </Link>
+            </div>
+          )}
           <div className="mt-auto flex items-center justify-between border-t border-[#233348] pt-2">
             <div className="flex items-center gap-1 text-[#92a9c9]">
               <Clock3 className="h-4 w-4" aria-hidden="true" />

@@ -35,31 +35,37 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, profile }) {
-      if (profile?.email) {
-        const email = profile.email;
-        const avatarUrl = "picture" in profile ? profile.picture : undefined;
-        const username = profile.name ?? email.split("@")[0];
+      const email = profile?.email ?? token.email;
+      const avatarUrl =
+        (profile && "picture" in profile ? profile.picture : token.picture) ??
+        undefined;
+      const username = profile?.name ?? token.name ?? email?.split("@")[0];
 
-        try {
-          const user = await prisma.user.upsert({
-            where: { email },
-            update: {
-              avatarUrl: avatarUrl as string,
-            },
-            create: {
-              email,
-              username,
-              avatarUrl: avatarUrl as string,
-            },
-          });
+      if (!email) return token;
 
-          token.sub = String(user.id);
-          token.name = user.username;
+      try {
+        const user = profile
+          ? await prisma.user.upsert({
+              where: { email },
+              update: {
+                avatarUrl: avatarUrl as string,
+              },
+              create: {
+                email,
+                username: username ?? email.split("@")[0],
+                avatarUrl: avatarUrl as string,
+              },
+            })
+          : await prisma.user.findUnique({ where: { email } });
+
+        if (user) {
+          token.sub = `${user.id}`;
+          token.name = user.username ?? token.name;
           token.picture = user.avatarUrl ?? token.picture;
-          token.email = user.email;
-        } catch (error) {
-          console.error("Unable to sync user with database", error);
+          token.email = user.email ?? token.email;
         }
+      } catch (error) {
+        console.error("Unable to sync user with database", error);
       }
 
       return token;

@@ -42,6 +42,11 @@ const ModalRoot = ({ open, onOpenChange, children }: ModalProps) => {
   const portalContent = useMemo(() => {
     if (!mounted || !open) return null;
 
+    const themeRoot =
+      typeof document !== "undefined"
+        ? (document.querySelector("main") as HTMLElement | null)
+        : null;
+
     return createPortal(
       <div className="fixed inset-0 z-50 rounded-4xl">
         <button
@@ -52,7 +57,7 @@ const ModalRoot = ({ open, onOpenChange, children }: ModalProps) => {
           {children}
         </div>
       </div>,
-      document.body
+      themeRoot ?? document.body
     );
   }, [children, mounted, onOpenChange, open]);
 

@@ -1,6 +1,7 @@
 {
   "common": {
     "close": "Close",
+    "continue": "Continue",
     "errors": {
       "home": "Unable to load sequences at this time"
     },
@@ -109,13 +110,18 @@
   "sequence": {
     "countLabel": "1/{count}",
     "cta": {
-      "title": "Name your Sequence",
+      "title": "Name your new Sequence...",
       "publish": "Publish",
       "creation-message": "Sequence created successfully.",
       "url-copied": "Link is copied"
     },
     "draft": {
-      "title": "Draft Your Sequence"
+      "title": "Sequence Name",
+      "titleCopy": "Current Sequence name",
+      "firstStepTitle": "Name Your Sequence",
+      "secondStepTitle": "Create Your Frames",
+      "description": "Description Optional",
+      "descriptionLabel": "Optional Description"
     },
     "self": "Sequence"
   },

@@ -27,6 +27,7 @@ export default function Home({
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [showCreationSuccess, setShowCreationSuccess] = useState(false);
   const sequenceIdRef = useRef<string | number | null>(null);
+  const sequenceTitleRef = useRef<string>("");
   const userId = session?.user?.id;
   const {
     data: sequences,
@@ -124,7 +125,13 @@ export default function Home({
           <SequenceErrorState />
         )}
       </section>
-      <CreateSequenceCta onCreate={() => setIsCreateDialogOpen(true)} />
+      <CreateSequenceCta
+        isLoading={false}
+        onCreate={(title) => {
+          sequenceTitleRef.current = title;
+          setIsCreateDialogOpen(true);
+        }}
+      />
 
       {isViewDialogOpen && (
         <ViewSequence
@@ -137,6 +144,7 @@ export default function Home({
           onClose={() => {
             setIsCreateDialogOpen(false);
           }}
+          initialSequenceTitle={sequenceTitleRef.current}
           onSequenceCreated={() => setShowCreationSuccess(true)}
         />
       )}

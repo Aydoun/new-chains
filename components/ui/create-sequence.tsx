@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
-import { ArrowLeft, ArrowRight, Check, ImagePlus, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, X } from "lucide-react";
 import { Modal } from "./modal";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Carousel } from "@/components/ui/carousel";
@@ -23,6 +23,7 @@ import { translate } from "@/lib/i18n";
 interface Props {
   onClose: () => void;
   onSequenceCreated?: (title: string) => void;
+  initialSequenceTitle: string;
 }
 
 export type PageFormValues = {
@@ -39,11 +40,14 @@ const createEmptyFrame = () => ({
   description: "",
 });
 
-export function CreateSequenceForm({ onClose, onSequenceCreated }: Props) {
+export function CreateSequenceForm({
+  onClose,
+  onSequenceCreated,
+  initialSequenceTitle,
+}: Props) {
   const { data: session } = useSession();
   const [activeFrame, setActiveFrame] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
-  const [coverFileName, setCoverFileName] = useState<string | null>(null);
   const [bulkCreateFrames, { isLoading: isSaving }] =
     useBulkCreateFramesMutation();
   const [createSequenceMutation, { isLoading: isSequenceSaving }] =
@@ -58,7 +62,7 @@ export function CreateSequenceForm({ onClose, onSequenceCreated }: Props) {
     handleSubmit,
   } = useForm<PageFormValues>({
     defaultValues: {
-      title: "",
+      title: initialSequenceTitle,
       description: "",
       pages: [createEmptyFrame()],
     },
@@ -88,17 +92,11 @@ export function CreateSequenceForm({ onClose, onSequenceCreated }: Props) {
     () => [
       {
         id: 1,
-        label: translate("sequence.details.step") || "Sequence details",
-        description:
-          translate("sequence.details.copy") ||
-          "Name your sequence and add a cover",
+        label: translate("sequence.draft.firstStepTitle"),
       },
       {
         id: 2,
-        label: translate("sequence.frames.step") || "Add frames",
-        description:
-          translate("sequence.frames.copy") ||
-          "Compose the entries that make up your sequence",
+        label: translate("sequence.draft.secondStepTitle"),
       },
     ],
     []
@@ -214,11 +212,11 @@ export function CreateSequenceForm({ onClose, onSequenceCreated }: Props) {
           className="text-sm font-medium text-foreground"
           htmlFor={`page-${index}-description`}
         >
-          {translate("frame.description")}
+          {translate("sequence.draft.descriptionLabel")}
         </label>
         <TextArea
           id={`page-${index}-description`}
-          placeholder={translate("frame.description.placeholder") || "Optional"}
+          placeholder={translate("sequence.draft.description")}
           variant="soft"
           radius="large"
           {...register(`pages.${index}.description`)}
@@ -234,17 +232,12 @@ export function CreateSequenceForm({ onClose, onSequenceCreated }: Props) {
       <Modal.Content className="fixed left-1/2 top-1/2 z-50 w-full max-w-4xl -translate-x-1/2 -translate-y-1/2 rounded-3xl border border-white/10 bg-[#0b0d14] p-8 shadow-[0_20px_80px_rgba(0,0,0,0.45)] duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]">
         <div className="flex items-start justify-between gap-6">
           <div className="space-y-1">
-            <Badge color="amber" radius="full" variant="soft">
+            <Badge color="orange" radius="full">
               {getStepLabel(currentStep + 1, steps.length)}
             </Badge>
             <Heading size="6" weight="medium" className="text-white">
-              {SequenceTitle?.trim() ||
-                translate("sequence.cta.title") ||
-                "Create a sequence"}
+              {SequenceTitle?.trim()}
             </Heading>
-            <Text color="gray" size="2">
-              {steps[currentStep]?.description}
-            </Text>
           </div>
           <Modal.Close
             aria-label="Close"
@@ -273,14 +266,11 @@ export function CreateSequenceForm({ onClose, onSequenceCreated }: Props) {
                 </div>
                 <div className="flex flex-col">
                   <Text
-                    color={isActive ? "amber" : "gray"}
+                    color={isActive ? "orange" : "gray"}
                     size="2"
                     weight="medium"
                   >
                     {step.label}
-                  </Text>
-                  <Text color="gray" size="1">
-                    {step.description}
                   </Text>
                 </div>
                 {index < steps.length - 1 && (
@@ -296,7 +286,7 @@ export function CreateSequenceForm({ onClose, onSequenceCreated }: Props) {
           onSubmit={handleSubmit(onSubmit)}
         >
           {currentStep === 0 ? (
-            <div className="grid gap-6 md:grid-cols-[2fr,1fr]">
+            <div>
               <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
                 <div className="space-y-4">
                   <div className="space-y-2">
@@ -304,24 +294,18 @@ export function CreateSequenceForm({ onClose, onSequenceCreated }: Props) {
                       className="flex items-center justify-between text-sm font-medium text-white"
                       htmlFor="sequence-title"
                     >
-                      <span>
-                        {translate("sequence.title") || "Title"}
-                      </span>
-                      <Badge color="amber" radius="full" variant="solid">
+                      <Text>{translate("sequence.draft.title")}</Text>
+                      <Badge color="orange" radius="full" variant="solid">
                         {translate("common.required")}
                       </Badge>
                     </label>
                     <TextField.Root
                       id="sequence-title"
-                      placeholder={
-                        translate("sequence.title.placeholder") ||
-                        "Name your sequence"
-                      }
                       {...register("title", {
                         required: translate("common.required"),
                       })}
-                      variant="soft"
                       radius="large"
+                      className="bg-none"
                     />
                     {errors.title && (
                       <p className="text-sm text-destructive">
@@ -329,22 +313,17 @@ export function CreateSequenceForm({ onClose, onSequenceCreated }: Props) {
                       </p>
                     )}
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-2 w-full">
                     <label
                       className="text-sm font-medium text-white"
                       htmlFor="sequence-description"
                     >
-                      {translate("sequence.description") ||
+                      {translate("sequence.draft.description") ||
                         "Description (optional)"}
                     </label>
                     <TextArea
                       id="sequence-description"
-                      placeholder={
-                        translate("sequence.description.placeholder") ||
-                        "Add a short note"
-                      }
                       {...register("description")}
-                      variant="soft"
                       radius="large"
                     />
                     {sequenceDescription && (
@@ -355,44 +334,6 @@ export function CreateSequenceForm({ onClose, onSequenceCreated }: Props) {
                     )}
                   </div>
                 </div>
-              </div>
-              <div className="flex flex-col gap-3 rounded-2xl border border-dashed border-white/15 bg-white/5 p-6 text-white">
-                <div className="flex items-center gap-3">
-                  <div className="rounded-full bg-amber-500/20 p-2 text-amber-200">
-                    <ImagePlus className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <Text weight="medium">
-                      {translate("sequence.cover") || "Upload cover"}
-                    </Text>
-                    <Text color="gray" size="2">
-                      {translate("sequence.cover.helper") ||
-                        "Drop an image or browse files"}
-                    </Text>
-                  </div>
-                </div>
-                <label
-                  htmlFor="sequence-cover"
-                  className="flex flex-1 cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-white/20 bg-black/30 p-6 text-center transition hover:border-amber-400/70 hover:bg-black/40"
-                >
-                  <input
-                    id="sequence-cover"
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(event) => {
-                      const file = event.target.files?.[0];
-                      if (file) setCoverFileName(file.name);
-                    }}
-                  />
-                  <Text color="gray" size="2">
-                    {coverFileName ||
-                      translate("sequence.cover.placeholder") || "Select file"}
-                  </Text>
-                  <Button variant="surface" type="button" radius="full">
-                    {translate("common.browse") || "Browse files"}
-                  </Button>
-                </label>
               </div>
             </div>
           ) : (
@@ -413,9 +354,7 @@ export function CreateSequenceForm({ onClose, onSequenceCreated }: Props) {
                       radius="full"
                       onClick={props.onPrevious}
                       disabled={props.currentIndex === 0}
-                      aria-label={
-                        translate("carousel.previous") || "Previous"
-                      }
+                      aria-label={translate("carousel.previous") || "Previous"}
                     >
                       <ArrowLeft className="h-4 w-4" />
                       <span className="sr-only">
@@ -424,7 +363,10 @@ export function CreateSequenceForm({ onClose, onSequenceCreated }: Props) {
                     </IconButton>
                     <div className="flex items-center gap-3 rounded-full border border-white/10 bg-black/40 px-4 py-2 text-sm text-white">
                       <span className="text-xs uppercase tracking-wide text-amber-200">
-                        {getStepLabel(props.currentIndex + 1, pageFrames.length)}
+                        {getStepLabel(
+                          props.currentIndex + 1,
+                          pageFrames.length
+                        )}
                       </span>
                       <span className="text-gray-300">
                         {getFrameProgressLabel(
@@ -453,13 +395,8 @@ export function CreateSequenceForm({ onClose, onSequenceCreated }: Props) {
 
           <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:space-x-2">
             {currentStep === 0 ? (
-              <Button
-                type="button"
-                variant="solid"
-                color="amber"
-                onClick={handleStepAdvance}
-              >
-                {translate("common.continue") || "Continue"}
+              <Button type="button" variant="solid" onClick={handleStepAdvance}>
+                {translate("common.continue")}
               </Button>
             ) : (
               <>

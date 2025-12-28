@@ -125,6 +125,12 @@
       "create": "New Sequence",
       "description": "Try adjusting your search filters and types, or create a new entry",
       "title": "No Sequences Found"
+    },
+    "sequenceError": {
+      "dashboard": "Home",
+      "description": "The Server encountered an unexpected condition, this might be temporary connectivity issue",
+      "retry": "Retry",
+      "title": "Unable To Load Sequences"
     }
   },
   "studio": {

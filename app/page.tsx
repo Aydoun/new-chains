@@ -7,13 +7,14 @@ import { useGetSequencesByUserQuery } from "./services/sequences";
 import { SequenceCard } from "@/components/sequence-card";
 import { CreateSequenceForm } from "@/components/ui/create-sequence";
 import { translate } from "@/lib/i18n";
-import { Callout, Text } from "@radix-ui/themes";
+import { Callout, Text, TextField } from "@radix-ui/themes";
 import Link from "next/link";
 import { SessionLoader } from "@/components/ui/spinner";
 import { ViewSequence } from "@/components/ui/view-sequence";
 import { useSearchParams } from "next/navigation";
-import { Filter } from "lucide-react";
+import { Filter, Search } from "lucide-react";
 import { SequenceEmptyState } from "@/components/sequence-empty-state";
+import { SequenceErrorState } from "@/components/sequence-error-state";
 
 export default function Home() {
   const searchParams = useSearchParams();
@@ -44,8 +45,6 @@ export default function Home() {
       setIsViewDialogOpen(true);
     }
   }, [sequenceIdParam]);
-
-  // TODO Error handling
 
   if (status === "loading" || isPending) return <SessionLoader />;
 
@@ -86,6 +85,16 @@ export default function Home() {
           </button>
         </div>
       </div>
+      <div className="relative flex-1 md:max-w-md">
+        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#92a9c9]">
+          <Search className="h-5 w-5" aria-hidden="true" />
+        </span>
+        <TextField.Root
+          type="text"
+          placeholder={translate("common.search")}
+          className="w-full rounded-lg border border-[#233348] bg-[#1a2533] pl-11 text-sm text-white placeholder:text-[#92a9c9] outline-none transition focus:border-[#136dec] focus:ring-1 focus:ring-[#136dec]"
+        />
+      </div>
       <section className="flex flex-col gap-4 pb-24">
         {!isError ? (
           <>
@@ -108,9 +117,7 @@ export default function Home() {
             )}
           </>
         ) : (
-          <div className="m-8 rounded-lg bg-red-900/40 p-4 text-sm text-red-200">
-            {translate("common.errors.home")}
-          </div>
+          <SequenceErrorState />
         )}
       </section>
       <CreateSequenceForm

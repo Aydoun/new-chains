@@ -76,25 +76,12 @@ export function AppSidebar() {
                   </span>
                 </div>
               </SidebarMenuItem>
-              <SidebarMenuItem key="search">
-                <SidebarMenuButton asChild>
-                  <div className="flex w-full items-center gap-2">
-                    <Search className="h-4 w-4 text-white" aria-hidden="true" />
-                    <Input
-                      type="search"
-                      placeholder={translate("navigation.search")}
-                      aria-label="Search"
-                      className="h-10 border-transparent bg-gray-800 text-white placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0"
-                    />
-                  </div>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
               {items.map((item) => (
                 <SidebarMenuItem key={item.titleKey}>
                   <SidebarMenuButton asChild isActive={pathname === item.url}>
                     <Link
                       href={item.url}
-                      className="text-white hover:font-bold"
+                      className="text-white hover:bg-slate-800"
                     >
                       <item.icon />
                       <span>{translate(`navigation.${item.titleKey}`)}</span>

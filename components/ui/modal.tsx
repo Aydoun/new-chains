@@ -43,7 +43,7 @@ const ModalRoot = ({ open, onOpenChange, children }: ModalProps) => {
     if (!mounted || !open) return null;
 
     return createPortal(
-      <div className="fixed inset-0 z-50">
+      <div className="fixed inset-0 z-50 rounded-4xl">
         <button
           aria-label="Close modal overlay"
           className="absolute inset-0 h-full w-full bg-black/60"

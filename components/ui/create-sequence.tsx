@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { X, CircleArrowUp } from "lucide-react";
-import { Dialog } from "@radix-ui/themes";
+import { X } from "lucide-react";
+import { Modal } from "./modal";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Carousel } from "@/components/ui/carousel";
 import { Button, TextField, TextArea } from "@radix-ui/themes";
@@ -12,8 +12,7 @@ import { useCreateSequenceMutation } from "@/app/services/sequences";
 import { translate } from "@/lib/i18n";
 
 interface Props {
-  isDialogOpen: boolean;
-  handleDialogChange: (open: boolean) => void;
+  onClose: () => void;
   onSequenceCreated?: (title: string) => void;
 }
 
@@ -30,11 +29,7 @@ const createEmptyFrame = () => ({
   description: "",
 });
 
-export function CreateSequenceForm({
-  isDialogOpen,
-  handleDialogChange,
-  onSequenceCreated,
-}: Props) {
+export function CreateSequenceForm({ onClose, onSequenceCreated }: Props) {
   const { data: session } = useSession();
   const [activeFrame, setActiveFrame] = useState(0);
   const [bulkCreateFrames, { isLoading: isSaving }] =
@@ -63,16 +58,15 @@ export function CreateSequenceForm({
   const SequenceTitle = watch("title");
   const pages = watch("pages");
 
-  const onDialogChange = (open: boolean) => {
-    handleDialogChange(open);
+  const onModalChange = (open: boolean) => {
+    console.log({ open });
     if (!open) {
-      reset({
-        pages: [createEmptyFrame()],
-        title: SequenceTitle,
-      });
+      onClose();
+      // reset({
+      //   pages: [createEmptyFrame()],
+      //   title: SequenceTitle,
+      // });
     }
-
-    setActiveFrame(0);
   };
 
   const onNextSlide = () => {
@@ -93,7 +87,7 @@ export function CreateSequenceForm({
   };
 
   const onSubmit = async (values: PageFormValues) => {
-    onDialogChange(false);
+    onModalChange(false);
     const framesPayload = values.pages.filter(
       (frame) => frame.content.length > 0
     );
@@ -163,61 +157,38 @@ export function CreateSequenceForm({
   if (!session?.user?.id) return null;
 
   return (
-    <Dialog.Root open={isDialogOpen} onOpenChange={onDialogChange}>
-      <div className="fixed bottom-6 left-0 z-20 w-full px-4 md:left-[256px] md:w-[calc(100%-256px)]">
-        <div className="mx-auto w-full max-w-3xl">
-          <div className="flex items-center gap-3 rounded-full border bg-gray-500 px-5 py-3 shadow-lg backdrop-blur">
-            <TextField.Root
-              placeholder={translate("sequence.cta.title")}
-              className="flex-1"
-              {...register("title")}
-              radius="full"
-            />
-            <Dialog.Trigger>
-              <Button
-                variant="solid"
-                disabled={!SequenceTitle}
-                type="button"
-                className="px-6"
-                radius="full"
-                loading={isSaving || isSequenceSaving}
-              >
-                <CircleArrowUp />
-              </Button>
-            </Dialog.Trigger>
+    <Modal open onOpenChange={onModalChange}>
+      <Modal.Content className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-2xl translate-x-[-50%] translate-y-[-50%] gap-6 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]">
+        <div className="flex flex-col space-y-1.5 text-left">
+          <div className="space-y-2 mb-4">
+            <h2 className="text-xl font-semibold text-white">
+              {SequenceTitle}
+            </h2>
           </div>
         </div>
-        <Dialog.Content className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-2xl translate-x-[-50%] translate-y-[-50%] gap-6 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]">
-          <div className="flex flex-col space-y-1.5 text-left">
-            <Dialog.Title>{translate("sequence.draft.title")}</Dialog.Title>
-            <Dialog.Description>{SequenceTitle}</Dialog.Description>
+        <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
+          <div className="space-y-3">
+            <Carousel
+              frames={pageFrames}
+              className="w-full"
+              currentIndex={activeFrame}
+              onNext={onNextSlide}
+              onPrevious={onPreviousSlide}
+              isEditMode
+            />
           </div>
-          <form
-            className="flex flex-col gap-6"
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <div className="space-y-3">
-              <Carousel
-                frames={pageFrames}
-                className="w-full"
-                currentIndex={activeFrame}
-                onNext={onNextSlide}
-                onPrevious={onPreviousSlide}
-                isEditMode
-              />
-            </div>
-            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:space-x-2 mt-2">
-              <Dialog.Close
-                aria-label="Close"
-                className="absolute right-4 top-4 rounded-full bg-gray-800 p-2 text-gray-300 transition"
-              >
-                <X className="h-4 w-4" />
-              </Dialog.Close>
-              <Button type="submit">{translate("sequence.cta.publish")}</Button>
-            </div>
-          </form>
-        </Dialog.Content>
-      </div>
-    </Dialog.Root>
+          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:space-x-2 mt-2">
+            <Modal.Close
+              aria-label="Close"
+              className="absolute right-4 top-4 rounded-full bg-gray-800 p-2 text-gray-300 transition"
+              onClick={onClose}
+            >
+              <X className="h-4 w-4" />
+            </Modal.Close>
+            <Button type="submit">{translate("sequence.cta.publish")}</Button>
+          </div>
+        </form>
+      </Modal.Content>
+    </Modal>
   );
 }

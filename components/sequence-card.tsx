@@ -56,18 +56,15 @@ export const SequenceCard: FC<Props> = ({
 
   return (
     <>
-      <div
-        onClick={onClick}
-        className="group flex cursor-pointer flex-col overflow-hidden rounded-xl border border-[#233348] bg-[#1a2533] transition-all duration-300 hover:border-[#136dec]/50 hover:shadow-xl hover:shadow-black/20"
-      >
-        <div className="h-44 w-full overflow-hidden">
+      <div className="group flex cursor-pointer flex-col overflow-hidden rounded-xl border border-[#233348] bg-[#1a2533] transition-all duration-300 hover:border-[#136dec]/50 hover:shadow-xl hover:shadow-black/20">
+        <div onClick={onClick} className="h-44 w-full overflow-hidden">
           <SequenceFrame
             text={sequence.firstFrame?.content}
             count={sequence.FrameOrder.length}
           />
         </div>
         <div className="flex flex-col gap-3 p-5">
-          <div className="space-y-1">
+          <div onClick={onClick} className="space-y-1">
             <Text
               size="4"
               weight="bold"
@@ -126,6 +123,7 @@ export const SequenceCard: FC<Props> = ({
                 size="1"
                 variant="ghost"
                 onClick={handleShareLink}
+                className="cursor-pointer"
               >
                 {isLinkCopied ? (
                   <Text size="1">{translate("sequence.cta.url-copied")}</Text>

@@ -7,11 +7,11 @@ import { useGetSequencesByUserQuery } from "./services/sequences";
 import { SequenceCard } from "@/components/sequence-card";
 import { CreateSequenceForm } from "@/components/ui/create-sequence";
 import { translate } from "@/lib/i18n";
-import { Callout, Text, TextField } from "@radix-ui/themes";
+import { Button, Callout, Text, TextField } from "@radix-ui/themes";
 import Link from "next/link";
 import { SessionLoader } from "@/components/ui/spinner";
 import { ViewSequence } from "@/components/ui/view-sequence";
-import { Filter, Search } from "lucide-react";
+import { CircleArrowUp, Filter, Search } from "lucide-react";
 import { SequenceEmptyState } from "@/components/sequence-empty-state";
 import { SequenceErrorState } from "@/components/sequence-error-state";
 
@@ -23,6 +23,7 @@ export default function Home({
   const { data: session, status } = useSession();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [showCreationSuccess, setShowCreationSuccess] = useState(false);
   const sequenceIdRef = useRef<string | number | null>(null);
   const userId = session?.user?.id;
@@ -122,17 +123,42 @@ export default function Home({
           <SequenceErrorState />
         )}
       </section>
-      <CreateSequenceForm
-        isDialogOpen={isDialogOpen}
-        handleDialogChange={(open) => {
-          setIsDialogOpen(open);
-        }}
-        onSequenceCreated={() => setShowCreationSuccess(true)}
-      />
+      <div className="fixed bottom-6 left-0 z-20 w-full px-4 md:left-[256px] md:w-[calc(100%-256px)]">
+        <div className="mx-auto w-full max-w-3xl">
+          <div className="flex items-center gap-3 rounded-full border bg-gray-500 px-5 py-3 shadow-lg backdrop-blur">
+            <TextField.Root
+              placeholder={translate("sequence.cta.title")}
+              className="flex-1"
+              // {...register("title")}
+              radius="full"
+            />
+            <Button
+              variant="solid"
+              // disabled={!SequenceTitle}
+              type="button"
+              className="px-6"
+              radius="full"
+              onClick={() => setIsCreateDialogOpen(true)}
+              // loading={isSaving || isSequenceSaving}
+            >
+              <CircleArrowUp />
+            </Button>
+          </div>
+        </div>
+      </div>
+
       {isViewDialogOpen && (
         <ViewSequence
           sequenceId={sequenceIdRef.current}
           onClose={() => setIsViewDialogOpen(false)}
+        />
+      )}
+      {isCreateDialogOpen && (
+        <CreateSequenceForm
+          onClose={() => {
+            setIsCreateDialogOpen(false);
+          }}
+          onSequenceCreated={() => setShowCreationSuccess(true)}
         />
       )}
     </div>

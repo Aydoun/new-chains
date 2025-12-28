@@ -13,6 +13,7 @@ export type SequenceInput = {
   frameOrder: number[];
   title: string;
   userId: string;
+  description?: string;
 };
 
 export type SequenceUpdateInput = {

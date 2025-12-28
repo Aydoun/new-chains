@@ -1,5 +1,5 @@
+import { Separator } from "@radix-ui/themes";
 import { Skeleton } from "./ui/skeleton";
-import { Separator } from "@radix-ui/react-separator";
 
 function SequenceSkeletonItem() {
   return (

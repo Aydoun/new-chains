@@ -14,6 +14,7 @@ import { ViewSequence } from "@/components/ui/view-sequence";
 import { CircleArrowUp, Filter, Search } from "lucide-react";
 import { SequenceEmptyState } from "@/components/sequence-empty-state";
 import { SequenceErrorState } from "@/components/sequence-error-state";
+import { CreateSequenceCta } from "@/components/create-sequence-cta";
 
 export default function Home({
   sequenceId,
@@ -123,29 +124,7 @@ export default function Home({
           <SequenceErrorState />
         )}
       </section>
-      <div className="fixed bottom-6 left-0 z-20 w-full px-4 md:left-[256px] md:w-[calc(100%-256px)]">
-        <div className="mx-auto w-full max-w-3xl">
-          <div className="flex items-center gap-3 rounded-full border bg-gray-500 px-5 py-3 shadow-lg backdrop-blur">
-            <TextField.Root
-              placeholder={translate("sequence.cta.title")}
-              className="flex-1"
-              // {...register("title")}
-              radius="full"
-            />
-            <Button
-              variant="solid"
-              // disabled={!SequenceTitle}
-              type="button"
-              className="px-6"
-              radius="full"
-              onClick={() => setIsCreateDialogOpen(true)}
-              // loading={isSaving || isSequenceSaving}
-            >
-              <CircleArrowUp />
-            </Button>
-          </div>
-        </div>
-      </div>
+      <CreateSequenceCta onCreate={() => setIsCreateDialogOpen(true)} />
 
       {isViewDialogOpen && (
         <ViewSequence

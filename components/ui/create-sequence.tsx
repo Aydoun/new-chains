@@ -42,7 +42,6 @@ export function CreateSequenceForm({ onClose, onSequenceCreated }: Props) {
     watch,
     setError,
     formState: { errors },
-    reset,
     handleSubmit,
   } = useForm<PageFormValues>({
     defaultValues: {
@@ -62,10 +61,6 @@ export function CreateSequenceForm({ onClose, onSequenceCreated }: Props) {
     console.log({ open });
     if (!open) {
       onClose();
-      // reset({
-      //   pages: [createEmptyFrame()],
-      //   title: SequenceTitle,
-      // });
     }
   };
 

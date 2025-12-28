@@ -83,6 +83,7 @@ export function Carousel({
           type="button"
           // variant="secondary"
           onClick={onPrevious}
+          aria-label="Previous"
         >
           <CircleArrowLeft />
         </Button>
@@ -92,7 +93,7 @@ export function Carousel({
             total: frameCount,
           })}
         </span>
-        <Button type="button" onClick={onNext}>
+        <Button type="button" onClick={onNext} aria-label="Next">
           <CircleArrowRight />
         </Button>
       </div>

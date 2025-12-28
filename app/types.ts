@@ -13,7 +13,7 @@ export interface Sequence {
   description: string;
   url?: string | null;
   userId: number;
-  user?: {
+  user: {
     id: number;
     username: string;
     avatarUrl?: string | null;

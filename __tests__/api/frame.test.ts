@@ -44,9 +44,21 @@ const createMockResponse = () => {
   return { res, store };
 };
 
+const sessionMock = vi.hoisted(() =>
+  vi.fn(async () => ({
+    session: {},
+    userId: 1,
+  }))
+);
+
+vi.mock("@/lib/api/auth", () => ({
+  requireApiSession: (...args: unknown[]) => sessionMock(...args),
+}));
+
 describe("api/frame/bulk-create", () => {
   beforeEach(() => {
     mocks.createMock.mockClear();
+    sessionMock.mockResolvedValue({ session: {}, userId: 1 });
   });
 
   it("rejects non-POST methods", async () => {

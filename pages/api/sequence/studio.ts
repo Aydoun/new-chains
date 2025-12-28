@@ -21,6 +21,15 @@ export default async function handler(
         isDeleted: false,
         visibility: "PUBLIC",
       },
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+            avatarUrl: true,
+          },
+        },
+      },
       orderBy: {
         createdAt: "desc",
       },

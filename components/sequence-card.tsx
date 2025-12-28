@@ -41,6 +41,10 @@ export const SequenceCard: FC<Props> = ({
     useLazyGetSequenceByIdQuery();
   const guardedFrames = data?.frames ?? [];
   const isOwner = userId === `${sequence.userId}`;
+  const formattedVisibility = sequence.visibility
+    .split("_")
+    .map((part) => part.charAt(0) + part.slice(1).toLowerCase())
+    .join(" ");
 
   const handleDialogChange = (open: boolean) => {
     setIsDialogOpen(open);
@@ -103,6 +107,14 @@ export const SequenceCard: FC<Props> = ({
                   <Text size="2" className="text-[#92a9c9]">
                     {sequence.description}
                   </Text>
+                  <div className="flex items-center gap-2 text-[#92a9c9]">
+                    <Text size="1" className="text-inherit">
+                      {formattedVisibility}
+                    </Text>
+                    <Text size="1" className="text-inherit">
+                      #{sequence.id}
+                    </Text>
+                  </div>
                 </div>
                 <div className="flex items-center gap-1 hover:underline text-[#92a9c9]">
                   <User className="h-4 w-4" aria-hidden="true" />

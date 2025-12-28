@@ -5,10 +5,9 @@ import { CircleArrowRight, Sparkles } from "lucide-react";
 
 interface Props {
   onCreate: (title: string) => void;
-  isLoading: boolean;
 }
 
-export const CreateSequenceCta: FC<Props> = ({ onCreate, isLoading }) => {
+export const CreateSequenceCta: FC<Props> = ({ onCreate }) => {
   const [sequenceTitle, setSequenceTitle] = useState("");
 
   return (
@@ -29,14 +28,13 @@ export const CreateSequenceCta: FC<Props> = ({ onCreate, isLoading }) => {
             <div className="h-6 w-px bg-gray-200 dark:bg-white/10 hidden sm:block"></div>
             <Button
               variant="solid"
-              // disabled={!SequenceTitle}
+              disabled={!sequenceTitle}
               type="button"
               className="px-6"
               radius="full"
               onClick={() => {
                 onCreate(sequenceTitle);
               }}
-              loading={isLoading}
             >
               <CircleArrowRight />
             </Button>

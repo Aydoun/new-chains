@@ -116,12 +116,15 @@
       "url-copied": "Link is copied"
     },
     "draft": {
+      "appendFrame": "Add a Frame",
       "title": "Sequence Name",
       "titleCopy": "Current Sequence name",
       "firstStepTitle": "Name Your Sequence",
       "secondStepTitle": "Create Your Frames",
       "description": "Description Optional",
-      "descriptionLabel": "Optional Description"
+      "descriptionLabel": "Optional Description",
+      "previousStep": "Previous Step",
+      "step": "Step {current} of {total}"
     },
     "self": "Sequence"
   },

@@ -1,8 +1,15 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { MouseEventHandler, useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
-import { ArrowLeft, ArrowRight, Check, X } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  Cloud,
+  PlusCircle,
+  X,
+} from "lucide-react";
 import { Modal } from "./modal";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Carousel } from "@/components/ui/carousel";
@@ -11,7 +18,6 @@ import {
   Button,
   Flex,
   Heading,
-  IconButton,
   Text,
   TextArea,
   TextField,
@@ -19,21 +25,13 @@ import {
 import { useBulkCreateFramesMutation } from "@/app/services/frames";
 import { useCreateSequenceMutation } from "@/app/services/sequences";
 import { translate } from "@/lib/i18n";
+import { SequenceCreationFormValues } from "@/app/types";
 
 interface Props {
   onClose: () => void;
   onSequenceCreated?: (title: string) => void;
   initialSequenceTitle: string;
 }
-
-export type PageFormValues = {
-  title: string;
-  description?: string;
-  pages: {
-    content: string;
-    description?: string;
-  }[];
-};
 
 const createEmptyFrame = () => ({
   content: "",
@@ -57,10 +55,9 @@ export function CreateSequenceForm({
     register,
     watch,
     setError,
-    clearErrors,
     formState: { errors },
     handleSubmit,
-  } = useForm<PageFormValues>({
+  } = useForm<SequenceCreationFormValues>({
     defaultValues: {
       title: initialSequenceTitle,
       description: "",
@@ -73,20 +70,7 @@ export function CreateSequenceForm({
   });
 
   const SequenceTitle = watch("title");
-  const sequenceDescription = watch("description");
   const pages = watch("pages");
-
-  const getStepLabel = (step: number, total: number) => {
-    const label = translate("common.step", { step, total });
-    if (label === "common.step") return `Step ${step} of ${total}`;
-    return label;
-  };
-
-  const getFrameProgressLabel = (current: number, total: number) => {
-    const label = translate("carousel.progress", { current, total });
-    if (label === "carousel.progress") return `Frame ${current} of ${total}`;
-    return label;
-  };
 
   const steps = useMemo(
     () => [
@@ -121,35 +105,22 @@ export function CreateSequenceForm({
     }
   };
 
-  const handleStepAdvance = () => {
-    const trimmedTitle = SequenceTitle?.trim();
-    if (!trimmedTitle) {
-      setError("title", {
-        type: "required",
-        message: translate("common.required"),
-      });
-      return;
-    }
-    clearErrors("title");
+  const handleStepAdvance: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     setCurrentStep(1);
   };
 
-  const handleBackToDetails = () => setCurrentStep(0);
-
   const onPreviousSlide = () => {
-    setActiveFrame((previous) => previous - 1);
+    if (activeFrame === 0) {
+      setCurrentStep(0);
+    } else {
+      setActiveFrame((previous) => Math.max(previous - 1, 0));
+    }
   };
 
-  const onSubmit = async (values: PageFormValues) => {
-    if (!values.title?.trim()) {
-      setError("title", {
-        type: "required",
-        message: translate("common.required"),
-      });
-      setCurrentStep(0);
-      return;
-    }
-    onModalChange(false);
+  const onSubmit = async (values: SequenceCreationFormValues) => {
     const framesPayload = values.pages
       .filter((frame) => frame.content.trim().length > 0)
       .map((frame) => ({
@@ -174,6 +145,8 @@ export function CreateSequenceForm({
         console.error("Unable to save sequence right now. Please try again.");
       }
     }
+
+    onModalChange(false);
   };
 
   useEffect(() => {
@@ -184,28 +157,24 @@ export function CreateSequenceForm({
 
   const pageFrames = pages.map((_, index) => (
     <div className="flex flex-col gap-4 w-full" key={`page-${index}`}>
-      <div className="space-y-2">
-        <label
-          className="text-sm font-medium text-foreground"
-          htmlFor={`page-${index}-content`}
-        >
-          {translate("frame.content")}
-        </label>
-        <TextField.Root
-          id={`page-${index}-content`}
-          placeholder={translate("sequence.cta.title")}
-          className="flex-1"
-          {...register(`pages.${index}.content`, {
-            required: translate("common.required"),
-          })}
-          variant="soft"
-          radius="large"
-        />
-        {errors.pages?.[index]?.content && (
-          <p className="text-sm text-destructive">
-            {errors.pages[index]?.content?.message}
-          </p>
-        )}
+      <div>
+        <div className="space-y-2">
+          <label className="text-left" htmlFor={`page-${index}-content`}>
+            {translate("frame.content")}
+          </label>
+          <TextField.Root
+            id={`page-${index}-content`}
+            {...register(`pages.${index}.content`, {
+              required: translate("common.required"),
+            })}
+            radius="large"
+          />
+          {errors.pages?.[index]?.content && (
+            <p className="text-sm text-destructive">
+              {errors.pages[index]?.content?.message}
+            </p>
+          )}
+        </div>
       </div>
       <div className="space-y-2">
         <label
@@ -216,8 +185,6 @@ export function CreateSequenceForm({
         </label>
         <TextArea
           id={`page-${index}-description`}
-          placeholder={translate("sequence.draft.description")}
-          variant="soft"
           radius="large"
           {...register(`pages.${index}.description`)}
         />
@@ -233,7 +200,10 @@ export function CreateSequenceForm({
         <div className="flex items-start justify-between gap-6">
           <div className="space-y-1">
             <Badge color="orange" radius="full">
-              {getStepLabel(currentStep + 1, steps.length)}
+              {translate("sequence.draft.step", {
+                current: currentStep + 1,
+                total: steps.length,
+              })}
             </Badge>
             <Heading size="6" weight="medium" className="text-white">
               {SequenceTitle?.trim()}
@@ -305,7 +275,6 @@ export function CreateSequenceForm({
                         required: translate("common.required"),
                       })}
                       radius="large"
-                      className="bg-none"
                     />
                     {errors.title && (
                       <p className="text-sm text-destructive">
@@ -326,12 +295,6 @@ export function CreateSequenceForm({
                       {...register("description")}
                       radius="large"
                     />
-                    {sequenceDescription && (
-                      <Text color="gray" size="1">
-                        {sequenceDescription.length}{" "}
-                        {translate("common.characters") || "characters"}
-                      </Text>
-                    )}
                   </div>
                 </div>
               </div>
@@ -345,77 +308,69 @@ export function CreateSequenceForm({
                 onNext={onNextSlide}
                 onPrevious={onPreviousSlide}
                 isEditMode
-                frameContainerClassName="bg-[#0f1118] border border-white/10 rounded-xl"
                 renderControls={(props) => (
                   <Flex align="center" justify="between">
-                    <IconButton
-                      variant="surface"
-                      color="gray"
+                    <Button
+                      variant="soft"
                       radius="full"
-                      onClick={props.onPrevious}
-                      disabled={props.currentIndex === 0}
-                      aria-label={translate("carousel.previous") || "Previous"}
+                      type="button"
+                      onClick={onPreviousSlide}
+                      aria-label={translate("carousel.previous")}
                     >
-                      <ArrowLeft className="h-4 w-4" />
-                      <span className="sr-only">
-                        {translate("carousel.previous") || "Previous"}
-                      </span>
-                    </IconButton>
+                      {props.currentIndex === 0 ? (
+                        <>
+                          <ArrowLeft className="h-4 w-4" />
+                          {translate("sequence.draft.previousStep")}
+                        </>
+                      ) : (
+                        <ArrowLeft className="h-4 w-4" />
+                      )}
+                    </Button>
                     <div className="flex items-center gap-3 rounded-full border border-white/10 bg-black/40 px-4 py-2 text-sm text-white">
-                      <span className="text-xs uppercase tracking-wide text-amber-200">
-                        {getStepLabel(
-                          props.currentIndex + 1,
-                          pageFrames.length
-                        )}
-                      </span>
-                      <span className="text-gray-300">
-                        {getFrameProgressLabel(
-                          props.currentIndex + 1,
-                          pageFrames.length
-                        )}
-                      </span>
+                      <Text color="orange" className="tracking-wide">
+                        {translate("carousel.progress", {
+                          current: props.currentIndex + 1,
+                          total: pageFrames.length,
+                        })}
+                      </Text>
                     </div>
-                    <IconButton
-                      variant="solid"
-                      color="amber"
+                    <Button
+                      variant="soft"
                       radius="full"
-                      onClick={props.onNext}
-                      aria-label={translate("carousel.next") || "Next"}
+                      type="button"
+                      onClick={onNextSlide}
+                      aria-label={translate("sequence.draft.appendFrame")}
                     >
-                      <span className="sr-only">
-                        {translate("carousel.next") || "Next"}
-                      </span>
-                      <ArrowRight className="h-4 w-4" />
-                    </IconButton>
+                      {props.currentIndex === pageFrames.length - 1 ? (
+                        <>
+                          <PlusCircle className="h-4 w-4" />
+                          <Text>{translate("sequence.draft.appendFrame")}</Text>
+                        </>
+                      ) : (
+                        <ArrowRight className="h-4 w-4" />
+                      )}
+                    </Button>
                   </Flex>
                 )}
               />
             </div>
           )}
-
           <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:space-x-2">
             {currentStep === 0 ? (
-              <Button type="button" variant="solid" onClick={handleStepAdvance}>
-                {translate("common.continue")}
+              <Button
+                type="button"
+                disabled={!SequenceTitle}
+                variant="solid"
+                onClick={handleStepAdvance}
+              >
+                {translate("common.next")}
+                <ArrowRight className="h-4 w-4" />
               </Button>
             ) : (
-              <>
-                <Button
-                  type="button"
-                  variant="surface"
-                  color="gray"
-                  onClick={handleBackToDetails}
-                >
-                  {translate("common.back") || "Back to details"}
-                </Button>
-                <Button
-                  type="submit"
-                  color="amber"
-                  loading={isSaving || isSequenceSaving}
-                >
-                  {translate("sequence.cta.publish")}
-                </Button>
-              </>
+              <Button type="submit" loading={isSaving || isSequenceSaving}>
+                <Cloud />
+                {translate("sequence.cta.publish")}
+              </Button>
             )}
           </div>
         </form>

@@ -7,11 +7,11 @@ import { useGetSequencesByUserQuery } from "./services/sequences";
 import { SequenceCard } from "@/components/sequence-card";
 import { CreateSequenceForm } from "@/components/ui/create-sequence";
 import { translate } from "@/lib/i18n";
-import { Button, Callout, Text, TextField } from "@radix-ui/themes";
+import { Callout, Text, TextField } from "@radix-ui/themes";
 import Link from "next/link";
 import { SessionLoader } from "@/components/ui/spinner";
 import { ViewSequence } from "@/components/ui/view-sequence";
-import { CircleArrowUp, Filter, Search } from "lucide-react";
+import { Filter, Search } from "lucide-react";
 import { SequenceEmptyState } from "@/components/sequence-empty-state";
 import { SequenceErrorState } from "@/components/sequence-error-state";
 import { CreateSequenceCta } from "@/components/create-sequence-cta";
@@ -22,7 +22,6 @@ export default function Home({
   sequenceId: string | null | undefined;
 }) {
   const { data: session, status } = useSession();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [showCreationSuccess, setShowCreationSuccess] = useState(false);
@@ -47,7 +46,6 @@ export default function Home({
     if (sequenceId) {
       sequenceIdRef.current = sequenceId;
       setIsViewDialogOpen(true);
-      console.log({ sequenceId });
     }
   }, [sequenceId]);
 
@@ -126,7 +124,6 @@ export default function Home({
         )}
       </section>
       <CreateSequenceCta
-        isLoading={false}
         onCreate={(title) => {
           sequenceTitleRef.current = title;
           setIsCreateDialogOpen(true);

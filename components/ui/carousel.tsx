@@ -22,8 +22,6 @@ interface CarouselProps {
   onNext: () => void;
   onPrevious: () => void;
   renderControls?: (props: CarouselControlsRenderProps) => React.ReactNode;
-  frameContainerClassName?: string;
-  frameInnerClassName?: string;
 }
 
 export function Carousel({
@@ -34,8 +32,6 @@ export function Carousel({
   onNext,
   onPrevious,
   renderControls,
-  frameContainerClassName,
-  frameInnerClassName,
 }: CarouselProps) {
   const frameCount = frames.length;
   const currentMaxIndex = Math.max(currentIndexProp, 0);
@@ -71,15 +67,14 @@ export function Carousel({
     <div className={cn("flex flex-col gap-4", className)}>
       <div
         className={cn(
-          "overflow-hidden rounded-lg border border-border shadow-sm",
-          frameContainerClassName
+          "overflow-hidden rounded-lg border border-border shadow-sm"
         )}
       >
         <div
           className="flex items-center justify-center py-6"
           aria-live="polite"
         >
-          <FrameContainer className={cn("bg-background", frameInnerClassName)}>
+          <FrameContainer className={cn("bg-bg-white/5")}>
             {frames[currentMaxIndex]}
           </FrameContainer>
         </div>
@@ -96,20 +91,24 @@ export function Carousel({
           <Button
             disabled={currentMaxIndex === 0}
             type="button"
-          onClick={onPrevious}
-          className="cursor-pointer"
-          aria-label="Previous"
-        >
-          <CircleArrowLeft />
-        </Button>
-        <Text className="text-sm text-muted-foreground">
-          {getProgressLabel(currentMaxIndex + 1, frameCount)}
-        </Text>
-        <Button
-          className="cursor-pointer"
-          type="button"
+            onClick={onPrevious}
+            className="cursor-pointer"
+            aria-label="Previous"
+            variant="soft"
+            radius="full"
+          >
+            <CircleArrowLeft />
+          </Button>
+          <Text className="text-sm text-muted-foreground">
+            {getProgressLabel(currentMaxIndex + 1, frameCount)}
+          </Text>
+          <Button
+            className="cursor-pointer"
+            type="button"
             onClick={onNext}
             aria-label="Next"
+            variant="soft"
+            radius="full"
           >
             <CircleArrowRight />
           </Button>

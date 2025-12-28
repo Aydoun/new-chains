@@ -68,7 +68,7 @@ export const SequenceCard: FC<Props> = ({
             <Text
               size="4"
               weight="bold"
-              className="leading-snug text-white transition-colors group-hover:text-[#f87171]"
+              className="leading-snug text-white transition-colors group-hover:text-primary-main"
               as="div"
             >
               {sequence.title}
@@ -159,7 +159,7 @@ export const SequenceFrame: FC<SequenceFrameProps> = ({
     <FrameContainer>
       <div
         className={cn(
-          "relative flex h-48 w-full flex-col items-center justify-center gap-2 text-center text-amber-50"
+          "relative flex h-48 w-full flex-col items-center justify-center gap-2 text-amber-50"
         )}
       >
         <blockquote className="max-w-2xl text-center text-gray-800">
@@ -190,7 +190,7 @@ export function FrameContainer({ className, children }: FrameContainerProps) {
   return (
     <div
       className={cn(
-        "flex h-48 w-full items-center justify-center bg-[#fff7ed] text-center font-[400] rounded-md",
+        "flex h-48 w-full items-center justify-center bg-[#fff7ed] font-[400] rounded-md",
         className
       )}
     >

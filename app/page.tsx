@@ -59,28 +59,34 @@ export default function Home() {
 
   return (
     <div className="flex flex-col gap-4 px-6 py-0 sm:px-6">
-      <div className="min-h-[52px]">
-        {showCreationSuccess && (
-          <Callout.Root color="green" role="status">
-            <Callout.Text>
-              {translate("sequence.cta.creation-message")}{" "}
-              <Link
-                href="/studio"
-                className="font-semibold underline underline-offset-4"
-              >
-                {translate("navigation.cta.studio-redirect")}
-              </Link>
-            </Callout.Text>
-          </Callout.Root>
-        )}
+      <div className="flex gap-6">
+        <Text
+          data-testid="homepage-title"
+          className="self-center"
+          weight="bold"
+          size="6"
+        >
+          {translate("navigation.explore")}
+        </Text>
+        <div className="min-h-[52px]">
+          {showCreationSuccess && (
+            <Callout.Root color="green" role="status">
+              <Callout.Text>
+                {translate("sequence.cta.creation-message")}{" "}
+                <Link
+                  href="/studio"
+                  className="font-semibold underline underline-offset-4"
+                >
+                  {translate("navigation.cta.studio-redirect")}
+                </Link>
+              </Callout.Text>
+            </Callout.Root>
+          )}
+        </div>
       </div>
-      <section className="flex flex-col gap-4">
+      <section className="flex flex-col gap-4 pb-24">
         {!isError ? (
           <>
-            <Text data-testid="homepage-title" weight="bold" size="6">
-              {translate("navigation.explore")}
-            </Text>
-
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {sequences?.map((sequence) => (
                 <SequenceCard

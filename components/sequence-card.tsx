@@ -60,7 +60,10 @@ export const SequenceCard: FC<Props> = ({
         className="group flex cursor-pointer flex-col overflow-hidden rounded-xl border border-[#233348] bg-[#1a2533] transition-all duration-300 hover:border-[#136dec]/50 hover:shadow-xl hover:shadow-black/20"
       >
         <div className="h-44 w-full overflow-hidden">
-          <SequenceFrame text={sequence.firstFrame?.content} />
+          <SequenceFrame
+            text={sequence.firstFrame?.content}
+            count={sequence.FrameOrder.length}
+          />
         </div>
         <div className="flex flex-col gap-3 p-5">
           <div className="space-y-1">
@@ -138,6 +141,7 @@ export const SequenceCard: FC<Props> = ({
 interface SequenceFrameProps {
   text: string | undefined;
   description?: string | undefined | null;
+  count?: number;
 }
 
 interface FrameContainerProps {
@@ -148,12 +152,13 @@ interface FrameContainerProps {
 export const SequenceFrame: FC<SequenceFrameProps> = ({
   text,
   description,
+  count,
 }) => {
   return (
     <FrameContainer>
       <div
         className={cn(
-          "flex h-48 w-full flex-col items-center justify-center gap-2 text-center text-amber-50"
+          "relative flex h-48 w-full flex-col items-center justify-center gap-2 text-center text-amber-50"
         )}
       >
         <blockquote className="max-w-2xl text-center text-gray-800">
@@ -166,6 +171,13 @@ export const SequenceFrame: FC<SequenceFrameProps> = ({
             {description}
           </p>
         )}
+        <div className="absolute top-3 right-3 z-20">
+          <span className="inline-flex items-center gap-1 rounded-full bg-black/60 backdrop-blur-md px-2.5 py-1 text-xs font-medium text-white border border-white/10">
+            {translate("sequence.countLabel", {
+              count: count ?? 0,
+            })}
+          </span>
+        </div>
       </div>
     </FrameContainer>
   );
@@ -175,7 +187,7 @@ export function FrameContainer({ className, children }: FrameContainerProps) {
   return (
     <div
       className={cn(
-        "flex h-48 w-full items-center justify-center bg-[#fff7ed] text-center font-[400]",
+        "flex h-48 w-full items-center justify-center bg-[#fff7ed] text-center font-[400] rounded-md",
         className
       )}
     >

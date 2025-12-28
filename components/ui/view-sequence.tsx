@@ -9,6 +9,7 @@ import { Modal } from "./modal";
 import { Sequence } from "@/app/types";
 import { SequenceFrame } from "../sequence-card";
 import { skipToken } from "@reduxjs/toolkit/query";
+import { Spinner } from "@radix-ui/themes";
 
 interface Props {
   sequence: Sequence | null;
@@ -16,10 +17,10 @@ interface Props {
 }
 
 export function ViewSequence({ sequence, onClose }: Props) {
+  const [activeFrame, setActiveFrame] = useState(0);
   const { data, isFetching, isError } = useGetSequenceByIdQuery(
     sequence?.id ?? skipToken
   );
-  const [activeFrame, setActiveFrame] = useState(0);
 
   const guardedFrames = data?.frames ?? [];
 
@@ -31,9 +32,9 @@ export function ViewSequence({ sequence, onClose }: Props) {
 
   return (
     <Modal open onOpenChange={handleDialogChange}>
-      <Modal.Content className="w-[94vw] max-w-lg rounded-2xl bg-gray-900 p-6 shadow-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+      <Modal.Content className="rounded-1xl bg-gray-900 p-8 shadow-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
         <div className="flex items-start justify-between gap-4">
-          <div className="space-y-2">
+          <div className="space-y-2 mb-4">
             <h2 className="text-xl font-semibold text-white">
               {sequence.title}
             </h2>
@@ -44,11 +45,11 @@ export function ViewSequence({ sequence, onClose }: Props) {
         </div>
         {!isFetching && !isError && (
           <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between text-xs text-amber-100">
+            <div className="text-xs text-amber-100">
               <span className="font-semibold uppercase tracking-wide">
                 {translate("frame.selfs")}
               </span>
-              <span className="rounded-full bg-amber-900/40 px-3 py-1 text-[11px] font-semibold shadow-sm ring-1 ring-amber-700/60">
+              <span className="ml-2 rounded-full bg-primary-main px-3 py-1 font-semibold shadow-sm ring-1 ring-amber-700/60">
                 {data?.FrameOrder.length ?? 0} {translate("common.items")}
               </span>
             </div>

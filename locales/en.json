@@ -91,6 +91,7 @@
     "explore": "Explore"
   },
   "sequence": {
+    "countLabel": "1/{count}",
     "cta": {
       "title": "Name your Sequence",
       "publish": "Publish",

@@ -171,13 +171,15 @@ export const SequenceFrame: FC<SequenceFrameProps> = ({
             {description}
           </p>
         )}
-        <div className="absolute top-3 right-3 z-20">
-          <span className="inline-flex items-center gap-1 rounded-full bg-black/60 backdrop-blur-md px-2.5 py-1 text-xs font-medium text-white border border-white/10">
-            {translate("sequence.countLabel", {
-              count: count ?? 0,
-            })}
-          </span>
-        </div>
+        {count && (
+          <div className="absolute top-3 right-3 z-20">
+            <span className="inline-flex items-center gap-1 rounded-full bg-black/60 backdrop-blur-md px-2.5 py-1 text-xs font-medium text-white border border-white/10">
+              {translate("sequence.countLabel", {
+                count: count ?? 0,
+              })}
+            </span>
+          </div>
+        )}
       </div>
     </FrameContainer>
   );

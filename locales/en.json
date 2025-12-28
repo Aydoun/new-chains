@@ -4,13 +4,15 @@
     "errors": {
       "home": "Unable to load sequences at this time"
     },
+    "filter": "Filter",
     "items": "items",
     "loading": "Loading",
     "next": "Next",
     "previous": "Previous",
     "required": "Field is Required",
     "save": "Save",
-    "send": "Send"
+    "send": "Send",
+    "search": "Search"
   },
   "app": {
     "name": "Link & Tell",

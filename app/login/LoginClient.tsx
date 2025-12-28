@@ -28,7 +28,7 @@ export default function LoginClient({ callbackUrl }: { callbackUrl: string }) {
 
       <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 py-10">
         <div className="mb-6 flex flex-col items-center gap-4 text-center">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#F87171] shadow-[0_20px_50px_-12px_rgba(19,109,236,0.6)] ring-1 ring-white/10">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-main shadow-[0_20px_50px_-12px_rgba(19,109,236,0.6)] ring-1 ring-white/10">
             <span className="text-2xl font-extrabold text-white">
               {translate("app.nameShortcut")}
             </span>

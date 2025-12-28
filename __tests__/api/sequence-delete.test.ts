@@ -3,10 +3,12 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { vi } from "vitest";
 
 const mocks = vi.hoisted(() => {
+  const defaultUserId = 10;
   const findUniqueMock = vi.fn(async ({ where }: { where: { id: number } }) => {
     if (where.id === 99) return null;
-    if (where.id === 2) return { id: 2, isDeleted: true };
-    return { id: where.id, isDeleted: false };
+    if (where.id === 2)
+      return { id: 2, isDeleted: true, userId: defaultUserId };
+    return { id: where.id, isDeleted: false, userId: defaultUserId };
   });
   const updateMock = vi.fn(async ({ where, data }) => ({
     id: where.id,
@@ -41,9 +43,18 @@ const createMockResponse = () => {
   return { res, store };
 };
 
+const sessionMock = vi.hoisted(() =>
+  vi.fn(async () => ({ session: {}, userId: 10 }))
+);
+
+vi.mock("@/lib/api/auth", () => ({
+  requireApiSession: (...args: unknown[]) => sessionMock(...args),
+}));
+
 describe("api/sequence/delete endpoint", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    sessionMock.mockResolvedValue({ session: {}, userId: 10 });
   });
 
   it("rejects requests without a valid id", async () => {

@@ -18,6 +18,7 @@ interface Props {
   userId: string | undefined;
   onClick: () => void;
   handleDelete?: (sequenceId: string | number) => void;
+  omitAuthor?: boolean;
 }
 
 export const SequenceCard: FC<Props> = ({
@@ -25,6 +26,7 @@ export const SequenceCard: FC<Props> = ({
   userId,
   onClick,
   handleDelete,
+  omitAuthor = false,
 }) => {
   const [isLinkCopied, setIsLinkCopied] = useState(false);
   const isOwner = userId === `${sequence.userId}`;
@@ -56,22 +58,19 @@ export const SequenceCard: FC<Props> = ({
 
   return (
     <>
-      <div
-        onClick={onClick}
-        className="group flex cursor-pointer flex-col overflow-hidden rounded-xl border border-[#233348] bg-[#1a2533] transition-all duration-300 hover:border-[#136dec]/50 hover:shadow-xl hover:shadow-black/20"
-      >
-        <div className="h-44 w-full overflow-hidden">
+      <div className="group flex cursor-pointer flex-col overflow-hidden rounded-xl border border-[#233348] bg-[#1a2533] transition-all duration-300 hover:border-[#136dec]/50 hover:shadow-xl hover:shadow-black/20">
+        <div onClick={onClick} className="h-44 w-full overflow-hidden">
           <SequenceFrame
             text={sequence.firstFrame?.content}
             count={sequence.FrameOrder.length}
           />
         </div>
         <div className="flex flex-col gap-3 p-5">
-          <div className="space-y-1">
+          <div onClick={onClick} className="space-y-1">
             <Text
               size="4"
               weight="bold"
-              className="leading-snug text-white transition-colors group-hover:text-[#f87171]"
+              className="leading-snug text-white transition-colors group-hover:text-primary-main"
               as="div"
             >
               {sequence.title}
@@ -80,10 +79,14 @@ export const SequenceCard: FC<Props> = ({
               {sequence.description}
             </Text>
           </div>
-          <div className="flex items-center gap-1 hover:underline text-[#92a9c9]">
-            <User className="h-4 w-4" aria-hidden="true" />
-            <Link href="/">Visit The Author</Link>
-          </div>
+          {!omitAuthor && (
+            <div className="flex items-center gap-1 hover:underline text-[#92a9c9]">
+              <User className="h-4 w-4" aria-hidden="true" />
+              <Link href={`/explore/${sequence.userId}`}>
+                {sequence.user?.username}
+              </Link>
+            </div>
+          )}
           <div className="mt-auto flex items-center justify-between border-t border-[#233348] pt-2">
             <div className="flex items-center gap-1 text-[#92a9c9]">
               <Clock3 className="h-4 w-4" aria-hidden="true" />
@@ -124,6 +127,7 @@ export const SequenceCard: FC<Props> = ({
                 size="1"
                 variant="ghost"
                 onClick={handleShareLink}
+                className="cursor-pointer"
               >
                 {isLinkCopied ? (
                   <Text size="1">{translate("sequence.cta.url-copied")}</Text>
@@ -159,7 +163,7 @@ export const SequenceFrame: FC<SequenceFrameProps> = ({
     <FrameContainer>
       <div
         className={cn(
-          "relative flex h-48 w-full flex-col items-center justify-center gap-2 text-center text-amber-50"
+          "relative flex h-48 w-full flex-col items-center justify-center gap-2 text-amber-50"
         )}
       >
         <blockquote className="max-w-2xl text-center text-gray-800">
@@ -190,7 +194,7 @@ export function FrameContainer({ className, children }: FrameContainerProps) {
   return (
     <div
       className={cn(
-        "flex h-48 w-full items-center justify-center bg-[#fff7ed] text-center font-[400] rounded-md",
+        "flex h-48 w-full items-center justify-center bg-[#fff7ed] font-[400] rounded-md",
         className
       )}
     >

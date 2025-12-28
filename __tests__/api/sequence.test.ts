@@ -12,13 +12,49 @@ const mocks = vi.hoisted(() => {
     FrameOrder: data.data.frameOrder ?? [],
   }));
   const findManyMock = vi.fn(async ({ where }: { where?: object }) => {
-    if (!where) return [{ id: 1, title: "Example", userId: 2, FrameOrder: [] }];
+    const baseSequence = {
+      description: "",
+      url: null,
+      FrameOrder: [],
+      visibility: "PUBLIC",
+      isDeleted: false,
+      createdAt: "2024-01-01",
+      updatedAt: "2024-01-02",
+      user: {
+        id: 11,
+        username: "creator",
+        avatarUrl: null,
+      },
+    };
+
+    if (!where)
+      return [
+        {
+          ...baseSequence,
+          id: 1,
+          title: "Example",
+          userId: 2,
+        },
+      ];
+
+    const userIdFilter = (where as { userId?: number | { not: number } })
+      .userId;
+    const filteredUserId =
+      userIdFilter && typeof userIdFilter === "object"
+        ? (userIdFilter as { not: number }).not
+        : (userIdFilter as number);
+
     return [
       {
+        ...baseSequence,
         id: 2,
         title: "Filtered",
-        userId: (where as { userId: number }).userId,
-        FrameOrder: [],
+        userId: filteredUserId ?? 2,
+        user: {
+          id: filteredUserId ?? 2,
+          username: "filtered-user",
+          avatarUrl: null,
+        },
       },
     ];
   });
@@ -64,9 +100,21 @@ const createMockResponse = () => {
   return { res, store };
 };
 
+const sessionMock = vi.hoisted(() =>
+  vi.fn(async () => ({
+    session: {},
+    userId: 1,
+  }))
+);
+
+vi.mock("@/lib/api/auth", () => ({
+  requireApiSession: (...args: unknown[]) => sessionMock(...args),
+}));
+
 describe("api/sequence endpoints", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    sessionMock.mockResolvedValue({ session: {}, userId: 1 });
   });
 
   it("returns 400 when creating a sequence without required fields", async () => {
@@ -81,6 +129,7 @@ describe("api/sequence endpoints", () => {
   });
 
   it("creates a sequence when payload is valid", async () => {
+    sessionMock.mockResolvedValueOnce({ session: {}, userId: 3 });
     const req = {
       method: "POST",
       body: {
@@ -98,6 +147,7 @@ describe("api/sequence endpoints", () => {
   });
 
   it("fetches sequences filtered by user id", async () => {
+    sessionMock.mockResolvedValueOnce({ session: {}, userId: 10 });
     const req = {
       method: "GET",
       query: { id: "99" },
@@ -106,11 +156,32 @@ describe("api/sequence endpoints", () => {
 
     await fetchHandler(req, res);
     expect(store.status).toBe(200);
-    const json = store.body as Array<{ userId: number }>;
-    expect(json[0].userId).toBe(99);
-    expect(mocks.findManyMock).toHaveBeenCalledWith({
-      where: { userId: 99, isDeleted: false, visibility: "PUBLIC" },
+    const json = store.body as Array<{
+      userId: number;
+      user: { id: number; username: string };
+    }>;
+    expect(json[0].user).toMatchObject({
+      id: expect.any(Number),
+      username: expect.any(String),
     });
+    expect(mocks.findManyMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: {
+          userId: { not: 10 },
+          isDeleted: false,
+          visibility: "PUBLIC",
+        },
+        include: {
+          user: {
+            select: {
+              avatarUrl: true,
+              id: true,
+              username: true,
+            },
+          },
+        },
+      })
+    );
   });
 
   it("reads a sequence and hydrates frames", async () => {

@@ -30,7 +30,7 @@ export function ViewSequence({ sequenceId, onClose }: Props) {
 
   return (
     <Modal open onOpenChange={handleDialogChange}>
-      <Modal.Content className="rounded-1xl bg-gray-900 p-8 shadow-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+      <Modal.Content className="border rounded-2xl bg-gray-900 p-8 shadow-2xl">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-2 mb-4">
             <h2 className="text-xl font-semibold text-white">

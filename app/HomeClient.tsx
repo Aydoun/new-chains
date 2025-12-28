@@ -11,10 +11,10 @@ import { Callout, Text, TextField } from "@radix-ui/themes";
 import Link from "next/link";
 import { SessionLoader } from "@/components/ui/spinner";
 import { ViewSequence } from "@/components/ui/view-sequence";
-import { useSearchParams } from "next/navigation";
 import { Filter, Search } from "lucide-react";
 import { SequenceEmptyState } from "@/components/sequence-empty-state";
 import { SequenceErrorState } from "@/components/sequence-error-state";
+import { CreateSequenceCta } from "@/components/create-sequence-cta";
 
 export default function Home({
   sequenceId,
@@ -22,10 +22,11 @@ export default function Home({
   sequenceId: string | null | undefined;
 }) {
   const { data: session, status } = useSession();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [showCreationSuccess, setShowCreationSuccess] = useState(false);
   const sequenceIdRef = useRef<string | number | null>(null);
+  const sequenceTitleRef = useRef<string>("");
   const userId = session?.user?.id;
   const {
     data: sequences,
@@ -45,7 +46,6 @@ export default function Home({
     if (sequenceId) {
       sequenceIdRef.current = sequenceId;
       setIsViewDialogOpen(true);
-      console.log({ sequenceId });
     }
   }, [sequenceId]);
 
@@ -123,17 +123,26 @@ export default function Home({
           <SequenceErrorState />
         )}
       </section>
-      <CreateSequenceForm
-        isDialogOpen={isDialogOpen}
-        handleDialogChange={(open) => {
-          setIsDialogOpen(open);
+      <CreateSequenceCta
+        onCreate={(title) => {
+          sequenceTitleRef.current = title;
+          setIsCreateDialogOpen(true);
         }}
-        onSequenceCreated={() => setShowCreationSuccess(true)}
       />
+
       {isViewDialogOpen && (
         <ViewSequence
           sequenceId={sequenceIdRef.current}
           onClose={() => setIsViewDialogOpen(false)}
+        />
+      )}
+      {isCreateDialogOpen && (
+        <CreateSequenceForm
+          onClose={() => {
+            setIsCreateDialogOpen(false);
+          }}
+          initialSequenceTitle={sequenceTitleRef.current}
+          onSequenceCreated={() => setShowCreationSuccess(true)}
         />
       )}
     </div>

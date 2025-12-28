@@ -9,6 +9,7 @@
     "next": "Next",
     "previous": "Previous",
     "required": "Field is Required",
+    "save": "Save",
     "send": "Send"
   },
   "app": {
@@ -89,6 +90,19 @@
     "search": "Search",
     "studio": "Studio",
     "explore": "Explore"
+  },
+  "profile": {
+    "cta": {
+      "avatar": "Change Avatar"
+    },
+    "connectedMessage": "Connected as {email}",
+    "delete": "Delete Account",
+    "deleteWarn": "Permanently delete your account and all of your content.",
+    "header": "Profile Settings",
+    "description": "Manage your personal information and connected accounts",
+    "googleAuth": "Managed via Google Auth",
+    "verified": "verified",
+    "selfDesc": "Brief description for your profile."
   },
   "sequence": {
     "countLabel": "1/{count}",

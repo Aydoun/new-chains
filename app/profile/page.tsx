@@ -1,22 +1,29 @@
 "use client";
 
 import { translate } from "@/lib/i18n";
-import { Text } from "@radix-ui/themes";
+import { Heading, Text, TextArea } from "@radix-ui/themes";
+import { CheckCircle, Lock, Save } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { ChangeEvent, useState } from "react";
 
 export default function ProfilePage() {
+  const { data: session } = useSession();
+  const [bioText, setBioText] = useState("");
+
+  const handleBioChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    const { value } = e.target;
+    if (value.length <= 240) setBioText(value);
+  };
+
   return (
     <div className={`flex w-full justify-center px-4 py-8 sm:px-8 sm:py-10`}>
       <div className="flex w-full max-w-5xl flex-col gap-8 text-white">
         <div className="flex flex-col gap-2">
-          <h1 className="text-3xl font-extrabold tracking-tight">
-            Profile Settings
-          </h1>
-          <p className="text-base text-[#92a9c9]">
-            Manage your personal information, connected accounts, and security
-            preferences.
-          </p>
+          <Heading size="7">{translate("profile.header")}</Heading>
+          <Text className="text-base text-[#92a9c9]">
+            {translate("profile.description")}
+          </Text>
         </div>
-
         <div className="flex flex-col gap-6">
           <div className="flex flex-col overflow-hidden rounded-xl border border-[#233348] bg-[#1a2533] shadow-[0_10px_40px_-20px_rgba(0,0,0,0.6)]">
             <div className="flex flex-col items-center gap-6 border-b border-[#233348] p-6 md:flex-row md:items-start md:p-8">
@@ -24,8 +31,7 @@ export default function ProfilePage() {
                 <div
                   className="size-24 rounded-full bg-cover bg-center shadow-xl ring-4 ring-[#101822]"
                   style={{
-                    backgroundImage:
-                      "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBvsaXsqqB-er5iafnCXR7C__mDhGtah8Rl9jALRanYCOwj_MqJHjzHYVy1bNCu065RU3BP9HFg-GVMtl5uS28woG4lYPOCARr5ZlsuGBcoCG7wmpagjBYQUveIpBsKxlgLGffgJpsf3NghrQrCg4tww-M2fWQ3bXsIR6inRq4pIg9YsmtszyxD9pIYFrXFQ0dvqXYqZJDQhK_aNLNmjIkJcszEfpiH2KWdsM-GOcy8zrJ1mzNobwnJJS0XKtjEFfZjsYHcmvarLnE')",
+                    backgroundImage: `url(${session?.user?.image})`,
                   }}
                 />
                 <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
@@ -33,96 +39,43 @@ export default function ProfilePage() {
                     camera_alt
                   </span>
                 </div>
-                <button className="absolute bottom-0 right-0 rounded-full bg-[#136dec] p-1.5 text-white shadow-sm ring-4 ring-[#1a2533] transition hover:bg-[#0f5dc9]">
-                  <span className="material-symbols-outlined text-[16px]">
-                    edit
-                  </span>
-                </button>
               </div>
-
               <div className="flex flex-1 flex-col items-center gap-2 md:items-start">
                 <div>
-                  <h3 className="text-center text-lg font-bold md:text-left">
-                    Alex Morgan
-                  </h3>
-                  <p className="text-center text-sm text-[#92a9c9] md:text-left">
-                    Senior Developer at DevStudio
-                  </p>
+                  <Heading
+                    as="h3"
+                    className="text-center text-lg font-bold md:text-left"
+                  >
+                    {session?.user?.name}
+                  </Heading>
                 </div>
                 <div className="mt-1 flex gap-3">
                   <button className="rounded-lg border border-[#233348] bg-[#253242] px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#2f3e52]">
-                    Change Avatar
-                  </button>
-                  <button className="rounded-lg px-4 py-2 text-sm font-medium text-red-400 transition-colors hover:bg-red-400/10 hover:text-red-300">
-                    Remove
+                    {translate("profile.cta.avatar")}
                   </button>
                 </div>
               </div>
             </div>
-
             <div className="p-6 md:p-8">
               <form className="flex flex-col gap-6">
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                  <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium">Full Name</label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#92a9c9]">
-                        <span className="material-symbols-outlined text-[20px]">
-                          person
-                        </span>
-                      </span>
-                      <input
-                        className="w-full rounded-lg border border-[#233348] bg-[#101822] px-4 py-2.5 pl-10 text-white outline-none transition-all placeholder:text-[#92a9c9]/60 focus:border-[#136dec] focus:ring-1 focus:ring-[#136dec]"
-                        type="text"
-                        defaultValue="Alex Morgan"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium">Job Title</label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#92a9c9]">
-                        <span className="material-symbols-outlined text-[20px]">
-                          work
-                        </span>
-                      </span>
-                      <input
-                        className="w-full rounded-lg border border-[#233348] bg-[#101822] px-4 py-2.5 pl-10 text-white outline-none transition-all placeholder:text-[#92a9c9]/60 focus:border-[#136dec] focus:ring-1 focus:ring-[#136dec]"
-                        type="text"
-                        defaultValue="Senior Developer"
-                      />
-                    </div>
-                  </div>
-                </div>
-
                 <div className="flex flex-col gap-2">
                   <label className="flex justify-between text-sm font-medium">
                     <span>Email Address</span>
                     <span className="flex items-center gap-1 text-xs text-[#92a9c9]">
-                      <span className="material-symbols-outlined text-[14px]">
-                        lock
-                      </span>
-                      Managed via Google Auth
+                      <Lock size={12} />
+                      {translate("profile.googleAuth")}
                     </span>
                   </label>
                   <div className="relative opacity-75">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#92a9c9]">
-                      <span className="material-symbols-outlined text-[20px]">
-                        mail
-                      </span>
-                    </span>
                     <input
-                      className="w-full cursor-not-allowed rounded-lg border border-[#233348] bg-[#101822] px-4 py-2.5 pl-10 text-[#92a9c9] outline-none placeholder:text-[#92a9c9]/60"
+                      className="w-full cursor-not-allowed rounded-lg border border-[#233348] bg-[#101822] px-4 py-2.5 text-[#92a9c9] outline-none placeholder:text-[#92a9c9]/60"
                       type="email"
                       readOnly
-                      defaultValue="alex.morgan@devstudio.com"
+                      defaultValue={session?.user?.email ?? ""}
                     />
                     <div className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center gap-1.5 rounded bg-green-500/10 px-2 py-1 text-xs font-medium text-green-400 ring-1 ring-green-500/20">
-                      <span className="material-symbols-outlined text-[14px]">
-                        check_circle
-                      </span>
-                      Verified
+                      <CheckCircle />
+                      {translate("profile.verified")}
                     </div>
                   </div>
                 </div>
@@ -130,18 +83,17 @@ export default function ProfilePage() {
                 <div className="flex flex-col gap-2">
                   <label className="text-sm font-medium">Bio</label>
                   <div className="relative">
-                    <textarea
-                      className="w-full resize-none rounded-lg border border-[#233348] bg-[#101822] p-3 text-white outline-none transition-all placeholder:text-[#92a9c9]/60 focus:border-[#136dec] focus:ring-1 focus:ring-[#136dec]"
+                    <TextArea
                       rows={4}
-                      defaultValue="Passionate about building scalable web applications and exploring new technologies. Always learning."
+                      value={bioText}
+                      onChange={handleBioChange}
                     />
                   </div>
                   <div className="mt-1 flex items-center justify-between text-xs text-[#92a9c9]">
-                    <p>Brief description for your profile.</p>
-                    <p>84 / 240</p>
+                    <Text>{translate("profile.selfDesc")}</Text>
+                    <Text>{`${bioText.length}/240`}</Text>
                   </div>
                 </div>
-
                 <div className="flex flex-col gap-4 border-t border-[#233348] pt-4">
                   <h4 className="text-sm font-medium">Connected Accounts</h4>
                   <div className="flex items-center justify-between rounded-lg border border-[#233348] bg-[#101822]/50 p-3">
@@ -173,51 +125,37 @@ export default function ProfilePage() {
                       <div className="flex flex-col">
                         <span className="text-sm font-medium">Google</span>
                         <span className="text-xs text-[#92a9c9]">
-                          Connected as alex.morgan@devstudio.com
+                          {translate("profile.connectedMessage", {
+                            email: session?.user?.email ?? "",
+                          })}
                         </span>
                       </div>
                     </div>
-                    <button
-                      className="rounded px-3 py-1.5 text-sm font-medium text-[#92a9c9] transition-colors hover:bg-white/5 hover:text-white"
-                      type="button"
-                    >
-                      Refresh
-                    </button>
                   </div>
                 </div>
-
                 <div className="mt-2 flex items-center justify-end gap-3 border-t border-[#233348] pt-4">
-                  <button
-                    className="rounded-lg px-5 py-2.5 text-sm font-medium text-[#92a9c9] transition-colors hover:bg-white/5 hover:text-white"
-                    type="button"
-                  >
-                    Cancel
-                  </button>
                   <button
                     className="flex items-center gap-2 rounded-lg bg-[#136dec] px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-900/20 transition hover:bg-[#0f5dc9]"
                     type="button"
                   >
-                    <span className="material-symbols-outlined text-[18px]">
-                      save
-                    </span>
-                    Save Changes
+                    <Save />
+                    {translate("common.save")}
                   </button>
                 </div>
               </form>
             </div>
           </div>
-
           <div className="flex flex-col items-start justify-between gap-4 rounded-xl border border-red-900/30 bg-red-900/10 p-6 text-red-300 md:flex-row md:items-center md:p-8">
             <div className="flex flex-col gap-1">
               <h3 className="text-base font-bold text-red-400">
-                Delete Account
+                {translate("profile.delete")}
               </h3>
               <p className="text-sm text-red-300/70">
-                Permanently delete your account and all of your content.
+                {translate("profile.deleteWarn")}
               </p>
             </div>
             <button className="whitespace-nowrap rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm font-bold text-red-400 transition-colors hover:bg-red-500/20">
-              Delete Account
+              {translate("profile.delete")}
             </button>
           </div>
         </div>

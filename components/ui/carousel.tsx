@@ -67,6 +67,7 @@ export function Carousel({
           type="button"
           onClick={onPrevious}
           className="cursor-pointer"
+          aria-label="Previous"
         >
           <CircleArrowLeft />
         </Button>
@@ -76,7 +77,12 @@ export function Carousel({
             total: frameCount,
           })}
         </Text>
-        <Button className="cursor-pointer" type="button" onClick={onNext}>
+        <Button
+          className="cursor-pointer"
+          type="button"
+          onClick={onNext}
+          aria-label="Next"
+        >
           <CircleArrowRight />
         </Button>
       </div>

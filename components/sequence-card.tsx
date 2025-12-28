@@ -82,7 +82,9 @@ export const SequenceCard: FC<Props> = ({
           </div>
           <div className="flex items-center gap-1 hover:underline text-[#92a9c9]">
             <User className="h-4 w-4" aria-hidden="true" />
-            <Link href="/">Visit The Author</Link>
+            <Link href={`/explore/${sequence.userId}`}>
+              {sequence.user?.username}
+            </Link>
           </div>
           <div className="mt-auto flex items-center justify-between border-t border-[#233348] pt-2">
             <div className="flex items-center gap-1 text-[#92a9c9]">

@@ -25,6 +25,15 @@ export default async function handler(
       orderBy: {
         createdAt: "desc",
       },
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+            avatarUrl: true,
+          },
+        },
+      },
     });
     if (!Array.isArray(sequences) || sequences.length === 0)
       return res.status(404).json({ message: "Sequences not found" });

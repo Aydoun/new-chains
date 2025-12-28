@@ -11,7 +11,6 @@ import { Callout, Text, TextField } from "@radix-ui/themes";
 import Link from "next/link";
 import { SessionLoader } from "@/components/ui/spinner";
 import { ViewSequence } from "@/components/ui/view-sequence";
-import { useSearchParams } from "next/navigation";
 import { Filter, Search } from "lucide-react";
 import { SequenceEmptyState } from "@/components/sequence-empty-state";
 import { SequenceErrorState } from "@/components/sequence-error-state";

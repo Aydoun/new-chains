@@ -45,10 +45,9 @@ export default function RootLayout({
                 <main className="flex w-full flex-col bg-[#0f1723] text-foreground">
                   <header className="flex items-center justify-end border-b border-border px-6 py-4 gap-3">
                     {/* <ThemeToggle theme={theme} onToggle={handleToggleTheme} /> */}
-                    <UserMenu />
                   </header>
                   <AuthStateSync />
-                  <div className="flex-1">{children}</div>
+                  <div className="relative">{children}</div>
                 </main>
               </SidebarProvider>
             </Theme>

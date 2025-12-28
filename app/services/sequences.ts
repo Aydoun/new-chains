@@ -64,6 +64,7 @@ export const {
   useGetSequencesByUserQuery,
   useCreateSequenceMutation,
   useLazyGetSequenceByIdQuery,
+  useGetSequenceByIdQuery,
   useDeleteSequenceMutation,
   useGetStudioSequencesQuery,
 } = sequenceApi;

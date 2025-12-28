@@ -4,12 +4,15 @@
     "errors": {
       "home": "Unable to load sequences at this time"
     },
+    "filter": "Filter",
     "items": "items",
     "loading": "Loading",
     "next": "Next",
     "previous": "Previous",
     "required": "Field is Required",
-    "send": "Send"
+    "save": "Save",
+    "send": "Send",
+    "search": "Search"
   },
   "app": {
     "name": "Link & Tell",
@@ -90,7 +93,21 @@
     "studio": "Studio",
     "explore": "Explore"
   },
+  "profile": {
+    "cta": {
+      "avatar": "Change Avatar"
+    },
+    "connectedMessage": "Connected as {email}",
+    "delete": "Delete Account",
+    "deleteWarn": "Permanently delete your account and all of your content.",
+    "header": "Profile Settings",
+    "description": "Manage your personal information and connected accounts",
+    "googleAuth": "Managed via Google Auth",
+    "verified": "verified",
+    "selfDesc": "Brief description for your profile."
+  },
   "sequence": {
+    "countLabel": "1/{count}",
     "cta": {
       "title": "Name your Sequence",
       "publish": "Publish",
@@ -101,6 +118,20 @@
       "title": "Draft Your Sequence"
     },
     "self": "Sequence"
+  },
+  "states": {
+    "emptySequences": {
+      "clear": "Clear Search",
+      "create": "New Sequence",
+      "description": "Try adjusting your search filters and types, or create a new entry",
+      "title": "No Sequences Found"
+    },
+    "sequenceError": {
+      "dashboard": "Home",
+      "description": "The Server encountered an unexpected condition, this might be temporary connectivity issue",
+      "retry": "Retry",
+      "title": "Unable To Load Sequences"
+    }
   },
   "studio": {
     "total": "Total Sequences",

@@ -13,6 +13,7 @@ import { SessionLoader } from "@/components/ui/spinner";
 import { ViewSequence } from "@/components/ui/view-sequence";
 import { useSearchParams } from "next/navigation";
 import { Filter } from "lucide-react";
+import { SequenceEmptyState } from "@/components/sequence-empty-state";
 
 export default function Home() {
   const searchParams = useSearchParams();
@@ -88,19 +89,23 @@ export default function Home() {
       <section className="flex flex-col gap-4 pb-24">
         {!isError ? (
           <>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {sequences?.map((sequence) => (
-                <SequenceCard
-                  key={sequence.id}
-                  userId={userId}
-                  sequence={sequence}
-                  onClick={() => {
-                    setIsViewDialogOpen(true);
-                    sequenceIdRef.current = sequence.id;
-                  }}
-                />
-              ))}
-            </div>
+            {Array.isArray(sequences) && sequences.length > 0 ? (
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {sequences?.map((sequence) => (
+                  <SequenceCard
+                    key={sequence.id}
+                    userId={userId}
+                    sequence={sequence}
+                    onClick={() => {
+                      setIsViewDialogOpen(true);
+                      sequenceIdRef.current = sequence.id;
+                    }}
+                  />
+                ))}
+              </div>
+            ) : (
+              <SequenceEmptyState />
+            )}
           </>
         ) : (
           <div className="m-8 rounded-lg bg-red-900/40 p-4 text-sm text-red-200">

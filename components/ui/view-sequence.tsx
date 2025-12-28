@@ -6,20 +6,18 @@ import { Carousel } from "@/components/ui/carousel";
 import { useGetSequenceByIdQuery } from "@/app/services/sequences";
 import { translate } from "@/lib/i18n";
 import { Modal } from "./modal";
-import { Sequence } from "@/app/types";
 import { SequenceFrame } from "../sequence-card";
 import { skipToken } from "@reduxjs/toolkit/query";
-import { Spinner } from "@radix-ui/themes";
 
 interface Props {
-  sequence: Sequence | null;
+  sequenceId: string | number | null;
   onClose: () => void;
 }
 
-export function ViewSequence({ sequence, onClose }: Props) {
+export function ViewSequence({ sequenceId, onClose }: Props) {
   const [activeFrame, setActiveFrame] = useState(0);
   const { data, isFetching, isError } = useGetSequenceByIdQuery(
-    sequence?.id ?? skipToken
+    sequenceId ?? skipToken
   );
 
   const guardedFrames = data?.frames ?? [];
@@ -28,7 +26,7 @@ export function ViewSequence({ sequence, onClose }: Props) {
     if (!open) onClose();
   };
 
-  if (!sequence) return null;
+  if (!sequenceId) return null;
 
   return (
     <Modal open onOpenChange={handleDialogChange}>
@@ -36,7 +34,7 @@ export function ViewSequence({ sequence, onClose }: Props) {
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-2 mb-4">
             <h2 className="text-xl font-semibold text-white">
-              {sequence.title}
+              {data?.title ?? ""}
             </h2>
           </div>
           <Modal.Close aria-label="Close" onClick={onClose}>

@@ -14,16 +14,15 @@ import { Callout, Text } from "@radix-ui/themes";
 import Link from "next/link";
 import { SessionLoader } from "@/components/ui/spinner";
 import { ViewSequence } from "@/components/ui/view-sequence";
-import { Sequence } from "./types";
-// import { useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 export default function Home() {
-  // const searchParams = useSearchParams();
+  const searchParams = useSearchParams();
   const { data: session, status } = useSession();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [showCreationSuccess, setShowCreationSuccess] = useState(false);
-  const currentDisplayedSequence = useRef<Sequence | null>(null);
+  const sequenceIdRef = useRef<string | number | null>(null);
   const userId = session?.user?.id;
   const {
     data: sequences,
@@ -34,7 +33,7 @@ export default function Home() {
   const [deleteSequence, { isLoading: isDeleting }] =
     useDeleteSequenceMutation();
   const isPending = isLoading || isFetching;
-  // const sequenceIdParam = searchParams?.get("sequence");
+  const sequenceIdParam = searchParams?.get("sequence");
 
   useEffect(() => {
     if (showCreationSuccess) {
@@ -50,10 +49,14 @@ export default function Home() {
     }
   };
 
-  // useEffect(() => {
-  //   if (sequenceIdParam) {
-  //   }
-  // }, [sequenceIdParam]);
+  useEffect(() => {
+    if (sequenceIdParam) {
+      sequenceIdRef.current = sequenceIdParam;
+      setIsViewDialogOpen(true);
+    }
+  }, [sequenceIdParam]);
+
+  // TODO Error handling
 
   if (status === "loading" || isPending) return <SessionLoader />;
 
@@ -95,7 +98,7 @@ export default function Home() {
                   sequence={sequence}
                   onClick={() => {
                     setIsViewDialogOpen(true);
-                    currentDisplayedSequence.current = sequence;
+                    sequenceIdRef.current = sequence.id;
                   }}
                   handleDelete={handleDelete}
                 />
@@ -117,7 +120,7 @@ export default function Home() {
       />
       {isViewDialogOpen && (
         <ViewSequence
-          sequence={currentDisplayedSequence.current}
+          sequenceId={sequenceIdRef.current}
           onClose={() => setIsViewDialogOpen(false)}
         />
       )}

@@ -1,6 +1,6 @@
 import { FC, useState, MouseEvent as ReactMouseEvent } from "react";
 import { Sequence } from "@/app/types";
-import { Clock3, Pencil, Share2, Trash2, User, X } from "lucide-react";
+import { Clock3, Pencil, Share2, Trash2, User } from "lucide-react";
 import { translate } from "@/lib/i18n";
 import { cn, timeAgo } from "@/lib/utils";
 import { IconButton, Text } from "@radix-ui/themes";
@@ -55,7 +55,7 @@ export const SequenceCard: FC<Props> = ({
 
   return (
     <>
-      <button
+      <div
         onClick={onClick}
         className="group flex cursor-pointer flex-col overflow-hidden rounded-xl border border-[#233348] bg-[#1a2533] transition-all duration-300 hover:border-[#136dec]/50 hover:shadow-xl hover:shadow-black/20"
       >
@@ -133,7 +133,7 @@ export const SequenceCard: FC<Props> = ({
             </div>
           </div>
         </div>
-      </button>
+      </div>
     </>
   );
 };

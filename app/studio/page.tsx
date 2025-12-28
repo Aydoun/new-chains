@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Text, TextField } from "@radix-ui/themes";
+import { Text, TextField } from "@radix-ui/themes";
 import {
   Filter,
   History,
@@ -9,11 +9,16 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useGetStudioSequencesQuery } from "../services/sequences";
+import {
+  useDeleteSequenceMutation,
+  useGetStudioSequencesQuery,
+} from "../services/sequences";
 import { SessionLoader } from "@/components/ui/spinner";
 import { timeAgo } from "@/lib/utils";
 import { SequenceCard } from "@/components/sequence-card";
 import { translate } from "@/lib/i18n";
+import { ViewSequence } from "@/components/ui/view-sequence";
+import { useRef, useState } from "react";
 
 type StatCard = {
   icon: LucideIcon;
@@ -33,19 +38,31 @@ const stats: StatCard[] = [
 
 export default function StudioPage() {
   const { data: session, status } = useSession();
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const currentSequenceId = useRef<number | string | null>(null);
   const {
     data: sequences,
     isLoading,
     isFetching,
     isError,
   } = useGetStudioSequencesQuery();
+  const [deleteSequence, { isLoading: isDeleting }] =
+    useDeleteSequenceMutation();
   const isBusy = status === "loading" || isLoading || isFetching;
+
+  const handleDelete = async (sequenceId: string | number) => {
+    try {
+      await deleteSequence(sequenceId).unwrap();
+    } catch (error) {
+      console.error("Unable to delete sequence right now.", error);
+    }
+  };
 
   if (isBusy) return <SessionLoader />;
 
   return (
     <div className="flex h-full min-h-[calc(100vh-4rem)] w-full overflow-hidden rounded-xl ">
-      <main className="flex w-full flex-col">
+      <div className="flex w-full flex-col">
         <div className="flex-1 overflow-y-auto">
           <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-8 px-4 py-6 sm:px-6 lg:px-10">
             <div className="flex flex-col gap-6">
@@ -64,12 +81,11 @@ export default function StudioPage() {
                 {/* <button className="flex h-10 items-center justify-center gap-2 rounded-lg border border-[#233348] bg-[#1a2533] px-4 text-sm font-bold text-white transition-colors hover:border-[#136dec]/50">
                   <SquarePlus />
                   <Text
-                    asChild
                     size="2"
                     weight="bold"
                     className="tracking-[0.015em]"
                   >
-                    <span>Create Sequence</span>
+                    Create Sequence
                   </Text>
                 </button> */}
               </div>
@@ -131,15 +147,24 @@ export default function StudioPage() {
                     key={sequence.id}
                     userId={session?.user?.id}
                     sequence={sequence}
-                    handleDelete={console.log}
-                    onClick={console.log}
+                    handleDelete={handleDelete}
+                    onClick={() => {
+                      currentSequenceId.current = sequence.id;
+                      setIsViewDialogOpen(true);
+                    }}
                   />
                 ))}
               </div>
             </div>
           </div>
         </div>
-      </main>
+      </div>
+      {isViewDialogOpen && (
+        <ViewSequence
+          sequenceId={currentSequenceId.current}
+          onClose={() => setIsViewDialogOpen(false)}
+        />
+      )}
     </div>
   );
 }

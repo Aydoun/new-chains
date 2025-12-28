@@ -17,7 +17,7 @@ interface Props {
   sequence: Sequence;
   userId: string | undefined;
   onClick: () => void;
-  handleDelete: (sequenceId: string | number) => void;
+  handleDelete?: (sequenceId: string | number) => void;
 }
 
 export const SequenceCard: FC<Props> = ({
@@ -32,7 +32,8 @@ export const SequenceCard: FC<Props> = ({
   const onDelete = async (event: ReactMouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     event.preventDefault();
-    handleDelete(sequence.id);
+
+    if (handleDelete) handleDelete(sequence.id);
   };
 
   const handleShareLink = async (event: ReactMouseEvent<HTMLButtonElement>) => {

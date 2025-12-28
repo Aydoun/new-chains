@@ -56,7 +56,9 @@ export function Carousel({
           className="flex items-center justify-center py-6"
           aria-live="polite"
         >
-          <FrameContainer>{frames[currentMaxIndex]}</FrameContainer>
+          <FrameContainer className="bg-background">
+            {frames[currentMaxIndex]}
+          </FrameContainer>
         </div>
       </div>
       <div className="flex items-center justify-between gap-2">

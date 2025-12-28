@@ -3,10 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { skipToken } from "@reduxjs/toolkit/query";
-import {
-  useDeleteSequenceMutation,
-  useGetSequencesByUserQuery,
-} from "./services/sequences";
+import { useGetSequencesByUserQuery } from "./services/sequences";
 import { SequenceCard } from "@/components/sequence-card";
 import { CreateSequenceForm } from "@/components/ui/create-sequence";
 import { translate } from "@/lib/i18n";
@@ -30,8 +27,6 @@ export default function Home() {
     isFetching,
     isError,
   } = useGetSequencesByUserQuery(userId ?? skipToken);
-  const [deleteSequence, { isLoading: isDeleting }] =
-    useDeleteSequenceMutation();
   const isPending = isLoading || isFetching;
   const sequenceIdParam = searchParams?.get("sequence");
 
@@ -40,14 +35,6 @@ export default function Home() {
       setTimeout(() => setShowCreationSuccess(false), 3000);
     }
   }, [showCreationSuccess]);
-
-  const handleDelete = async (sequenceId: string | number) => {
-    try {
-      await deleteSequence(sequenceId).unwrap();
-    } catch (error) {
-      console.error("Unable to delete sequence right now.", error);
-    }
-  };
 
   useEffect(() => {
     if (sequenceIdParam) {
@@ -100,7 +87,6 @@ export default function Home() {
                     setIsViewDialogOpen(true);
                     sequenceIdRef.current = sequence.id;
                   }}
-                  handleDelete={handleDelete}
                 />
               ))}
             </div>

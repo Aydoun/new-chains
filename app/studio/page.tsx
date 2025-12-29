@@ -144,32 +144,34 @@ export default function StudioPage() {
                   </button>
                 </div>
               </div>
-              {!isError ? (
-                <>
-                  {Array.isArray(sequences?.items) &&
-                  sequences?.items.length > 0 ? (
-                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                      {sequences?.items.map((sequence) => (
-                        <SequenceCard
-                          key={sequence.id}
-                          userId={session?.user?.id}
-                          sequence={sequence}
-                          handleDelete={handleDelete}
-                          omitAuthor
-                          onClick={() => {
-                            currentSequenceId.current = sequence.id;
-                            setIsViewDialogOpen(true);
-                          }}
-                        />
-                      ))}
-                    </div>
-                  ) : (
-                    <SequenceEmptyState />
-                  )}
-                </>
-              ) : (
-                <SequenceErrorState />
-              )}
+              <section className="mt-4 pb-24">
+                {!isError ? (
+                  <>
+                    {Array.isArray(sequences?.items) &&
+                    sequences?.items.length > 0 ? (
+                      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        {sequences?.items.map((sequence) => (
+                          <SequenceCard
+                            key={sequence.id}
+                            userId={session?.user?.id}
+                            sequence={sequence}
+                            handleDelete={handleDelete}
+                            omitAuthor
+                            onClick={() => {
+                              currentSequenceId.current = sequence.id;
+                              setIsViewDialogOpen(true);
+                            }}
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <SequenceEmptyState />
+                    )}
+                  </>
+                ) : (
+                  <SequenceErrorState />
+                )}
+              </section>
             </div>
           </div>
         </div>

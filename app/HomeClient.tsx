@@ -105,7 +105,7 @@ export default function Home({
           </TextField.Slot>
         </TextField.Root>
       </div>
-      <section className="flex flex-col gap-4 pb-24">
+      <section className="mt-4 pb-24">
         {!isError ? (
           <>
             {Array.isArray(sequences?.items) && sequences.items.length > 0 ? (

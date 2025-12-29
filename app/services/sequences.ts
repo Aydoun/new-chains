@@ -22,14 +22,22 @@ export type SequenceUpdateInput = {
   visibility?: Sequence["visibility"];
 };
 
+export type SequenceResponse = {
+  items: Sequence[];
+  page: number;
+  pageSize: number;
+  hasMore: boolean;
+  nextPage: number | null;
+};
+
 export const sequenceApi = createApi({
   reducerPath: "sequenceApi",
   baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL, credentials: "include" }),
   endpoints: (builder) => ({
-    getSequencesByUser: builder.query<Sequence[], string>({
+    getSequencesByUser: builder.query<SequenceResponse, string>({
       query: (userId) => `sequence/fetch?id=${userId}`,
     }),
-    getStudioSequences: builder.query<Sequence[], void>({
+    getStudioSequences: builder.query<SequenceResponse, void>({
       query: () => `sequence/studio`,
     }),
     getSequenceById: builder.query<SingleSequence, number | string>({

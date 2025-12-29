@@ -2,6 +2,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
 import { requireApiSession } from "@/lib/api/auth";
 
+const DEFAULT_PAGE_SIZE = 20;
+const MAX_PAGE_SIZE = 50;
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -13,6 +16,18 @@ export default async function handler(
   if (!sessionResult) return;
 
   const { userId: clientId } = sessionResult;
+  const pageQuery = req.query.page;
+  const limitQuery = req.query.limit;
+
+  const page =
+    typeof pageQuery === "string" && !Number.isNaN(Number.parseInt(pageQuery))
+      ? Math.max(1, Number.parseInt(pageQuery, 10))
+      : 1;
+  const requestedLimit =
+    typeof limitQuery === "string" && !Number.isNaN(Number.parseInt(limitQuery))
+      ? Number.parseInt(limitQuery, 10)
+      : DEFAULT_PAGE_SIZE;
+  const limit = Math.min(Math.max(requestedLimit, 1), MAX_PAGE_SIZE);
 
   try {
     const sequences = await prisma.sequence.findMany({
@@ -21,45 +36,44 @@ export default async function handler(
         isDeleted: false,
         visibility: "PUBLIC",
       },
-      orderBy: {
-        createdAt: "desc",
-      },
-      include: {
-        user: {
-          select: {
-            id: true,
-            username: true,
-            avatarUrl: true,
-          },
-        },
-      },
+      skip: (page - 1) * limit,
+      take: limit + 1,
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
     });
-    if (!Array.isArray(sequences))
-      return res.status(404).json({ message: "Sequences not found" });
+
+    const hasMore = sequences.length > limit;
+    const pageSequences = hasMore ? sequences.slice(0, limit) : sequences;
 
     const firstFrameIds = sequences
       .map((sequence) => sequence.FrameOrder?.[0])
       .filter(Boolean);
 
-    const frames = firstFrameIds.length
-      ? await prisma.frame.findMany({ where: { id: { in: firstFrameIds } } })
-      : [];
+    const frames =
+      firstFrameIds.length > 0
+        ? await prisma.frame.findMany({ where: { id: { in: firstFrameIds } } })
+        : [];
 
-    const framesById = new Map(frames.map((frame) => [frame.id, frame]));
+    const framesById = new Map(frames.map((f) => [f.id, f]));
 
-    const sequencesWithFirstFrame = sequences.map((sequence) => ({
+    const items = pageSequences.map((sequence) => ({
       ...sequence,
-      firstFrame:
-        typeof sequence.FrameOrder?.[0] === "number"
-          ? framesById.get(sequence.FrameOrder[0]) ?? null
-          : null,
+      firstFrame: !!sequence.FrameOrder?.[0]
+        ? framesById.get(sequence.FrameOrder[0]) ?? null
+        : null,
     }));
 
-    res.status(200).json(sequencesWithFirstFrame);
+    return res.status(200).json({
+      items,
+      page,
+      pageSize: limit,
+      hasMore,
+      nextPage: hasMore ? page + 1 : null,
+    });
   } catch (error) {
-    if (error instanceof Error)
-      res
+    if (error instanceof Error) {
+      return res
         .status(500)
         .json({ error: "Error fetching sequence", details: error.message });
+    }
   }
 }

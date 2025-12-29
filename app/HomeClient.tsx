@@ -42,6 +42,8 @@ export default function Home({
     }
   }, [showCreationSuccess]);
 
+  // console.log({ se: sequences?.items });
+
   useEffect(() => {
     if (sequenceId) {
       sequenceIdRef.current = sequenceId;
@@ -106,9 +108,9 @@ export default function Home({
       <section className="flex flex-col gap-4 pb-24">
         {!isError ? (
           <>
-            {Array.isArray(sequences) && sequences.length > 0 ? (
+            {Array.isArray(sequences?.items) && sequences.items.length > 0 ? (
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {sequences?.map((sequence) => (
+                {sequences.items.map((sequence) => (
                   <SequenceCard
                     key={sequence.id}
                     userId={userId}

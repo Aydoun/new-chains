@@ -41,7 +41,7 @@ export default async function handler(
       take: limit + 1,
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       include: {
-        user: { select: { id: true, username: true, avatarUrl: true } },
+        user: { select: { id: true, username: true } },
       },
     });
 

@@ -1,9 +1,8 @@
-"use client";
-
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { Sequence, SingleSequence } from "../types";
 
 const API_BASE_URL = `/api/`;
+const DEFAULT_PAGE_SIZE = 20;
 
 export type BulkCreateFramesResponse = {
   ids: number[];
@@ -22,7 +21,7 @@ export type SequenceUpdateInput = {
   visibility?: Sequence["visibility"];
 };
 
-export type SequenceResponse = {
+export type PaginatedSequencesResponse = {
   items: Sequence[];
   page: number;
   pageSize: number;
@@ -30,15 +29,38 @@ export type SequenceResponse = {
   nextPage: number | null;
 };
 
+export type PaginationParams = {
+  page?: number;
+  limit?: number;
+};
+
 export const sequenceApi = createApi({
   reducerPath: "sequenceApi",
   baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL, credentials: "include" }),
   endpoints: (builder) => ({
-    getSequencesByUser: builder.query<SequenceResponse, string>({
-      query: (userId) => `sequence/fetch?id=${userId}`,
+    getSequencesByUser: builder.query<
+      PaginatedSequencesResponse,
+      (PaginationParams & { userId?: string }) | void
+    >({
+      query: ({ userId, page = 1, limit = DEFAULT_PAGE_SIZE } = {}) => {
+        const params = new URLSearchParams({
+          page: String(page),
+          limit: String(limit),
+        });
+
+        if (userId) {
+          params.set("id", userId);
+        }
+
+        return `sequence/fetch?${params.toString()}`;
+      },
     }),
-    getStudioSequences: builder.query<SequenceResponse, void>({
-      query: () => `sequence/studio`,
+    getStudioSequences: builder.query<
+      PaginatedSequencesResponse,
+      PaginationParams
+    >({
+      query: ({ page = 1, limit = DEFAULT_PAGE_SIZE } = {}) =>
+        `sequence/studio?page=${page}&limit=${limit}`,
     }),
     getSequenceById: builder.query<SingleSequence, number | string>({
       query: (sequenceId) => `sequence/read?id=${sequenceId}`,
@@ -76,4 +98,5 @@ export const {
   useGetSequenceByIdQuery,
   useDeleteSequenceMutation,
   useGetStudioSequencesQuery,
+  useLazyGetSequencesByUserQuery,
 } = sequenceApi;

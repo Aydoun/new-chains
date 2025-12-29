@@ -45,21 +45,14 @@ export default function StudioPage() {
   const { data: session, status } = useSession();
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const currentSequenceId = useRef<number | string | null>(null);
-  // const {
-  //   data: sequences,
-  //   isLoading,
-  //   isFetching,
-  //   isError,
-  // } = useGetStudioSequencesQuery();
   const [fetchStudioSequences] = useLazyGetStudioSequencesQuery();
-  const studioQueryParams = { limit: 6 };
+  const studioQueryParams = { limit: 20 };
   const {
     items: sequences,
     hasMore,
     isLoading,
     error,
     loadMore,
-    setItems,
   } = useInfinitePagination<Sequence, { page?: number; limit?: number }>({
     fetchPage: (params) => fetchStudioSequences(params).unwrap(),
     initialParams: studioQueryParams,

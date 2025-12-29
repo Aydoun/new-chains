@@ -11,9 +11,10 @@ import {
 import { useSession } from "next-auth/react";
 import {
   useDeleteSequenceMutation,
-  useGetStudioSequencesQuery,
+  useLazyGetStudioSequencesQuery,
 } from "../services/sequences";
 import { SessionLoader } from "@/components/ui/spinner";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { timeAgo } from "@/lib/utils";
 import { SequenceCard } from "@/components/sequence-card";
 import { translate } from "@/lib/i18n";
@@ -21,6 +22,8 @@ import { ViewSequence } from "@/components/ui/view-sequence";
 import { useRef, useState } from "react";
 import { SequenceErrorState } from "@/components/sequence-error-state";
 import { SequenceEmptyState } from "@/components/sequence-empty-state";
+import { useInfinitePagination } from "@/hooks/useInfinitePagination";
+import { Sequence } from "../types";
 
 type StatCard = {
   icon: LucideIcon;
@@ -42,15 +45,32 @@ export default function StudioPage() {
   const { data: session, status } = useSession();
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const currentSequenceId = useRef<number | string | null>(null);
+  // const {
+  //   data: sequences,
+  //   isLoading,
+  //   isFetching,
+  //   isError,
+  // } = useGetStudioSequencesQuery();
+  const [fetchStudioSequences] = useLazyGetStudioSequencesQuery();
+  const studioQueryParams = { limit: 6 };
   const {
-    data: sequences,
+    items: sequences,
+    hasMore,
     isLoading,
-    isFetching,
-    isError,
-  } = useGetStudioSequencesQuery();
+    error,
+    loadMore,
+    setItems,
+  } = useInfinitePagination<Sequence, { page?: number; limit?: number }>({
+    fetchPage: (params) => fetchStudioSequences(params).unwrap(),
+    initialParams: studioQueryParams,
+    enabled: status === "authenticated",
+  });
   const [deleteSequence, { isLoading: isDeleting }] =
     useDeleteSequenceMutation();
-  const isBusy = status === "loading" || isLoading || isFetching;
+  const isBusy =
+    status === "loading" ||
+    (isLoading && Array.isArray(sequences) && sequences.length === 0);
+  const isError = Boolean(error);
 
   const handleDelete = async (sequenceId: string | number) => {
     try {
@@ -113,8 +133,8 @@ export default function StudioPage() {
                         className="leading-tight text-white"
                       >
                         {index === 0
-                          ? sequences?.items?.length ?? 0
-                          : timeAgo(sequences?.items?.[0]?.updatedAt)}
+                          ? sequences.length ?? 0
+                          : timeAgo(sequences[0]?.updatedAt)}
                       </Text>
                     </div>
                   </div>
@@ -147,23 +167,42 @@ export default function StudioPage() {
               <section className="mt-4 pb-24">
                 {!isError ? (
                   <>
-                    {Array.isArray(sequences?.items) &&
-                    sequences?.items.length > 0 ? (
-                      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                        {sequences?.items.map((sequence) => (
-                          <SequenceCard
-                            key={sequence.id}
-                            userId={session?.user?.id}
-                            sequence={sequence}
-                            handleDelete={handleDelete}
-                            omitAuthor
-                            onClick={() => {
-                              currentSequenceId.current = sequence.id;
-                              setIsViewDialogOpen(true);
-                            }}
-                          />
-                        ))}
-                      </div>
+                    {Array.isArray(sequences) && sequences.length > 0 ? (
+                      <InfiniteScroll
+                        dataLength={sequences.length}
+                        next={loadMore}
+                        hasMore={hasMore}
+                        loader={
+                          <div className="flex justify-center py-4">
+                            <Text>{translate("common.loading")}</Text>
+                          </div>
+                        }
+                        endMessage={
+                          <Text
+                            as="p"
+                            size="2"
+                            className="py-4 text-center text-[#92a9c9]"
+                          >
+                            {translate("common.endOfFeed")}
+                          </Text>
+                        }
+                      >
+                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                          {sequences?.map((sequence) => (
+                            <SequenceCard
+                              key={sequence.id}
+                              userId={session?.user?.id}
+                              sequence={sequence}
+                              handleDelete={handleDelete}
+                              omitAuthor
+                              onClick={() => {
+                                currentSequenceId.current = sequence.id;
+                                setIsViewDialogOpen(true);
+                              }}
+                            />
+                          ))}
+                        </div>
+                      </InfiniteScroll>
                     ) : (
                       <SequenceEmptyState />
                     )}

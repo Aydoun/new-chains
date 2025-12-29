@@ -99,4 +99,5 @@ export const {
   useDeleteSequenceMutation,
   useGetStudioSequencesQuery,
   useLazyGetSequencesByUserQuery,
+  useLazyGetStudioSequencesQuery,
 } = sequenceApi;

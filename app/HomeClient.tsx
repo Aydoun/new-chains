@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
-import { skipToken } from "@reduxjs/toolkit/query";
-import { useGetSequencesByUserQuery } from "./services/sequences";
+import {
+  useLazyGetSequencesByUserQuery,
+} from "./services/sequences";
 import { SequenceCard } from "@/components/sequence-card";
 import { CreateSequenceForm } from "@/components/ui/create-sequence";
 import { translate } from "@/lib/i18n";
@@ -15,6 +16,9 @@ import { Filter, Search } from "lucide-react";
 import { SequenceEmptyState } from "@/components/sequence-empty-state";
 import { SequenceErrorState } from "@/components/sequence-error-state";
 import { CreateSequenceCta } from "@/components/create-sequence-cta";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { useInfinitePagination } from "@/hooks/useInfinitePagination";
+import type { Sequence } from "./types";
 
 export default function Home({
   sequenceId,
@@ -28,13 +32,24 @@ export default function Home({
   const sequenceIdRef = useRef<string | number | null>(null);
   const sequenceTitleRef = useRef<string>("");
   const userId = session?.user?.id;
+  const [fetchSequences] = useLazyGetSequencesByUserQuery();
+  const queryParams = useMemo(() => ({ limit: 12 }), []);
+  const canFetch = status === "authenticated";
   const {
-    data: sequences,
+    items: sequences,
+    hasMore,
     isLoading,
-    isFetching,
-    isError,
-  } = useGetSequencesByUserQuery(userId ?? skipToken);
-  const isPending = isLoading || isFetching;
+    error,
+    loadMore,
+  } = useInfinitePagination<Sequence, { userId?: string; limit?: number }>({
+    fetchPage: (params) => fetchSequences(params).unwrap(),
+    initialParams: queryParams,
+    enabled: canFetch,
+  });
+  const isError = Boolean(error);
+  const isBusy =
+    status === "loading" ||
+    (canFetch && isLoading && Array.isArray(sequences) && sequences.length === 0);
 
   useEffect(() => {
     if (showCreationSuccess) {
@@ -49,7 +64,7 @@ export default function Home({
     }
   }, [sequenceId]);
 
-  if (status === "loading" || isPending) return <SessionLoader />;
+  if (isBusy) return <SessionLoader />;
 
   return (
     <div className="flex flex-col gap-4 px-6 py-0 sm:px-6">
@@ -102,19 +117,39 @@ export default function Home({
         {!isError ? (
           <>
             {Array.isArray(sequences) && sequences.length > 0 ? (
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {sequences?.map((sequence) => (
-                  <SequenceCard
-                    key={sequence.id}
-                    userId={userId}
-                    sequence={sequence}
-                    onClick={() => {
-                      setIsViewDialogOpen(true);
-                      sequenceIdRef.current = sequence.id;
-                    }}
-                  />
-                ))}
-              </div>
+              <InfiniteScroll
+                dataLength={sequences.length}
+                next={loadMore}
+                hasMore={hasMore}
+                loader={
+                  <div className="flex justify-center py-4">
+                    <SessionLoader />
+                  </div>
+                }
+                endMessage={
+                  <Text
+                    as="p"
+                    size="2"
+                    className="py-4 text-center text-[#92a9c9]"
+                  >
+                    {translate("common.endOfFeed")}
+                  </Text>
+                }
+              >
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {sequences?.map((sequence) => (
+                    <SequenceCard
+                      key={sequence.id}
+                      userId={userId}
+                      sequence={sequence}
+                      onClick={() => {
+                        setIsViewDialogOpen(true);
+                        sequenceIdRef.current = sequence.id;
+                      }}
+                    />
+                  ))}
+                </div>
+              </InfiniteScroll>
             ) : (
               <SequenceEmptyState />
             )}

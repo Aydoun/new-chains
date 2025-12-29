@@ -3,10 +3,11 @@
     "close": "Close",
     "continue": "Continue",
     "errors": {
-      "home": "Unable to load sequences at this time"
-    },
-    "filter": "Filter",
-    "items": "items",
+    "home": "Unable to load sequences at this time"
+  },
+  "endOfFeed": "You have reached the end of the feed.",
+  "filter": "Filter",
+  "items": "items",
     "loading": "Loading",
     "next": "Next",
     "previous": "Previous",

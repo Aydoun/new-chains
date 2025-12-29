@@ -5,6 +5,18 @@ import type { Sequence, SingleSequence } from "../types";
 
 const API_BASE_URL = `/api/`;
 
+export type PaginationParams = {
+  page?: number;
+  limit?: number;
+};
+
+export type PaginatedSequencesResponse = {
+  items: Sequence[];
+  page: number;
+  totalPages: number;
+  hasMore: boolean;
+};
+
 export type BulkCreateFramesResponse = {
   ids: number[];
 };
@@ -26,11 +38,29 @@ export const sequenceApi = createApi({
   reducerPath: "sequenceApi",
   baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL, credentials: "include" }),
   endpoints: (builder) => ({
-    getSequencesByUser: builder.query<Sequence[], string>({
-      query: (userId) => `sequence/fetch?id=${userId}`,
+    getSequencesByUser: builder.query<
+      PaginatedSequencesResponse,
+      (PaginationParams & { userId?: string }) | void
+    >({
+      query: ({ userId, page = 1, limit = 12 } = {}) => {
+        const params = new URLSearchParams({
+          page: String(page),
+          limit: String(limit),
+        });
+
+        if (userId) {
+          params.set("id", userId);
+        }
+
+        return `sequence/fetch?${params.toString()}`;
+      },
     }),
-    getStudioSequences: builder.query<Sequence[], void>({
-      query: () => `sequence/studio`,
+    getStudioSequences: builder.query<
+      PaginatedSequencesResponse,
+      PaginationParams
+    >({
+      query: ({ page = 1, limit = 12 } = {}) =>
+        `sequence/studio?page=${page}&limit=${limit}`,
     }),
     getSequenceById: builder.query<SingleSequence, number | string>({
       query: (sequenceId) => `sequence/read?id=${sequenceId}`,
@@ -68,4 +98,6 @@ export const {
   useGetSequenceByIdQuery,
   useDeleteSequenceMutation,
   useGetStudioSequencesQuery,
+  useLazyGetSequencesByUserQuery,
+  useLazyGetStudioSequencesQuery,
 } = sequenceApi;

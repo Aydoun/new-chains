@@ -58,6 +58,7 @@ const mocks = vi.hoisted(() => {
       },
     ];
   });
+  const countMock = vi.fn(async () => 1);
   const findFirstMock = vi.fn(async ({ where }: { where?: { id: number } }) =>
     where?.id
       ? { id: where.id, FrameOrder: [4, 5], title: "Single", userId: 1 }
@@ -68,7 +69,13 @@ const mocks = vi.hoisted(() => {
     { id: 5, content: "Frame 5" },
   ]);
 
-  return { createMock, findManyMock, findFirstMock, findManyFramesMock };
+  return {
+    createMock,
+    findManyMock,
+    countMock,
+    findFirstMock,
+    findManyFramesMock,
+  };
 });
 
 vi.mock("@/lib/prisma", () => ({
@@ -76,6 +83,7 @@ vi.mock("@/lib/prisma", () => ({
     sequence: {
       create: mocks.createMock,
       findMany: mocks.findManyMock,
+      count: mocks.countMock,
       findFirst: mocks.findFirstMock,
     },
     frame: {
@@ -156,18 +164,23 @@ describe("api/sequence endpoints", () => {
 
     await fetchHandler(req, res);
     expect(store.status).toBe(200);
-    const json = store.body as Array<{
-      userId: number;
-      user: { id: number; username: string };
-    }>;
-    expect(json[0].user).toMatchObject({
+    const json = store.body as {
+      items: Array<{
+        userId: number;
+        user: { id: number; username: string };
+      }>;
+      page: number;
+      hasMore: boolean;
+    };
+    expect(json.items[0].user).toMatchObject({
       id: expect.any(Number),
       username: expect.any(String),
     });
+    expect(json).toMatchObject({ page: 1, hasMore: false });
     expect(mocks.findManyMock).toHaveBeenCalledWith(
       expect.objectContaining({
         where: {
-          userId: { not: 10 },
+          userId: 99,
           isDeleted: false,
           visibility: "PUBLIC",
         },

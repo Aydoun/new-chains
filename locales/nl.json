@@ -1,5 +1,6 @@
 {
     "common": {
-        "close": "Fermer"
+        "close": "Fermer",
+        "endOfFeed": "Je bent aan het einde van de feed gekomen."
     }
 }

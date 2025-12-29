@@ -1,10 +1,15 @@
-import { FC, useState, MouseEvent as ReactMouseEvent } from "react";
+import { FC, useMemo, useState, MouseEvent as ReactMouseEvent } from "react";
 import { Sequence } from "@/app/types";
 import { Clock3, Pencil, Share2, Trash2, User } from "lucide-react";
 import { translate } from "@/lib/i18n";
 import { cn, timeAgo } from "@/lib/utils";
 import { IconButton, Text } from "@radix-ui/themes";
 import Link from "next/link";
+import {
+  useDeleteSequenceMutation,
+  useLazyGetSequenceByIdQuery,
+} from "@/app/services/sequences";
+import { Modal } from "./ui/modal";
 
 export interface SequenceCardProps {
   title: string;
@@ -16,7 +21,7 @@ export interface SequenceCardProps {
 interface Props {
   sequence: Sequence;
   userId: string | undefined;
-  onClick: () => void;
+  onClick?: () => void;
   handleDelete?: (sequenceId: string | number) => void;
   omitAuthor?: boolean;
 }
@@ -29,13 +34,37 @@ export const SequenceCard: FC<Props> = ({
   omitAuthor = false,
 }) => {
   const [isLinkCopied, setIsLinkCopied] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [fetchSequence, { data, isFetching, isError }] =
+    useLazyGetSequenceByIdQuery();
+  const [deleteSequence] = useDeleteSequenceMutation();
   const isOwner = userId === `${sequence.userId}`;
+  const frames = data?.frames ?? [];
+
+  const formattedVisibility = useMemo(() => {
+    if (!sequence.visibility) return "";
+
+    return sequence.visibility
+      .toLowerCase()
+      .split("_")
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" ");
+  }, [sequence.visibility]);
 
   const onDelete = async (event: ReactMouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     event.preventDefault();
 
-    if (handleDelete) handleDelete(sequence.id);
+    if (handleDelete) {
+      handleDelete(sequence.id);
+      return;
+    }
+
+    try {
+      await deleteSequence(sequence.id).unwrap();
+    } catch (error) {
+      console.error("Unable to delete sequence right now.", error);
+    }
   };
 
   const handleShareLink = async (event: ReactMouseEvent<HTMLButtonElement>) => {
@@ -56,17 +85,31 @@ export const SequenceCard: FC<Props> = ({
     }
   };
 
+  const handleCardClick = () => {
+    if (onClick) {
+      onClick();
+      return;
+    }
+
+    setIsDialogOpen(true);
+    fetchSequence(sequence.id);
+  };
+
+  const handleDialogChange = (open: boolean) => {
+    if (!open) setIsDialogOpen(false);
+  };
+
   return (
     <>
       <div className="group flex cursor-pointer flex-col overflow-hidden rounded-xl border border-[#233348] bg-[#1a2533] transition-all duration-300 hover:border-[#136dec]/50 hover:shadow-xl hover:shadow-black/20">
-        <div onClick={onClick} className="h-44 w-full overflow-hidden">
+        <div onClick={handleCardClick} className="h-44 w-full overflow-hidden">
           <SequenceFrame
             text={sequence.firstFrame?.content}
             count={sequence.FrameOrder.length}
           />
         </div>
         <div className="flex flex-col gap-3 p-5">
-          <div onClick={onClick} className="space-y-1">
+          <div onClick={handleCardClick} className="space-y-1">
             <Text
               size="4"
               weight="bold"
@@ -77,6 +120,14 @@ export const SequenceCard: FC<Props> = ({
             </Text>
             <Text size="2" className="text-[#92a9c9]">
               {sequence.description}
+            </Text>
+          </div>
+          <div className="flex items-center justify-between text-[#92a9c9]">
+            <span className="rounded-full bg-[#233348] px-2 py-1 text-xs font-semibold">
+              {formattedVisibility}
+            </span>
+            <Text size="1" weight="bold" className="font-mono">
+              #{sequence.id}
             </Text>
           </div>
           {!omitAuthor && (
@@ -139,6 +190,50 @@ export const SequenceCard: FC<Props> = ({
           </div>
         </div>
       </div>
+      {isDialogOpen && !onClick && (
+        <Modal open onOpenChange={handleDialogChange}>
+          <Modal.Content className="border rounded-2xl bg-gray-900 p-6 shadow-2xl">
+            <div className="flex items-start justify-between gap-4">
+              <div className="space-y-2 mb-4">
+                <Text as="p" size="4" weight="bold" className="text-white">
+                  {data?.title ?? sequence.title}
+                </Text>
+              </div>
+              <Modal.Close
+                aria-label="Close"
+                onClick={() => setIsDialogOpen(false)}
+              >
+                ×
+              </Modal.Close>
+            </div>
+            {isFetching && (
+              <Text size="2" className="text-[#92a9c9]">
+                {translate("common.loading")}
+              </Text>
+            )}
+            {!isFetching && isError && (
+              <Text size="2" className="text-red-400">
+                {translate("common.errors.home")}
+              </Text>
+            )}
+            {!isFetching && !isError && (
+              <div className="flex flex-col gap-3">
+                {frames.length > 0 ? (
+                  frames.map((frame, index) => (
+                    <SequenceFrame
+                      key={frame?.id ?? index}
+                      text={frame?.content}
+                      description={frame?.description}
+                    />
+                  ))
+                ) : (
+                  <SequenceFrame text={translate("frame.empty")} />
+                )}
+              </div>
+            )}
+          </Modal.Content>
+        </Modal>
+      )}
     </>
   );
 };

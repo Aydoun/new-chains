@@ -1,6 +1,7 @@
 {
     "common": {
         "close": "Fermer",
-        "required": ""
+        "required": "",
+        "endOfFeed": "Vous avez atteint la fin du fil."
     }
 }

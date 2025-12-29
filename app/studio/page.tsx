@@ -11,9 +11,10 @@ import {
 import { useSession } from "next-auth/react";
 import {
   useDeleteSequenceMutation,
-  useGetStudioSequencesQuery,
+  useLazyGetStudioSequencesQuery,
 } from "../services/sequences";
 import { SessionLoader } from "@/components/ui/spinner";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { timeAgo } from "@/lib/utils";
 import { SequenceCard } from "@/components/sequence-card";
 import { translate } from "@/lib/i18n";
@@ -21,6 +22,8 @@ import { ViewSequence } from "@/components/ui/view-sequence";
 import { useRef, useState } from "react";
 import { SequenceErrorState } from "@/components/sequence-error-state";
 import { SequenceEmptyState } from "@/components/sequence-empty-state";
+import { useInfinitePagination } from "@/hooks/useInfinitePagination";
+import { Sequence } from "../types";
 
 type StatCard = {
   icon: LucideIcon;
@@ -42,15 +45,25 @@ export default function StudioPage() {
   const { data: session, status } = useSession();
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const currentSequenceId = useRef<number | string | null>(null);
+  const [fetchStudioSequences] = useLazyGetStudioSequencesQuery();
+  const studioQueryParams = { limit: 20 };
   const {
-    data: sequences,
+    items: sequences,
+    hasMore,
     isLoading,
-    isFetching,
-    isError,
-  } = useGetStudioSequencesQuery();
+    error,
+    loadMore,
+  } = useInfinitePagination<Sequence, { page?: number; limit?: number }>({
+    fetchPage: (params) => fetchStudioSequences(params).unwrap(),
+    initialParams: studioQueryParams,
+    enabled: status === "authenticated",
+  });
   const [deleteSequence, { isLoading: isDeleting }] =
     useDeleteSequenceMutation();
-  const isBusy = status === "loading" || isLoading || isFetching;
+  const isBusy =
+    status === "loading" ||
+    (isLoading && Array.isArray(sequences) && sequences.length === 0);
+  const isError = Boolean(error);
 
   const handleDelete = async (sequenceId: string | number) => {
     try {
@@ -113,8 +126,8 @@ export default function StudioPage() {
                         className="leading-tight text-white"
                       >
                         {index === 0
-                          ? sequences?.length ?? 0
-                          : timeAgo(sequences?.[0]?.updatedAt)}
+                          ? sequences.length ?? 0
+                          : timeAgo(sequences[0]?.updatedAt)}
                       </Text>
                     </div>
                   </div>
@@ -124,14 +137,15 @@ export default function StudioPage() {
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-4 py-2 md:flex-row md:items-center md:justify-between">
                 <div className="relative flex-1 md:max-w-md">
-                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#92a9c9]">
-                    <Search className="h-5 w-5" aria-hidden="true" />
-                  </span>
                   <TextField.Root
                     type="text"
                     placeholder={translate("common.search")}
-                    className="w-full rounded-lg border border-[#233348] bg-[#1a2533] pl-11 text-sm text-white placeholder:text-[#92a9c9] outline-none transition focus:border-[#136dec] focus:ring-1 focus:ring-[#136dec]"
-                  />
+                    className="w-full rounded-lg border border-[#233348] text-sm text-white placeholder:text-[#92a9c9] outline-none transition"
+                  >
+                    <TextField.Slot>
+                      <Search className="h-5 w-5" aria-hidden="true" />
+                    </TextField.Slot>
+                  </TextField.Root>
                 </div>
                 <div className="flex items-center gap-2 self-end md:self-auto">
                   <div className="mx-1 hidden h-8 w-px bg-[#233348] md:block" />
@@ -143,31 +157,53 @@ export default function StudioPage() {
                   </button>
                 </div>
               </div>
-              {!isError ? (
-                <>
-                  {Array.isArray(sequences) && sequences.length > 0 ? (
-                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                      {sequences?.map((sequence) => (
-                        <SequenceCard
-                          key={sequence.id}
-                          userId={session?.user?.id}
-                          sequence={sequence}
-                          handleDelete={handleDelete}
-                          omitAuthor
-                          onClick={() => {
-                            currentSequenceId.current = sequence.id;
-                            setIsViewDialogOpen(true);
-                          }}
-                        />
-                      ))}
-                    </div>
-                  ) : (
-                    <SequenceEmptyState />
-                  )}
-                </>
-              ) : (
-                <SequenceErrorState />
-              )}
+              <section className="mt-4 pb-24">
+                {!isError ? (
+                  <>
+                    {Array.isArray(sequences) && sequences.length > 0 ? (
+                      <InfiniteScroll
+                        dataLength={sequences.length}
+                        next={loadMore}
+                        hasMore={hasMore}
+                        loader={
+                          <div className="flex justify-center py-4">
+                            <Text>{translate("common.loading")}</Text>
+                          </div>
+                        }
+                        endMessage={
+                          <Text
+                            as="p"
+                            size="2"
+                            className="py-4 text-center text-[#92a9c9]"
+                          >
+                            {translate("common.endOfFeed")}
+                          </Text>
+                        }
+                      >
+                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                          {sequences?.map((sequence) => (
+                            <SequenceCard
+                              key={sequence.id}
+                              userId={session?.user?.id}
+                              sequence={sequence}
+                              handleDelete={handleDelete}
+                              omitAuthor
+                              onClick={() => {
+                                currentSequenceId.current = sequence.id;
+                                setIsViewDialogOpen(true);
+                              }}
+                            />
+                          ))}
+                        </div>
+                      </InfiniteScroll>
+                    ) : (
+                      <SequenceEmptyState />
+                    )}
+                  </>
+                ) : (
+                  <SequenceErrorState />
+                )}
+              </section>
             </div>
           </div>
         </div>

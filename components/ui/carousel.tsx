@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { CircleArrowRight, CircleArrowLeft } from "lucide-react";
 import { translate } from "@/lib/i18n";
-import { Button, Text } from "@radix-ui/themes";
+import { IconButton, Text } from "@radix-ui/themes";
 import { FrameContainer } from "../sequence-card";
 
 export interface CarouselControlsRenderProps {
@@ -88,30 +88,32 @@ export function Carousel({
         })
       ) : (
         <div className="flex items-center justify-between gap-2">
-          <Button
+          <IconButton
             disabled={currentMaxIndex === 0}
-            type="button"
-            onClick={onPrevious}
-            className="cursor-pointer"
-            aria-label="Previous"
             variant="soft"
+            type="button"
+            size="3"
+            className="cursor-pointer"
             radius="full"
+            onClick={onPrevious}
+            aria-label="carousel-previous"
           >
             <CircleArrowLeft />
-          </Button>
+          </IconButton>
           <Text className="text-sm text-muted-foreground">
             {getProgressLabel(currentMaxIndex + 1, frameCount)}
           </Text>
-          <Button
-            className="cursor-pointer"
-            type="button"
-            onClick={onNext}
-            aria-label="Next"
+          <IconButton
             variant="soft"
+            type="button"
+            size="3"
+            className="cursor-pointer"
             radius="full"
+            onClick={onNext}
+            aria-label="carousel-next"
           >
             <CircleArrowRight />
-          </Button>
+          </IconButton>
         </div>
       )}
     </div>

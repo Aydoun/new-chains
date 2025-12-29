@@ -37,17 +37,16 @@ export function useInfinitePagination<TItem, TParams extends object>({
 
   const fetchAndSet = useCallback(
     async (pageToLoad: number, replace = false) => {
-      // setIsLoading(true);
+      setIsLoading(true);
       try {
         const result = await fetchPage({ ...initialParams, page: pageToLoad });
 
-        console.log({ result });
         setItems((prev) =>
           replace ? result.items : [...prev, ...result.items]
         );
-        // setHasMore(result.hasMore);
-        // setPage(pageToLoad + 1);
-        // setError(null);
+        setHasMore(result.hasMore);
+        setPage(pageToLoad + 1);
+        setError(null);
       } catch (err) {
         setError(err);
       } finally {
@@ -59,15 +58,14 @@ export function useInfinitePagination<TItem, TParams extends object>({
 
   const loadMore = useCallback(async () => {
     if (!hasMore || isLoading || !enabled) return;
-    console.log("called");
-    // await fetchAndSet(page);
-  }, [enabled, hasMore, isLoading, page]);
+    await fetchAndSet(page);
+  }, [enabled, hasMore, isLoading]);
 
   useEffect(() => {
     if (!enabled) return;
 
     setIsLoading(true);
-    // reset();
+    reset();
     fetchAndSet(initialPage, true);
   }, [enabled, initialPage]);
 

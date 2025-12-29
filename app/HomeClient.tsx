@@ -2,11 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
-import { skipToken } from "@reduxjs/toolkit/query";
-import {
-  useGetSequencesByUserQuery,
-  useLazyGetSequencesByUserQuery,
-} from "./services/sequences";
+import { useLazyGetSequencesByUserQuery } from "./services/sequences";
 import { SequenceCard } from "@/components/sequence-card";
 import { CreateSequenceForm } from "@/components/ui/create-sequence";
 import { translate } from "@/lib/i18n";
@@ -37,13 +33,6 @@ export default function Home({
   const [fetchSequences] = useLazyGetSequencesByUserQuery();
   const queryParams = { limit: 20 };
   const canFetch = status === "authenticated";
-  // const {
-  //   data: sequences,
-  //   isLoading,
-  //   isFetching,
-  //   isError,
-  // } = useGetSequencesByUserQuery(userId ?? skipToken);
-  // const isPending = isLoading || isFetching;
   const {
     items: sequences,
     hasMore,
@@ -75,8 +64,6 @@ export default function Home({
       setIsViewDialogOpen(true);
     }
   }, [sequenceId]);
-
-  console.log({ isBusy });
 
   if (isBusy) return <SessionLoader />;
 
@@ -142,7 +129,7 @@ export default function Home({
                 hasMore={hasMore}
                 loader={
                   <div className="flex justify-center py-4">
-                    <p>Hey babe</p>
+                    <Text>{translate("common.loading")}</Text>
                   </div>
                 }
                 endMessage={

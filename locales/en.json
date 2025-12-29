@@ -5,6 +5,7 @@
     "errors": {
       "home": "Unable to load sequences at this time"
     },
+    "endOfFeed": "#",
     "filter": "Filter",
     "items": "items",
     "loading": "Loading",

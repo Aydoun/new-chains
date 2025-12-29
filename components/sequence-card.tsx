@@ -132,7 +132,7 @@ export const SequenceCard: FC<Props> = ({
                 {isLinkCopied ? (
                   <Text size="1">{translate("sequence.cta.url-copied")}</Text>
                 ) : (
-                  <Share2 className="text-blue-400 h-4 w-4" />
+                  <Share2 className="text-primary-main h-4 w-4" />
                 )}
               </IconButton>
             </div>
@@ -194,7 +194,7 @@ export function FrameContainer({ className, children }: FrameContainerProps) {
   return (
     <div
       className={cn(
-        "flex h-48 w-full items-center justify-center bg-[#fff7ed] font-[400] rounded-md",
+        "flex h-48 w-full items-center justify-center bg-frame-primary font-[400] rounded-md",
         className
       )}
     >

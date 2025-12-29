@@ -1,10 +1,9 @@
 import {
   Home,
-  Search,
-  Blend,
   Mail,
   UserRound,
   type LucideIcon,
+  LayoutGrid,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -16,7 +15,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Input } from "@/components/ui/input";
 import { translate } from "@/lib/i18n";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
@@ -39,7 +37,7 @@ const items: NavigationItem[] = [
   {
     titleKey: "studio",
     url: "/studio",
-    icon: Blend,
+    icon: LayoutGrid,
     isProtected: true,
   },
   {
@@ -81,7 +79,7 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild isActive={pathname === item.url}>
                     <Link
                       href={item.url}
-                      className="text-white hover:bg-slate-800"
+                      className="text-white py-5 px-3 hover:bg-slate-800"
                     >
                       <item.icon />
                       <span>{translate(`navigation.${item.titleKey}`)}</span>

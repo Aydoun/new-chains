@@ -124,14 +124,15 @@ export default function StudioPage() {
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-4 py-2 md:flex-row md:items-center md:justify-between">
                 <div className="relative flex-1 md:max-w-md">
-                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#92a9c9]">
-                    <Search className="h-5 w-5" aria-hidden="true" />
-                  </span>
                   <TextField.Root
                     type="text"
                     placeholder={translate("common.search")}
-                    className="w-full rounded-lg border border-[#233348] bg-[#1a2533] pl-11 text-sm text-white placeholder:text-[#92a9c9] outline-none transition focus:border-[#136dec] focus:ring-1 focus:ring-[#136dec]"
-                  />
+                    className="w-full rounded-lg border border-[#233348] text-sm text-white placeholder:text-[#92a9c9] outline-none transition"
+                  >
+                    <TextField.Slot>
+                      <Search className="h-5 w-5" aria-hidden="true" />
+                    </TextField.Slot>
+                  </TextField.Root>
                 </div>
                 <div className="flex items-center gap-2 self-end md:self-auto">
                   <div className="mx-1 hidden h-8 w-px bg-[#233348] md:block" />

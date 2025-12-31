@@ -44,6 +44,7 @@ body {
     --sidebar-ring: 217.2 91.2% 59.8%;
     --primary-color: #ff9b52;
     --frame-bg: rgb(253 246 227 / var(--tw-bg-opacity, 1));
+    --focus-8: transparent;
   }
   .dark {
     --background: 240 10% 3.9%;
@@ -80,6 +81,7 @@ body {
     --sidebar-ring: 217.2 91.2% 59.8%;
     --primary-color: #C83C6A;
     --frame-bg: rgb(253 246 227 / var(--tw-bg-opacity, 1));
+    --focus-8: transparent;
   }
 }
 

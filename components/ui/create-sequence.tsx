@@ -196,7 +196,7 @@ export function CreateSequenceForm({
 
   return (
     <Modal open onOpenChange={onModalChange}>
-      <Modal.Content className="fixed left-1/2 top-1/2 z-50 w-full max-w-4xl -translate-x-1/2 -translate-y-1/2 rounded-3xl border border-white/10 bg-[#0b0d14] p-8 shadow-[0_20px_80px_rgba(0,0,0,0.45)] duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]">
+      <Modal.Content className="fixed left-1/2 top-1/2 z-50 w-full max-w-4xl -translate-x-1/2 -translate-y-1/2 rounded-3xl bg-[#0b0d14] p-8">
         <div className="flex items-start justify-between gap-6">
           <div className="space-y-1">
             <Badge color="orange" radius="full">
@@ -217,8 +217,7 @@ export function CreateSequenceForm({
             <X className="h-4 w-4" />
           </Modal.Close>
         </div>
-
-        <div className="mt-6 flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3">
+        <div className="mt-6 flex flex-wrap items-center gap-3 rounded-2xl p-3">
           {steps.map((step, index) => {
             const isActive = index === currentStep;
             const isComplete = index < currentStep;
@@ -250,7 +249,6 @@ export function CreateSequenceForm({
             );
           })}
         </div>
-
         <form
           className="mt-6 flex flex-col gap-6"
           onSubmit={handleSubmit(onSubmit)}
@@ -317,14 +315,7 @@ export function CreateSequenceForm({
                       onClick={onPreviousSlide}
                       aria-label={translate("carousel.previous")}
                     >
-                      {props.currentIndex === 0 ? (
-                        <>
-                          <ArrowLeft className="h-4 w-4" />
-                          {translate("sequence.draft.previousStep")}
-                        </>
-                      ) : (
-                        <ArrowLeft className="h-4 w-4" />
-                      )}
+                      <ArrowLeft className="h-4 w-4" />
                     </Button>
                     <div className="flex items-center gap-3 rounded-full border border-white/10 bg-black/40 px-4 py-2 text-sm text-white">
                       <Text color="orange" className="tracking-wide">
@@ -335,7 +326,6 @@ export function CreateSequenceForm({
                       </Text>
                     </div>
                     <Button
-                      variant="soft"
                       radius="full"
                       type="button"
                       onClick={onNextSlide}
@@ -367,7 +357,11 @@ export function CreateSequenceForm({
                 <ArrowRight className="h-4 w-4" />
               </Button>
             ) : (
-              <Button type="submit" loading={isSaving || isSequenceSaving}>
+              <Button
+                type="submit"
+                disabled={pageFrames.length <= 1}
+                loading={isSaving || isSequenceSaving}
+              >
                 <Cloud />
                 {translate("sequence.cta.publish")}
               </Button>

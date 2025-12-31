@@ -6,18 +6,17 @@ import { useLazyGetSequencesByUserQuery } from "./services/sequences";
 import { SequenceCard } from "@/components/sequence-card";
 import { CreateSequenceForm } from "@/components/ui/create-sequence";
 import { translate } from "@/lib/i18n";
-import { Callout, Text, TextField } from "@radix-ui/themes";
+import { Callout, Separator, Text, TextField } from "@radix-ui/themes";
 import Link from "next/link";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { SessionLoader } from "@/components/ui/spinner";
 import { ViewSequence } from "@/components/view-sequence";
-import { Filter, Menu, Search } from "lucide-react";
+import { Filter, Search } from "lucide-react";
 import { SequenceEmptyState } from "@/components/sequence-empty-state";
 import { SequenceErrorState } from "@/components/sequence-error-state";
 import { CreateSequenceCta } from "@/components/create-sequence-cta";
 import { Sequence } from "./types";
 import { useInfinitePagination } from "@/hooks/useInfinitePagination";
-import { MobileMenu } from "@/components/mobile-menu";
 
 export default function Home({
   sequenceId,
@@ -130,15 +129,7 @@ export default function Home({
                     <Text>{translate("common.loading")}</Text>
                   </div>
                 }
-                endMessage={
-                  <Text
-                    as="p"
-                    size="2"
-                    className="py-4 text-center text-[#92a9c9]"
-                  >
-                    {translate("common.endOfFeed")}
-                  </Text>
-                }
+                endMessage={<Separator className="mt-6 w-full" />}
               >
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                   {sequences?.map((sequence) => (

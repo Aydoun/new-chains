@@ -27,7 +27,7 @@ type NavigationItem = {
   url: string;
 };
 
-const items: NavigationItem[] = [
+export const navigationItems: NavigationItem[] = [
   {
     titleKey: "home",
     url: "/",
@@ -68,18 +68,20 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem key="icon">
-                <div className="flex my-4 h-10 w-10 items-center justify-center rounded-xl bg-primary-main">
-                  <span className="text-1xl font-extrabold text-white">
-                    {translate("app.nameShortcut")}
-                  </span>
-                </div>
+                <Link href="/">
+                  <div className="flex my-4 h-10 w-10 items-center justify-center rounded-xl bg-primary-main">
+                    <span className="text-1xl font-extrabold text-white">
+                      {translate("app.nameShortcut")}
+                    </span>
+                  </div>
+                </Link>
               </SidebarMenuItem>
-              {items.map((item) => (
+              {navigationItems.map((item) => (
                 <SidebarMenuItem key={item.titleKey}>
                   <SidebarMenuButton asChild isActive={pathname === item.url}>
                     <Link
                       href={item.url}
-                      className="text-white py-5 px-3 hover:bg-slate-800"
+                      className="py-5 px-3 hover:bg-slate-800"
                     >
                       <item.icon />
                       <span>{translate(`navigation.${item.titleKey}`)}</span>

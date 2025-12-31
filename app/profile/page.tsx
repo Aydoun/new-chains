@@ -16,7 +16,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className={`flex w-full justify-center px-4 py-8 sm:px-8 sm:py-10`}>
+    <div className={`flex w-full justify-center px-6 py-8 mt-8 md:mt-6`}>
       <div className="flex w-full max-w-5xl flex-col gap-8 text-white">
         <div className="flex flex-col gap-2">
           <Heading size="7">{translate("profile.header")}</Heading>
@@ -73,7 +73,7 @@ export default function ProfilePage() {
                       readOnly
                       defaultValue={session?.user?.email ?? ""}
                     />
-                    <div className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center gap-1.5 rounded bg-green-500/10 px-2 py-1 text-xs font-medium text-green-400 ring-1 ring-green-500/20">
+                    <div className="absolute sm:hidden right-3 top-1/2 hidden md:flex -translate-y-1/2 items-center gap-1.5 rounded bg-green-500/10 px-2 py-1 text-xs font-medium text-green-400 ring-1 ring-green-500/20">
                       <CheckCircle />
                       {translate("profile.verified")}
                     </div>

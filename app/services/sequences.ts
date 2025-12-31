@@ -4,6 +4,12 @@ import type { Sequence, SingleSequence } from "../types";
 const API_BASE_URL = `/api/`;
 const DEFAULT_PAGE_SIZE = 20;
 
+export type SequenceTimeFilter =
+  | "last-hour"
+  | "today"
+  | "this-week"
+  | "this-month";
+
 export type BulkCreateFramesResponse = {
   ids: number[];
 };
@@ -32,6 +38,7 @@ export type PaginatedSequencesResponse = {
 export type PaginationParams = {
   page?: number;
   limit?: number;
+  userId?: string;
 };
 
 export const sequenceApi = createApi({
@@ -59,8 +66,10 @@ export const sequenceApi = createApi({
       PaginatedSequencesResponse,
       PaginationParams
     >({
-      query: ({ page = 1, limit = DEFAULT_PAGE_SIZE } = {}) =>
-        `sequence/studio?page=${page}&limit=${limit}`,
+      query: ({ page = 1, limit = DEFAULT_PAGE_SIZE, userId } = {}) =>
+        `sequence/studio?page=${page}&limit=${limit}${
+          userId ? `&userId=${userId}` : ""
+        }`,
     }),
     getSequenceById: builder.query<SingleSequence, number | string>({
       query: (sequenceId) => `sequence/read?id=${sequenceId}`,

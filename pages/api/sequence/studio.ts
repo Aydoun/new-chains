@@ -15,7 +15,7 @@ export default async function handler(
   const sessionResult = await requireApiSession(req, res);
   if (!sessionResult) return;
 
-  const { userId: clientId } = sessionResult;
+  const { userId } = req.query;
   const pageQuery = req.query.page;
   const limitQuery = req.query.limit;
 
@@ -27,6 +27,12 @@ export default async function handler(
     typeof limitQuery === "string" && !Number.isNaN(Number.parseInt(limitQuery))
       ? Number.parseInt(limitQuery, 10)
       : DEFAULT_PAGE_SIZE;
+
+  const clientId =
+    typeof userId === "string" && !Number.isNaN(Number.parseInt(userId))
+      ? Number.parseInt(userId, 10)
+      : sessionResult.userId;
+
   const limit = Math.min(Math.max(requestedLimit, 1), MAX_PAGE_SIZE);
 
   try {

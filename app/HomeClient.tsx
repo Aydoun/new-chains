@@ -6,11 +6,11 @@ import { useLazyGetSequencesByUserQuery } from "./services/sequences";
 import { SequenceCard } from "@/components/sequence-card";
 import { CreateSequenceForm } from "@/components/ui/create-sequence";
 import { translate } from "@/lib/i18n";
-import { Callout, Text, TextField } from "@radix-ui/themes";
+import { Callout, Separator, Text, TextField } from "@radix-ui/themes";
 import Link from "next/link";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { SessionLoader } from "@/components/ui/spinner";
-import { ViewSequence } from "@/components/ui/view-sequence";
+import { ViewSequence } from "@/components/view-sequence";
 import { Filter, Search } from "lucide-react";
 import { SequenceEmptyState } from "@/components/sequence-empty-state";
 import { SequenceErrorState } from "@/components/sequence-error-state";
@@ -68,7 +68,7 @@ export default function Home({
   if (isBusy) return <SessionLoader />;
 
   return (
-    <div className="flex flex-col gap-4 px-6 py-0 sm:px-6">
+    <div className="flex flex-col gap-4 px-6 py-0 px-6 mt-12 md:mt-6">
       <div className="flex justify-between">
         <div className="flex gap-4">
           <Text
@@ -100,11 +100,8 @@ export default function Home({
           </div>
         </div>
         <div className="self-center">
-          <button className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-[#92a9c9] transition hover:bg-[#1a2533] hover:text-white">
+          <button className=" rounded-lg px-3 py-2 text-sm font-medium text-[#92a9c9] transition hover:bg-[#1a2533] hover:text-white hidden md:block">
             <Filter className="h-5 w-5" aria-hidden="true" />
-            <Text size="2" weight="medium" className="hidden sm:inline">
-              {translate("common.filter")}
-            </Text>
           </button>
         </div>
       </div>
@@ -132,15 +129,7 @@ export default function Home({
                     <Text>{translate("common.loading")}</Text>
                   </div>
                 }
-                endMessage={
-                  <Text
-                    as="p"
-                    size="2"
-                    className="py-4 text-center text-[#92a9c9]"
-                  >
-                    {translate("common.endOfFeed")}
-                  </Text>
-                }
+                endMessage={<Separator className="mt-6 w-full" />}
               >
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                   {sequences?.map((sequence) => (

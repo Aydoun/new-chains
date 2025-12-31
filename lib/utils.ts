@@ -10,11 +10,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function getStorageItem(key: string) {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem(key);
-}
-
 export function timeAgo(
   isoDate: string | undefined,
   { locale = "en", nowThresholdSeconds = 5 }: RelativeTimeOptions = {}

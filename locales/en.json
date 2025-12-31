@@ -111,17 +111,17 @@
   "sequence": {
     "countLabel": "1/{count}",
     "cta": {
-      "title": "Name your new Sequence...",
+      "title": "Name your new Sequence",
       "publish": "Publish",
       "creation-message": "Sequence created successfully.",
       "url-copied": "Link is copied"
     },
     "draft": {
-      "appendFrame": "Add a Frame",
+      "appendFrame": "Next Frame",
       "title": "Sequence Name",
       "titleCopy": "Current Sequence name",
-      "firstStepTitle": "Name Your Sequence",
-      "secondStepTitle": "Create Your Frames",
+      "firstStepTitle": "Sequence Name",
+      "secondStepTitle": "Attach Frames",
       "description": "Description Optional",
       "descriptionLabel": "Optional Description",
       "previousStep": "Previous Step",
@@ -146,6 +146,7 @@
   "studio": {
     "total": "Total Sequences",
     "lastEdit": "Last Edited",
-    "greetings": "Hello {name}"
+    "greetings": "Hello {name}",
+    "explorerWelcome": "Welcome To {name} Studio"
   }
 }

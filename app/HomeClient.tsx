@@ -11,7 +11,7 @@ import Link from "next/link";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { SessionLoader } from "@/components/ui/spinner";
 import { ViewSequence } from "@/components/ui/view-sequence";
-import { Filter, Search } from "lucide-react";
+import { Filter, Menu, Search } from "lucide-react";
 import { SequenceEmptyState } from "@/components/sequence-empty-state";
 import { SequenceErrorState } from "@/components/sequence-error-state";
 import { CreateSequenceCta } from "@/components/create-sequence-cta";
@@ -100,11 +100,11 @@ export default function Home({
           </div>
         </div>
         <div className="self-center">
-          <button className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-[#92a9c9] transition hover:bg-[#1a2533] hover:text-white">
+          <button className=" rounded-lg px-3 py-2 text-sm font-medium text-[#92a9c9] transition hover:bg-[#1a2533] hover:text-white hidden md:block">
             <Filter className="h-5 w-5" aria-hidden="true" />
-            <Text size="2" weight="medium" className="hidden sm:inline">
-              {translate("common.filter")}
-            </Text>
+          </button>
+          <button className="rounded-lg px-3 py-2 text-sm font-medium text-[#92a9c9] transition hover:bg-[#1a2533] block md:hidden">
+            <Menu className="h-5 w-5" aria-hidden="true" />
           </button>
         </div>
       </div>

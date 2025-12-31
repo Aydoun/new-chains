@@ -17,6 +17,7 @@ import { SequenceErrorState } from "@/components/sequence-error-state";
 import { CreateSequenceCta } from "@/components/create-sequence-cta";
 import { Sequence } from "./types";
 import { useInfinitePagination } from "@/hooks/useInfinitePagination";
+import { MobileMenu } from "@/components/mobile-menu";
 
 export default function Home({
   sequenceId,
@@ -68,7 +69,7 @@ export default function Home({
   if (isBusy) return <SessionLoader />;
 
   return (
-    <div className="flex flex-col gap-4 px-6 py-0 sm:px-6">
+    <div className="flex flex-col gap-4 px-6 py-0 px-6 mt-12 md:mt-6">
       <div className="flex justify-between">
         <div className="flex gap-4">
           <Text
@@ -102,9 +103,6 @@ export default function Home({
         <div className="self-center">
           <button className=" rounded-lg px-3 py-2 text-sm font-medium text-[#92a9c9] transition hover:bg-[#1a2533] hover:text-white hidden md:block">
             <Filter className="h-5 w-5" aria-hidden="true" />
-          </button>
-          <button className="rounded-lg px-3 py-2 text-sm font-medium text-[#92a9c9] transition hover:bg-[#1a2533] block md:hidden">
-            <Menu className="h-5 w-5" aria-hidden="true" />
           </button>
         </div>
       </div>

@@ -11,9 +11,9 @@ export const CreateSequenceCta: FC<Props> = ({ onCreate }) => {
   const [sequenceTitle, setSequenceTitle] = useState("");
 
   return (
-    <div className="fixed bottom-6 left-0 z-20 w-full px-4 md:left-[256px] md:w-[calc(100%-256px)]">
+    <div className="fixed bottom-6 left-0 z-20 w-full md:left-[256px] md:w-[calc(100%-256px)]">
       <div className="mx-auto w-full max-w-3xl">
-        <div className="relative flex items-center bg-[#121215] border border-gray-200 rounded-full shadow-2xl px-8 py-4">
+        <div className="flex items-center bg-[#121215] border border-gray-200 rounded-full shadow-2xl gap-4 py-4 px-4">
           <TextField.Root
             placeholder={translate("sequence.cta.title")}
             className="flex-1 pl-4 pr-2"

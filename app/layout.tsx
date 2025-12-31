@@ -11,6 +11,7 @@ import { Theme } from "@radix-ui/themes";
 import { SessionProvider } from "next-auth/react";
 import { UserMenu } from "@/hooks/userMenu";
 import { AuthStateSync } from "@/hooks/authStateSync";
+import { MobileMenu } from "@/components/mobile-menu";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,11 +44,11 @@ export default function RootLayout({
               <SidebarProvider>
                 <AppSidebar />
                 <main className="flex w-full flex-col bg-[#0f1723] text-foreground">
-                  <header className="flex items-center justify-end border-b border-border px-6 py-4 gap-3">
-                    {/* <ThemeToggle theme={theme} onToggle={handleToggleTheme} /> */}
-                  </header>
                   <AuthStateSync />
-                  <div className="relative">{children}</div>
+                  <div className="relative">
+                    <MobileMenu />
+                    {children}
+                  </div>
                 </main>
               </SidebarProvider>
             </Theme>

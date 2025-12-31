@@ -27,7 +27,7 @@ type NavigationItem = {
   url: string;
 };
 
-const items: NavigationItem[] = [
+export const navigationItems: NavigationItem[] = [
   {
     titleKey: "home",
     url: "/",
@@ -74,7 +74,7 @@ export function AppSidebar() {
                   </span>
                 </div>
               </SidebarMenuItem>
-              {items.map((item) => (
+              {navigationItems.map((item) => (
                 <SidebarMenuItem key={item.titleKey}>
                   <SidebarMenuButton asChild isActive={pathname === item.url}>
                     <Link

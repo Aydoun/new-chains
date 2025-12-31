@@ -76,18 +76,14 @@ export default function StudioPage() {
   if (isBusy) return <SessionLoader />;
 
   return (
-    <div className="flex h-full min-h-[calc(100vh-4rem)] w-full overflow-hidden rounded-xl ">
+    <div className="flex w-full overflow-hidden mt-8 md:mt-6">
       <div className="flex w-full flex-col">
         <div className="flex-1 overflow-y-auto">
-          <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-8 px-4 py-6 sm:px-6 lg:px-10">
+          <div className="mx-auto flex w-full flex-col gap-8 px-4 py-6 px-6 md:px-10">
             <div className="flex flex-col gap-6">
               <div className="flex flex-wrap items-end justify-between gap-4">
-                <div className="flex flex-col gap-2">
-                  <Text
-                    size="6"
-                    weight="bold"
-                    className="tracking-[-0.033em] text-white sm:text-[38px]"
-                  >
+                <div>
+                  <Text size="6" weight="bold">
                     {translate("studio.greetings", {
                       name: session?.user?.name ?? "",
                     })}

@@ -5,8 +5,8 @@ import { X } from "lucide-react";
 import { Carousel } from "@/components/ui/carousel";
 import { useGetSequenceByIdQuery } from "@/app/services/sequences";
 import { translate } from "@/lib/i18n";
-import { Modal } from "./modal";
-import { SequenceFrame } from "../sequence-card";
+import { Modal } from "./ui/modal";
+import { SequenceFrame } from "./sequence-card";
 import { skipToken } from "@reduxjs/toolkit/query";
 
 interface Props {

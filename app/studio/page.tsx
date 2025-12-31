@@ -18,7 +18,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { timeAgo } from "@/lib/utils";
 import { SequenceCard } from "@/components/sequence-card";
 import { translate } from "@/lib/i18n";
-import { ViewSequence } from "@/components/ui/view-sequence";
+import { ViewSequence } from "@/components/view-sequence";
 import { useRef, useState } from "react";
 import { SequenceErrorState } from "@/components/sequence-error-state";
 import { SequenceEmptyState } from "@/components/sequence-empty-state";

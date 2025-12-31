@@ -10,7 +10,7 @@ import { Callout, Text, TextField } from "@radix-ui/themes";
 import Link from "next/link";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { SessionLoader } from "@/components/ui/spinner";
-import { ViewSequence } from "@/components/ui/view-sequence";
+import { ViewSequence } from "@/components/view-sequence";
 import { Filter, Menu, Search } from "lucide-react";
 import { SequenceEmptyState } from "@/components/sequence-empty-state";
 import { SequenceErrorState } from "@/components/sequence-error-state";

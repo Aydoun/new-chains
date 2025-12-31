@@ -34,15 +34,26 @@ export type PaginationParams = {
   limit?: number;
 };
 
+export type SequenceTimeFilter =
+  | "last-hour"
+  | "today"
+  | "this-week"
+  | "this-month";
+
 export const sequenceApi = createApi({
   reducerPath: "sequenceApi",
   baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL, credentials: "include" }),
   endpoints: (builder) => ({
     getSequencesByUser: builder.query<
       PaginatedSequencesResponse,
-      (PaginationParams & { userId?: string }) | void
+      (PaginationParams & { userId?: string; timeFilter?: SequenceTimeFilter }) | void
     >({
-      query: ({ userId, page = 1, limit = DEFAULT_PAGE_SIZE } = {}) => {
+      query: ({
+        userId,
+        page = 1,
+        limit = DEFAULT_PAGE_SIZE,
+        timeFilter,
+      } = {}) => {
         const params = new URLSearchParams({
           page: String(page),
           limit: String(limit),
@@ -51,16 +62,29 @@ export const sequenceApi = createApi({
         if (userId) {
           params.set("id", userId);
         }
+        if (timeFilter) {
+          params.set("timeFilter", timeFilter);
+        }
 
         return `sequence/fetch?${params.toString()}`;
       },
     }),
     getStudioSequences: builder.query<
       PaginatedSequencesResponse,
-      PaginationParams
+      PaginationParams & { timeFilter?: SequenceTimeFilter }
     >({
-      query: ({ page = 1, limit = DEFAULT_PAGE_SIZE } = {}) =>
-        `sequence/studio?page=${page}&limit=${limit}`,
+      query: ({ page = 1, limit = DEFAULT_PAGE_SIZE, timeFilter } = {}) => {
+        const params = new URLSearchParams({
+          page: String(page),
+          limit: String(limit),
+        });
+
+        if (timeFilter) {
+          params.set("timeFilter", timeFilter);
+        }
+
+        return `sequence/studio?${params.toString()}`;
+      },
     }),
     getSequenceById: builder.query<SingleSequence, number | string>({
       query: (sequenceId) => `sequence/read?id=${sequenceId}`,

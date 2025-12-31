@@ -1,15 +1,10 @@
 "use client";
 
 import { Text, TextField } from "@radix-ui/themes";
-import {
-  Filter,
-  History,
-  Link as LinkIcon,
-  Search,
-  type LucideIcon,
-} from "lucide-react";
+import { History, Link as LinkIcon, Search, type LucideIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import {
+  SequenceTimeFilter,
   useDeleteSequenceMutation,
   useLazyGetStudioSequencesQuery,
 } from "../services/sequences";
@@ -19,11 +14,12 @@ import { timeAgo } from "@/lib/utils";
 import { SequenceCard } from "@/components/sequence-card";
 import { translate } from "@/lib/i18n";
 import { ViewSequence } from "@/components/view-sequence";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { SequenceErrorState } from "@/components/sequence-error-state";
 import { SequenceEmptyState } from "@/components/sequence-empty-state";
 import { useInfinitePagination } from "@/hooks/useInfinitePagination";
 import { Sequence } from "../types";
+import { TimeFilterDropdown } from "@/components/time-filter-dropdown";
 
 type StatCard = {
   icon: LucideIcon;
@@ -46,14 +42,24 @@ export default function StudioPage() {
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const currentSequenceId = useRef<number | string | null>(null);
   const [fetchStudioSequences] = useLazyGetStudioSequencesQuery();
-  const studioQueryParams = { limit: 20 };
+  const [timeFilter, setTimeFilter] = useState<SequenceTimeFilter>();
+  const studioQueryParams = useMemo(
+    () => ({
+      limit: 20,
+      timeFilter,
+    }),
+    [timeFilter]
+  );
   const {
     items: sequences,
     hasMore,
     isLoading,
     error,
     loadMore,
-  } = useInfinitePagination<Sequence, { page?: number; limit?: number }>({
+  } = useInfinitePagination<
+    Sequence,
+    { page?: number; limit?: number; timeFilter?: SequenceTimeFilter }
+  >({
     fetchPage: (params) => fetchStudioSequences(params).unwrap(),
     initialParams: studioQueryParams,
     enabled: status === "authenticated",
@@ -145,12 +151,10 @@ export default function StudioPage() {
                 </div>
                 <div className="flex items-center gap-2 self-end md:self-auto">
                   <div className="mx-1 hidden h-8 w-px bg-[#233348] md:block" />
-                  <button className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-[#92a9c9] transition hover:bg-[#1a2533] hover:text-white">
-                    <Filter className="h-5 w-5" aria-hidden="true" />
-                    <Text size="2" weight="medium" className="hidden sm:inline">
-                      {translate("common.filter")}
-                    </Text>
-                  </button>
+                  <TimeFilterDropdown
+                    value={timeFilter}
+                    onChange={setTimeFilter}
+                  />
                 </div>
               </div>
               <section className="mt-4 pb-24">

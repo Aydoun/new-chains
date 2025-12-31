@@ -59,7 +59,7 @@ export function useInfinitePagination<TItem, TParams extends object>({
   const loadMore = useCallback(async () => {
     if (!hasMore || isLoading || !enabled) return;
     await fetchAndSet(page);
-  }, [enabled, hasMore, isLoading]);
+  }, [enabled, fetchAndSet, hasMore, isLoading, page]);
 
   useEffect(() => {
     if (!enabled) return;
@@ -67,7 +67,7 @@ export function useInfinitePagination<TItem, TParams extends object>({
     setIsLoading(true);
     reset();
     fetchAndSet(initialPage, true);
-  }, [enabled, initialPage]);
+  }, [enabled, fetchAndSet, initialPage, initialParams, reset]);
 
   return {
     items,

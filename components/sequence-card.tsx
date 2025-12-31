@@ -58,29 +58,35 @@ export const SequenceCard: FC<Props> = ({
 
   return (
     <>
-      <div className="group flex cursor-pointer flex-col overflow-hidden rounded-xl border border-[#233348] bg-[#1a2533] transition-all duration-300 hover:border-[#136dec]/50 hover:shadow-xl hover:shadow-black/20">
-        <div onClick={onClick} className="h-44 w-full overflow-hidden">
+      <div className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-xl border border-[#233348] bg-[#1a2533] transition-all duration-300 hover:border-[#136dec]/50 hover:shadow-xl hover:shadow-black/20">
+        <div
+          onClick={onClick}
+          className="h-44 w-full overflow-hidden flex-shrink-0"
+        >
           <SequenceFrame
             text={sequence.firstFrame?.content}
             count={sequence.FrameOrder.length}
           />
         </div>
-        <div className="flex flex-col gap-3 p-5">
+        <div className="flex flex-1 flex-col gap-3 p-5">
           <div onClick={onClick} className="space-y-1">
             <Text
               size="4"
               weight="bold"
-              className="leading-snug text-white transition-colors group-hover:text-primary-main"
+              className="line-clamp-2 leading-snug text-white transition-colors group-hover:text-primary-main"
               as="div"
             >
               {sequence.title}
             </Text>
-            <Text size="2" className="text-[#92a9c9]">
+            <Text size="2" className="line-clamp-3 text-[#92a9c9]">
               {sequence.description}
             </Text>
           </div>
           {!omitAuthor && (
-            <div className="flex items-center gap-1 hover:underline text-[#92a9c9]">
+            <div
+              className="flex items-center gap-1 text-[#92a9c9] hover:underline"
+              onClick={(event) => event.stopPropagation()}
+            >
               <User className="h-4 w-4" aria-hidden="true" />
               <Link href={`/explore/${sequence.userId}`}>
                 {sequence.user?.username}

@@ -1,6 +1,7 @@
 import createHandler from "@/pages/api/sequence/create";
 import fetchHandler from "@/pages/api/sequence/fetch";
 import readHandler from "@/pages/api/sequence/read";
+import studioHandler from "@/pages/api/sequence/studio";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { vi } from "vitest";
 
@@ -115,6 +116,7 @@ describe("api/sequence endpoints", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     sessionMock.mockResolvedValue({ session: {}, userId: 1 });
+    vi.useRealTimers();
   });
 
   it("returns 400 when creating a sequence without required fields", async () => {
@@ -156,11 +158,13 @@ describe("api/sequence endpoints", () => {
 
     await fetchHandler(req, res);
     expect(store.status).toBe(200);
-    const json = store.body as Array<{
-      userId: number;
-      user: { id: number; username: string };
-    }>;
-    expect(json[0].user).toMatchObject({
+    const json = store.body as {
+      items: Array<{
+        userId: number;
+        user: { id: number; username: string };
+      }>;
+    };
+    expect(json.items[0].user).toMatchObject({
       id: expect.any(Number),
       username: expect.any(String),
     });
@@ -174,7 +178,6 @@ describe("api/sequence endpoints", () => {
         include: {
           user: {
             select: {
-              avatarUrl: true,
               id: true,
               username: true,
             },
@@ -182,6 +185,37 @@ describe("api/sequence endpoints", () => {
         },
       })
     );
+  });
+
+  it("applies time filter when provided", async () => {
+    const fixedNow = new Date("2024-04-10T12:00:00Z");
+    vi.setSystemTime(fixedNow);
+    const req = {
+      method: "GET",
+      query: { timeFilter: "this-week" },
+    } as unknown as NextApiRequest;
+    const { res, store } = createMockResponse();
+
+    await fetchHandler(req, res);
+
+    expect(store.status).toBe(200);
+    const expectedStartOfWeek = new Date(fixedNow);
+    expectedStartOfWeek.setHours(0, 0, 0, 0);
+    expectedStartOfWeek.setDate(
+      expectedStartOfWeek.getDate() - ((expectedStartOfWeek.getDay() + 6) % 7)
+    );
+
+    expect(mocks.findManyMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          createdAt: { gte: expectedStartOfWeek },
+          isDeleted: false,
+          visibility: "PUBLIC",
+        }),
+      })
+    );
+
+    vi.useRealTimers();
   });
 
   it("reads a sequence and hydrates frames", async () => {
@@ -199,5 +233,33 @@ describe("api/sequence endpoints", () => {
       where: { id: 5, isDeleted: false },
     });
     expect(mocks.findManyFramesMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("applies time filter to studio sequences", async () => {
+    sessionMock.mockResolvedValueOnce({ session: {}, userId: 7 });
+    const fixedNow = new Date("2024-04-10T12:00:00Z");
+    vi.setSystemTime(fixedNow);
+    const req = {
+      method: "GET",
+      query: { timeFilter: "last-hour" },
+    } as unknown as NextApiRequest;
+    const { res, store } = createMockResponse();
+
+    await studioHandler(req, res);
+
+    expect(store.status).toBe(200);
+    const expectedDate = new Date(fixedNow.getTime() - 60 * 60 * 1000);
+
+    expect(mocks.findManyMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          createdAt: { gte: expectedDate },
+          userId: 7,
+          visibility: "PUBLIC",
+        }),
+      })
+    );
+
+    vi.useRealTimers();
   });
 });

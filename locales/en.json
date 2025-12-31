@@ -146,6 +146,7 @@
   "studio": {
     "total": "Total Sequences",
     "lastEdit": "Last Edited",
-    "greetings": "Hello {name}"
+    "greetings": "Hello {name}",
+    "explorerWelcome": "Welcome To {name} Studio"
   }
 }

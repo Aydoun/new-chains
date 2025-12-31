@@ -16,11 +16,11 @@ export function MobileMenu() {
           </DropdownMenu.Trigger>
           <DropdownMenu.Content variant="soft" color="indigo">
             {navigationItems.map((item) => (
-              <DropdownMenu.Item className="w-20 h-20" key={item.titleKey}>
-                <Link
-                  href={item.url}
-                  className="text-white py-5 px-3 hover:bg-slate-800"
-                >
+              <DropdownMenu.Item
+                className="w-20 h-20 text-center"
+                key={item.titleKey}
+              >
+                <Link href={item.url}>
                   <item.icon />
                   <span>{translate(`navigation.${item.titleKey}`)}</span>
                 </Link>

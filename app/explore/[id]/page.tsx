@@ -1,27 +1,59 @@
 "use client";
 
 import { translate } from "@/lib/i18n";
-import { Heading, Text, TextArea } from "@radix-ui/themes";
-import { CheckCircle, Lock, Save } from "lucide-react";
 import { useSession } from "next-auth/react";
-// import { useParams } from "next/navigation";
-import { ChangeEvent, useState } from "react";
+import { useParams } from "next/navigation";
+import { useLazyGetStudioSequencesQuery } from "@/app/services/sequences";
+import { useInfinitePagination } from "@/hooks/useInfinitePagination";
+import { Sequence } from "@/app/types";
+import { SessionLoader } from "@/components/ui/spinner";
+import { useGetUserByIdQuery } from "@/app/services/users";
+import { StudioView } from "@/components/studio-view";
 
 export default function ExplorePage() {
-  //   const params = useParams<{ id: string }>();
-  const { data: session } = useSession();
-  const [bioText, setBioText] = useState("");
+  const { data: session, status } = useSession();
+  const params = useParams<{ id: string }>();
+  const profileId = params?.id ?? "";
 
-  //   console.log({ pp: params?.id });
+  const { data: user, isFetching: isFetchingUser } = useGetUserByIdQuery(
+    profileId!,
+    {
+      skip: !profileId,
+    }
+  );
+  const [fetchStudioSequences] = useLazyGetStudioSequencesQuery();
+  const {
+    items: sequences,
+    hasMore,
+    isLoading,
+    error,
+    loadMore,
+  } = useInfinitePagination<
+    Sequence,
+    { page?: number; limit?: number; userId?: string }
+  >({
+    fetchPage: (params) => fetchStudioSequences(params).unwrap(),
+    initialParams: { limit: 20, userId: profileId },
+    enabled: Boolean(profileId),
+  });
+  const isBusy =
+    status === "loading" ||
+    isFetchingUser ||
+    (isLoading && Array.isArray(sequences) && sequences.length === 0);
+  const isError = Boolean(error);
 
-  const handleBioChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    const { value } = e.target;
-    if (value.length <= 240) setBioText(value);
-  };
+  if (isBusy) return <SessionLoader />;
 
   return (
-    <div className={`flex w-full justify-center px-4 py-8 sm:px-8 sm:py-10`}>
-      <p>Hello Explorer</p>
-    </div>
+    <StudioView
+      greeting={translate("studio.explorerWelcome", {
+        name: user?.username ?? "",
+      })}
+      sequences={sequences ?? []}
+      hasMore={hasMore}
+      isError={isError}
+      loadMore={loadMore}
+      viewerId={session?.user?.id}
+    />
   );
 }

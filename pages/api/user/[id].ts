@@ -15,10 +15,6 @@ export default async function handler(
   const { id } = req.query;
   const userId = parseInt(id as string, 10);
 
-  if (userId !== sessionResult.userId) {
-    return res.status(403).json({ message: "Forbidden" });
-  }
-
   try {
     const user = await prisma.user.findUnique({
       where: { id: userId },

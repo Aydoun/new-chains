@@ -87,7 +87,10 @@ export const SequenceCard: FC<Props> = ({
               </Link>
             </div>
           )}
-          <div className="mt-auto flex items-center justify-between border-t border-[#233348] pt-2">
+          <div
+            data-testid="card-menu"
+            className="mt-auto flex items-center justify-between"
+          >
             <div className="flex items-center gap-1 text-[#92a9c9]">
               <Clock3 className="h-4 w-4" aria-hidden="true" />
               <Text size="1" weight="medium">

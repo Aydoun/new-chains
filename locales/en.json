@@ -79,6 +79,13 @@
     "self": "Frame",
     "selfs": "Frames"
   },
+  "filter": {
+    "label": "created",
+    "last-hour": "Last hour",
+    "today": "Today",
+    "this-week": "This week",
+    "this-month": "This month"
+  },
   "footer": {
     "privacyPolicy": "Privacy Policy",
     "terms": "Terms Of Service",

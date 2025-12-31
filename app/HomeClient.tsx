@@ -2,7 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
-import { useLazyGetSequencesByUserQuery } from "./services/sequences";
+import {
+  SequenceTimeFilter,
+  useLazyGetSequencesByUserQuery,
+} from "./services/sequences";
 import { SequenceCard } from "@/components/sequence-card";
 import { CreateSequenceForm } from "@/components/ui/create-sequence";
 import { translate } from "@/lib/i18n";
@@ -17,6 +20,7 @@ import { SequenceErrorState } from "@/components/sequence-error-state";
 import { CreateSequenceCta } from "@/components/create-sequence-cta";
 import { Sequence } from "./types";
 import { useInfinitePagination } from "@/hooks/useInfinitePagination";
+import { FilterDropdown } from "@/components/filter-dropdown";
 
 export default function Home({
   sequenceId,
@@ -27,11 +31,12 @@ export default function Home({
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [showCreationSuccess, setShowCreationSuccess] = useState(false);
+  const [timeFilter, setTimeFilter] = useState<SequenceTimeFilter>();
   const sequenceIdRef = useRef<string | number | null>(null);
   const sequenceTitleRef = useRef<string>("");
   const userId = session?.user?.id;
   const [fetchSequences] = useLazyGetSequencesByUserQuery();
-  const queryParams = { limit: 20 };
+  const queryParams = { limit: 20, timeFilter };
   const canFetch = status === "authenticated";
   const {
     items: sequences,
@@ -39,7 +44,10 @@ export default function Home({
     isLoading,
     error,
     loadMore,
-  } = useInfinitePagination<Sequence, { userId?: string; limit?: number }>({
+  } = useInfinitePagination<
+    Sequence,
+    { userId?: string; limit?: number; timeFilter?: SequenceTimeFilter }
+  >({
     fetchPage: (params) => fetchSequences(params).unwrap(),
     initialParams: queryParams,
     enabled: canFetch,
@@ -100,9 +108,7 @@ export default function Home({
           </div>
         </div>
         <div className="self-center">
-          <button className=" rounded-lg px-3 py-2 text-sm font-medium text-[#92a9c9] transition hover:bg-[#1a2533] hover:text-white hidden md:block">
-            <Filter className="h-5 w-5" aria-hidden="true" />
-          </button>
+          <FilterDropdown value={timeFilter} onChange={setTimeFilter} />
         </div>
       </div>
       <div className="relative flex-1 md:max-w-md">

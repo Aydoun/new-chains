@@ -58,15 +58,18 @@ export const SequenceCard: FC<Props> = ({
 
   return (
     <>
-      <div className="group flex cursor-pointer flex-col overflow-hidden rounded-xl border border-[#233348] bg-[#1a2533] transition-all duration-300 hover:border-[#136dec]/50 hover:shadow-xl hover:shadow-black/20">
-        <div onClick={onClick} className="h-44 w-full overflow-hidden">
+      <div
+        onClick={onClick}
+        className="group flex cursor-pointer flex-col overflow-hidden rounded-xl border border-[#233348] bg-[#1a2533] transition-all duration-300 hover:border-[#136dec]/50 hover:shadow-xl hover:shadow-black/20"
+      >
+        <div className="h-44 w-full overflow-hidden">
           <SequenceFrame
             text={sequence.firstFrame?.content}
             count={sequence.FrameOrder.length}
           />
         </div>
         <div className="flex flex-col gap-3 p-5">
-          <div onClick={onClick} className="space-y-1">
+          <div className="space-y-1">
             <Text
               size="4"
               weight="bold"
@@ -80,7 +83,10 @@ export const SequenceCard: FC<Props> = ({
             </Text>
           </div>
           {!omitAuthor && (
-            <div className="flex items-center gap-1 hover:underline text-[#92a9c9]">
+            <div
+              onClick={(event) => event.stopPropagation()}
+              className="flex items-center gap-1 hover:underline text-[#92a9c9]"
+            >
               <User className="h-4 w-4" aria-hidden="true" />
               <Link href={`/explore/${sequence.userId}`}>
                 {sequence.user?.username}

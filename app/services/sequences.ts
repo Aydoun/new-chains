@@ -36,6 +36,7 @@ export type PaginatedSequencesResponse = {
 export const sequenceApi = createApi({
   reducerPath: "sequenceApi",
   baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL, credentials: "include" }),
+  tagTypes: ["StudioSequences"],
   endpoints: (builder) => ({
     getSequencesByUser: builder.query<
       PaginatedSequencesResponse,
@@ -61,6 +62,13 @@ export const sequenceApi = createApi({
 
         return `sequence/studio?${params}`;
       },
+      providesTags: (_result, _error, { timeFilter, userId } = {}) => [
+        { type: "StudioSequences", id: "LIST" },
+        {
+          type: "StudioSequences",
+          id: `FILTER-${timeFilter ?? "all"}-${userId ?? "any"}`,
+        },
+      ],
     }),
     getSequenceById: builder.query<SingleSequence, number | string>({
       query: (sequenceId) => `sequence/${sequenceId}`,
@@ -77,6 +85,7 @@ export const sequenceApi = createApi({
         url: `sequence/delete?id=${sequenceId}`,
         method: "DELETE",
       }),
+      invalidatesTags: [{ type: "StudioSequences", id: "LIST" }],
     }),
     updateSequence: builder.mutation<
       Sequence,

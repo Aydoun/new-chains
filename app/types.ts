@@ -3,6 +3,9 @@ export interface User {
   username: string;
   email: string;
   passwordHash: string;
+  bio: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export type FrameType = "PHRASE" | "IMAGE" | "VIDEO" | "AUDIO" | "DOCUMENT";

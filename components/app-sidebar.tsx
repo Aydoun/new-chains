@@ -92,7 +92,7 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        <div className="absolute bottom-3 left-3 z-20">
+        <div className="absolute bottom-3 left-3 z-20 w-[calc(100%-25px)]">
           <UserMenu />
         </div>
       </SidebarContent>

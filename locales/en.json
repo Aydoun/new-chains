@@ -113,6 +113,7 @@
     "header": "Profile Settings",
     "description": "Manage your personal information and connected accounts",
     "googleAuth": "Managed via Google Auth",
+    "image-alt": "camera_alt",
     "verified": "verified",
     "selfDesc": "Brief description for your profile."
   },

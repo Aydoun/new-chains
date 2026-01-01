@@ -2,10 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
-import {
-  TimeFilter,
-  useLazyGetSequencesByUserQuery,
-} from "./services/sequences";
+import { useLazyGetSequencesByUserQuery } from "./services/sequences";
 import { SequenceCard } from "@/components/sequence-card";
 import { CreateSequenceForm } from "@/components/ui/create-sequence";
 import { translate } from "@/lib/i18n";
@@ -14,11 +11,11 @@ import Link from "next/link";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { SessionLoader } from "@/components/ui/spinner";
 import { ViewSequence } from "@/components/view-sequence";
-import { Filter, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { SequenceEmptyState } from "@/components/sequence-empty-state";
 import { SequenceErrorState } from "@/components/sequence-error-state";
 import { CreateSequenceCta } from "@/components/create-sequence-cta";
-import { Sequence } from "./types";
+import { Sequence, TimeFilter } from "./types";
 import { useInfinitePagination } from "@/hooks/useInfinitePagination";
 import { FilterDropdown } from "@/components/filter-dropdown";
 
@@ -74,7 +71,7 @@ export default function Home({
   if (isBusy) return <SessionLoader />;
 
   return (
-    <div className="flex flex-col gap-4 px-6 py-0 px-6 mt-12 md:mt-6">
+    <div className="flex flex-col gap-4 px-6 py-0 px-6 mt-20 md:mt-6">
       <div className="flex justify-between">
         <div className="flex gap-4">
           <Text

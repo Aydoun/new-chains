@@ -3,14 +3,13 @@
 import { useMemo, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import {
-  TimeFilter,
   useDeleteSequenceMutation,
   useLazyGetStudioSequencesQuery,
 } from "@/app/services/sequences";
 import { SessionLoader } from "@/components/ui/spinner";
 import { translate } from "@/lib/i18n";
 import { useInfinitePagination } from "@/hooks/useInfinitePagination";
-import { Sequence } from "@/app/types";
+import { Sequence, TimeFilter } from "@/app/types";
 import { StudioView } from "@/components/studio-view";
 
 export default function StudioPage() {

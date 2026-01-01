@@ -76,7 +76,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-8 mt-8 md:mt-6 py-8 px-6 md:px-14">
+    <div className="mx-auto flex max-w-6xl flex-col gap-8 mt-12 md:mt-6 py-8 px-6 md:px-14">
       <section className="space-y-3">
         <p className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary">
           {translate("navigation.contact")}

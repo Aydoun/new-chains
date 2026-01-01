@@ -1,13 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { Sequence, SingleSequence } from "../types";
+import type {
+  PaginationParams,
+  Sequence,
+  SingleSequence,
+  TimeFilter,
+} from "@/app/types";
 import { API_BASE_URL, DEFAULT_PAGE_SIZE } from "@/lib/constants";
-
-export type TimeFilter =
-  | "last-hour"
-  | "today"
-  | "this-week"
-  | "this-month"
-  | undefined;
+import { getQueryParams } from "@/lib/utils";
 
 export type BulkCreateFramesResponse = {
   ids: number[];
@@ -34,39 +33,18 @@ export type PaginatedSequencesResponse = {
   nextPage: number | null;
 };
 
-export type PaginationParams = {
-  page?: number;
-  limit?: number;
-  userId?: string;
-};
-
 export const sequenceApi = createApi({
   reducerPath: "sequenceApi",
   baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL, credentials: "include" }),
   endpoints: (builder) => ({
     getSequencesByUser: builder.query<
       PaginatedSequencesResponse,
-      (PaginationParams & { userId?: string; timeFilter?: TimeFilter }) | void
+      PaginationParams | void
     >({
-      query: ({
-        userId,
-        page = 1,
-        limit = DEFAULT_PAGE_SIZE,
-        timeFilter,
-      } = {}) => {
-        const params = new URLSearchParams({
-          page: String(page),
-          limit: String(limit),
-        });
+      query: ({ page = 1, limit = DEFAULT_PAGE_SIZE, timeFilter } = {}) => {
+        const params = getQueryParams({ page, limit, timeFilter });
 
-        if (userId) {
-          params.set("id", userId);
-        }
-        if (timeFilter) {
-          params.set("timeFilter", timeFilter);
-        }
-
-        return `sequence/fetch?${params.toString()}`;
+        return `sequence/fetch?${params}`;
       },
     }),
     getStudioSequences: builder.query<
@@ -79,19 +57,9 @@ export const sequenceApi = createApi({
         userId,
         timeFilter,
       } = {}) => {
-        const params = new URLSearchParams({
-          page: String(page),
-          limit: String(limit),
-        });
+        const params = getQueryParams({ page, userId, limit, timeFilter });
 
-        if (timeFilter) {
-          params.set("timeFilter", timeFilter);
-        }
-        if (userId) {
-          params.set("userId", userId);
-        }
-
-        return `sequence/studio?${params.toString()}`;
+        return `sequence/studio?${params}`;
       },
     }),
     getSequenceById: builder.query<SingleSequence, number | string>({

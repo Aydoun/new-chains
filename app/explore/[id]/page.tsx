@@ -4,12 +4,9 @@ import { useMemo, useState } from "react";
 import { translate } from "@/lib/i18n";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
-import {
-  TimeFilter,
-  useLazyGetStudioSequencesQuery,
-} from "@/app/services/sequences";
+import { useLazyGetStudioSequencesQuery } from "@/app/services/sequences";
 import { useInfinitePagination } from "@/hooks/useInfinitePagination";
-import { Sequence } from "@/app/types";
+import { Sequence, TimeFilter } from "@/app/types";
 import { SessionLoader } from "@/components/ui/spinner";
 import { useGetUserByIdQuery } from "@/app/services/users";
 import { StudioView } from "@/components/studio-view";

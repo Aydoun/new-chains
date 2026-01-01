@@ -1,4 +1,4 @@
-import { TimeFilter } from "@/app/services/sequences";
+import { TimeFilter } from "@/app/types";
 import { translate } from "@/lib/i18n";
 import { DropdownMenu, Separator, Text } from "@radix-ui/themes";
 import { Filter } from "lucide-react";

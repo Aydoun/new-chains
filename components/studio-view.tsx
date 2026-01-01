@@ -2,23 +2,31 @@
 
 import { translate } from "@/lib/i18n";
 import { timeAgo } from "@/lib/utils";
-import { Separator, Spinner, Text, TextField } from "@radix-ui/themes";
+import {
+  Button,
+  Callout,
+  Separator,
+  Spinner,
+  Text,
+  TextField,
+} from "@radix-ui/themes";
 import {
   Filter,
   History,
   Link as LinkIcon,
   Search,
+  SquarePlus,
   type LucideIcon,
 } from "lucide-react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useRef, useState } from "react";
-import { Sequence } from "@/app/types";
+import { useEffect, useRef, useState } from "react";
+import { Sequence, TimeFilter } from "@/app/types";
 import { SequenceCard } from "./sequence-card";
 import { SequenceEmptyState } from "./sequence-empty-state";
 import { SequenceErrorState } from "./sequence-error-state";
 import { ViewSequence } from "./view-sequence";
 import { FilterDropdown } from "./filter-dropdown";
-import { TimeFilter } from "@/app/services/sequences";
+import { CreateSequenceForm } from "./ui/create-sequence";
 
 type StatCard = {
   icon: LucideIcon;
@@ -64,19 +72,40 @@ export function StudioView({
   deletingSequenceRef,
 }: Props) {
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [showCreationSuccess, setShowCreationSuccess] = useState(false);
   const currentSequenceId = useRef<number | string | null>(null);
 
+  useEffect(() => {
+    if (showCreationSuccess) {
+      setTimeout(() => setShowCreationSuccess(false), 1000 * 10);
+    }
+  }, [showCreationSuccess]);
+
   return (
-    <div className="flex w-full overflow-hidden mt-8 md:mt-6">
+    <div className="flex w-full overflow-hidden mt-12 md:mt-6">
       <div className="flex w-full flex-col">
         <div className="flex-1 overflow-y-auto">
           <div className="mx-auto flex w-full flex-col gap-8 px-4 py-6 px-6 md:px-10">
             <div className="flex flex-col gap-6">
-              <div className="flex flex-wrap items-end justify-between gap-4">
-                <div>
+              <div className="flex flex-wrap justify-between">
+                <div className="self-center">
                   <Text size="6" weight="bold">
                     {greeting}
                   </Text>
+                </div>
+                <div className="min-h-[52px]">
+                  {showCreationSuccess && (
+                    <Callout.Root
+                      className="mt-1 p-3 px-4"
+                      color="green"
+                      role="status"
+                    >
+                      <Callout.Text>
+                        {translate("sequence.cta.creation-message")}{" "}
+                      </Callout.Text>
+                    </Callout.Root>
+                  )}
                 </div>
               </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -127,6 +156,18 @@ export function StudioView({
                   <FilterDropdown value={filter} onChange={onFilterChange} />
                 </div>
               </div>
+              <div className="flex justify-end">
+                <Button
+                  variant="surface"
+                  onClick={() => setIsCreateDialogOpen(true)}
+                  className="flex cursor-pointer h-10 w-60 items-center gap-2 px-4 text-sm font-bold"
+                >
+                  <SquarePlus />
+                  <Text size="2" weight="bold" className="tracking-[0.015em]">
+                    {translate("sequence.cta.label")}
+                  </Text>
+                </Button>
+              </div>
               <section className="mt-4 pb-24">
                 {!isError ? (
                   <>
@@ -175,6 +216,16 @@ export function StudioView({
         <ViewSequence
           sequenceId={currentSequenceId.current}
           onClose={() => setIsViewDialogOpen(false)}
+        />
+      )}
+
+      {isCreateDialogOpen && (
+        <CreateSequenceForm
+          onClose={() => {
+            setIsCreateDialogOpen(false);
+          }}
+          initialSequenceTitle=""
+          onSequenceCreated={() => setShowCreationSuccess(true)}
         />
       )}
     </div>

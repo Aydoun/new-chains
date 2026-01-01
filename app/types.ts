@@ -53,3 +53,17 @@ export type SequenceCreationFormValues = {
     description?: string;
   }[];
 };
+
+export type PaginationParams = {
+  page?: number;
+  limit?: number;
+  userId?: string;
+  timeFilter?: TimeFilter;
+};
+
+export type TimeFilter =
+  | "last-hour"
+  | "today"
+  | "this-week"
+  | "this-month"
+  | undefined;

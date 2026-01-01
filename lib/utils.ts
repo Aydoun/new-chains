@@ -1,3 +1,4 @@
+import { PaginationParams } from "@/app/types";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -49,4 +50,17 @@ export function timeAgo(
   }
 
   return rtf.format(0, "second");
+}
+
+export function getQueryParams(query: PaginationParams) {
+  const { page, limit, userId, timeFilter } = query;
+  const params = new URLSearchParams({
+    page: `${page}`,
+    limit: `${limit}`,
+  });
+
+  if (userId) params.set("userId", userId);
+  if (timeFilter) params.set("timeFilter", timeFilter);
+
+  return params.toString();
 }

@@ -123,7 +123,8 @@
       "title": "Name your Sequence",
       "publish": "Publish",
       "creation-message": "Sequence created successfully.",
-      "url-copied": "Link is copied"
+      "url-copied": "Link is copied",
+      "label": "Create a Sequence"
     },
     "draft": {
       "appendFrame": "Next Frame",

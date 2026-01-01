@@ -50,7 +50,7 @@ export default function ProfilePage() {
   if (isFetchingUser) return <SessionLoader />;
 
   return (
-    <div className={`flex w-full justify-center px-6 py-8 mt-8 md:mt-6`}>
+    <div className={`flex w-full justify-center px-6 py-8 mt-12 md:mt-6`}>
       <div className="flex w-full max-w-5xl flex-col gap-8 text-white">
         <div className="flex flex-col gap-2">
           <Heading size="7">{translate("profile.header")}</Heading>

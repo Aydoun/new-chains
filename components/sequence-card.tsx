@@ -145,6 +145,7 @@ export const SequenceCard: FC<Props> = ({
                     size="1"
                     variant="ghost"
                     onClick={handleShareLink}
+                    className="cursor-pointer"
                   >
                     {isLinkCopied ? (
                       <Text size="1">

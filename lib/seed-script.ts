@@ -1,17 +1,14 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/**
- * CommonJS-only seed script (no ESM, no import keywords)
- *
- * Install:
- *   npm i undici dotenv
- *
- * .env:
- *   BASE_URL=http://localhost:3000
- *   SESSION_TOKEN=PASTE_NEXT_AUTH_SESSION_TOKEN
- *
- * Run (recommended):
- *   npx ts-node --compiler-options "{\"module\":\"CommonJS\"}" lib/seed-script.ts
- */
+type FrameItem = {
+  key: string;
+  content: string;
+  description: string;
+};
+
+type SequenceItem = {
+  key: string;
+  title: string;
+  description: string;
+};
 
 require("dotenv/config");
 
@@ -31,13 +28,10 @@ if (!SESSION_TOKEN) {
   process.exit(1);
 }
 
-// If you’re truly CommonJS-only, do NOT set "type":"module" in package.json.
-// And prefer fixture as .js/.cjs so require() works.
 const FIXTURE_FILE =
   process.env.FIXTURE_FILE ||
   path.join(process.cwd(), "lib", "fixture.content-platform.ts");
 
-// Endpoints (adjust to your API)
 const ENDPOINTS = {
   bulkCreateFrames: "/api/frame/bulk-create",
   createSequence: "/api/sequence/create",
@@ -51,14 +45,6 @@ const USER_ID_POOL = [1, 2, 12, 13, 35, 36, 38];
 // ----------------------------
 function pickUniform(arr: number[]) {
   return arr[nodeCrypto.randomInt(0, arr.length)];
-}
-
-function uniq<T>(arr: T[]) {
-  return Array.from(new Set(arr));
-}
-
-function sleep(ms: number) {
-  return new Promise((r) => setTimeout(r, ms));
 }
 
 async function httpJson(method: string, urlPath: string, bodyObj?: any) {
@@ -96,52 +82,11 @@ async function httpJson(method: string, urlPath: string, bodyObj?: any) {
   return json;
 }
 
-async function withRetry<T>(
-  fn: () => Promise<T>,
-  opts?: { retries?: number; baseDelayMs?: number }
-): Promise<T> {
-  const retries = opts?.retries ?? 4;
-  const baseDelayMs = opts?.baseDelayMs ?? 300;
-
-  let lastErr: any;
-  for (let i = 0; i <= retries; i++) {
-    try {
-      return await fn();
-    } catch (err: any) {
-      lastErr = err;
-      const sc = err?.statusCode;
-
-      const retryable =
-        !sc || sc === 429 || (sc >= 500 && sc <= 599) || sc === 408;
-
-      if (!retryable || i === retries) break;
-
-      const delay = baseDelayMs * Math.pow(2, i);
-      console.warn(`Retrying after error (attempt ${i + 1}/${retries + 1})...`);
-      console.warn(String(err.message).slice(0, 400));
-      await sleep(delay);
-    }
-  }
-
-  throw lastErr;
-}
-
-function normalizeBulkFramePayload(frames: any[]) {
+function normalizeBulkFramePayload(frames: FrameItem[]) {
   return frames.map((f) => ({
     content: f.content,
-    description: f.description ?? null,
-    type: f.type ?? "PHRASE",
+    description: f.description,
   }));
-}
-
-function extractIdsFromBulkResponse(resp: any): number[] {
-  if (Array.isArray(resp)) return resp;
-  if (resp && Array.isArray(resp.ids)) return resp.ids;
-  throw new Error(
-    `Bulk frames endpoint returned unexpected payload: ${JSON.stringify(
-      resp
-    ).slice(0, 300)}`
-  );
 }
 
 // ----------------------------
@@ -158,16 +103,6 @@ function loadFixture(filePath: string) {
   return fixture && fixture.default ? fixture.default : fixture;
 }
 
-function buildFrameMap(frames: any[]) {
-  const map = new Map<string, any>();
-  for (const f of frames) {
-    if (!f.key) throw new Error("Frame missing key");
-    if (map.has(f.key)) throw new Error(`Duplicate frame key: ${f.key}`);
-    map.set(f.key, f);
-  }
-  return map;
-}
-
 // ----------------------------
 // Main
 // ----------------------------
@@ -176,35 +111,24 @@ async function main() {
 
   const fixture = loadFixture(FIXTURE_FILE);
 
-  const sequences = fixture?.sequences ?? [];
-  const frames = fixture?.frames ?? [];
+  const sequences: SequenceItem[] = fixture?.sequences ?? [];
+  const frames: FrameItem[] = fixture?.frames ?? [];
 
   if (!sequences.length) throw new Error("Fixture has no sequences");
   if (!frames.length) throw new Error("Fixture has no frames");
 
-  const frameMap = buildFrameMap(frames);
-
-  // Validate references
-  for (const s of sequences) {
-    const missing = (s.frameOrder ?? []).filter(
-      (k: string) => !frameMap.has(k)
-    );
-    if (missing.length) {
-      throw new Error(
-        `Sequence ${s.key || s.title} references missing frames: ${missing.join(
-          ", "
-        )}`
-      );
-    }
-  }
-
   for (let i = 0; i < sequences.length; i++) {
     const s = sequences[i];
+    const sequenceKey = s.key;
     const userId = pickUniform(USER_ID_POOL);
+
+    const correspondingFrames = frames.filter((f) => f.key === sequenceKey);
 
     try {
       // 1) create frames first (bulk)
-      const bulkPayload = { frames: normalizeBulkFramePayload(fixture.frames) };
+      const bulkPayload = {
+        frames: normalizeBulkFramePayload(correspondingFrames),
+      };
 
       const resp = await httpJson(
         "POST",
@@ -219,17 +143,13 @@ async function main() {
         frameOrder: resp.ids,
       };
 
-      const createdSequence = await httpJson(
-        "POST",
-        ENDPOINTS.createSequence,
-        seqPayload
-      );
-
-      console.log("Done: ", createdSequence);
+      await httpJson("POST", ENDPOINTS.createSequence, seqPayload);
     } catch (err: any) {
       console.log("error: ", err);
     }
   }
+
+  console.log("Done!");
 }
 
 main().catch((e: any) => {

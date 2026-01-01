@@ -45,7 +45,7 @@ type Props = {
   handleDelete?: (sequenceId: string | number) => void;
   onFilterChange: (value: TimeFilter) => void;
   filter: TimeFilter;
-  deletingSequenceRef: string | number;
+  deletingSequenceRef?: string | number;
   viewerId?: string;
   omitAuthor?: boolean;
 };

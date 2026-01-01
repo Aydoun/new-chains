@@ -1,9 +1,13 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { translate } from "@/lib/i18n";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
-import { useLazyGetStudioSequencesQuery } from "@/app/services/sequences";
+import {
+  TimeFilter,
+  useLazyGetStudioSequencesQuery,
+} from "@/app/services/sequences";
 import { useInfinitePagination } from "@/hooks/useInfinitePagination";
 import { Sequence } from "@/app/types";
 import { SessionLoader } from "@/components/ui/spinner";
@@ -13,6 +17,8 @@ import { StudioView } from "@/components/studio-view";
 export default function ExplorePage() {
   const { data: session, status } = useSession();
   const params = useParams<{ id: string }>();
+  const [timeFilter, setTimeFilter] = useState<TimeFilter>();
+
   const profileId = params?.id ?? "";
 
   const { data: user, isFetching: isFetchingUser } = useGetUserByIdQuery(
@@ -20,6 +26,10 @@ export default function ExplorePage() {
     {
       skip: !profileId,
     }
+  );
+  const initialParams = useMemo(
+    () => ({ limit: 20, userId: profileId, timeFilter }),
+    [timeFilter]
   );
   const [fetchStudioSequences] = useLazyGetStudioSequencesQuery();
   const {
@@ -30,10 +40,10 @@ export default function ExplorePage() {
     loadMore,
   } = useInfinitePagination<
     Sequence,
-    { page?: number; limit?: number; userId?: string }
+    { page?: number; limit?: number; userId?: string; timeFilter?: TimeFilter }
   >({
     fetchPage: (params) => fetchStudioSequences(params).unwrap(),
-    initialParams: { limit: 20, userId: profileId },
+    initialParams,
   });
   const isBusy =
     status === "loading" ||
@@ -53,6 +63,8 @@ export default function ExplorePage() {
       isError={isError}
       loadMore={loadMore}
       viewerId={session?.user?.id}
+      filter={timeFilter}
+      onFilterChange={setTimeFilter}
     />
   );
 }

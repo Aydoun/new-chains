@@ -90,7 +90,7 @@ export const sequenceApi = createApi({
           params.set("timeFilter", timeFilter);
         }
         if (userId) {
-          params.set("id", userId);
+          params.set("userId", userId);
         }
 
         return `sequence/studio?${params.toString()}`;

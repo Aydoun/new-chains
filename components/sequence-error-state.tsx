@@ -17,11 +17,7 @@ export function SequenceErrorState({
   className,
 }: SequenceErrorStateProps) {
   return (
-    <Flex
-      align="center"
-      justify="center"
-      className={cn("px-6 py-10", className)}
-    >
+    <Flex align="center" justify="center" className={cn("py-10", className)}>
       <Card
         className="w-full max-w-2xl border border-slate-200/70 bg-white/90 p-8 shadow-2xl backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80"
         variant="surface"

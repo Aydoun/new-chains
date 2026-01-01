@@ -1,6 +1,6 @@
 import { TimeFilter } from "@/app/services/sequences";
 import { translate } from "@/lib/i18n";
-import { DropdownMenu, Text } from "@radix-ui/themes";
+import { DropdownMenu, Separator, Text } from "@radix-ui/themes";
 import { Filter } from "lucide-react";
 
 type TimeFilterOption = {
@@ -13,10 +13,6 @@ const FILTER_OPTIONS: TimeFilterOption[] = [
   { value: "this-week" },
   { value: "this-month" },
 ];
-
-function isTimeFilter(value: string): value is TimeFilter {
-  return FILTER_OPTIONS.some((option) => option.value === value);
-}
 
 function getLabelForFilter(value?: TimeFilter) {
   const translationKey = FILTER_OPTIONS.find(
@@ -51,14 +47,21 @@ export function FilterDropdown({ value, onChange }: Props) {
         <DropdownMenu.RadioGroup
           value={value ?? ""}
           onValueChange={(selected) =>
-            onChange(isTimeFilter(selected) ? selected : undefined)
+            onChange((selected ?? undefined) as TimeFilter)
           }
         >
           {FILTER_OPTIONS.map((option) => (
-            <DropdownMenu.RadioItem key={option.value} value={option.value}>
+            <DropdownMenu.RadioItem
+              key={option.value}
+              value={option.value ?? ""}
+            >
               {translate(`filter.${option.value}`)}
             </DropdownMenu.RadioItem>
           ))}
+          <Separator className="w-full my-3" />
+          <DropdownMenu.RadioItem key="clear" value="">
+            Clear Filter
+          </DropdownMenu.RadioItem>
         </DropdownMenu.RadioGroup>
       </DropdownMenu.Content>
     </DropdownMenu.Root>

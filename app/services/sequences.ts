@@ -4,7 +4,12 @@ import type { Sequence, SingleSequence } from "../types";
 const API_BASE_URL = `/api/`;
 const DEFAULT_PAGE_SIZE = 20;
 
-export type TimeFilter = "last-hour" | "today" | "this-week" | "this-month";
+export type TimeFilter =
+  | "last-hour"
+  | "today"
+  | "this-week"
+  | "this-month"
+  | undefined;
 
 export type BulkCreateFramesResponse = {
   ids: number[];

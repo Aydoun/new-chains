@@ -84,6 +84,15 @@ export default function Home({
             size="6"
           >
             {translate("navigation.explore")}
+            <Text
+              data-testid="homepage-description"
+              weight="bold"
+              size="3"
+              className="text-amber-700"
+              as="div"
+            >
+              {translate("navigation.exploreDescription")}
+            </Text>
           </Text>
           <div className="min-h-[52px]">
             {showCreationSuccess && (
@@ -109,6 +118,7 @@ export default function Home({
           <FilterDropdown value={timeFilter} onChange={setTimeFilter} />
         </div>
       </div>
+
       <div className="relative flex-1 md:max-w-md">
         <TextField.Root
           type="text"

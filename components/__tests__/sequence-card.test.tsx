@@ -4,100 +4,83 @@ import { Theme } from "@radix-ui/themes";
 import { vi } from "vitest";
 import { SequenceCard } from "../sequence-card";
 
-const fetchSequenceMock = vi.fn();
-const deleteSequenceMock = vi.fn(() => ({
-  unwrap: () => Promise.resolve({ message: "deleted" }),
-}));
-
-type MockSequenceQueryState = {
-  data?: {
-    frames: Array<{ id?: number; content?: string; description?: string }>;
-    FrameOrder?: number[];
-  };
-  isFetching: boolean;
-  isError: boolean;
-};
-
-const mockSequenceQueryState: MockSequenceQueryState = {
-  data: {
-    frames: [{ id: 1, content: "Frame content", description: "Details" }],
-    FrameOrder: [1],
-  },
-  isFetching: false,
-  isError: false,
-};
-
-vi.mock("@/app/services/sequences", () => ({
-  useLazyGetSequenceByIdQuery: () => [
-    fetchSequenceMock,
-    mockSequenceQueryState,
-  ],
-  useDeleteSequenceMutation: () => [deleteSequenceMock, { isLoading: false }],
-}));
-
 const baseSequence = {
   id: 7,
   title: "Sequence Title",
   description: "A nice description",
   FrameOrder: [],
   userId: 1,
+  user: { id: 1, username: "creator", avatarUrl: null },
+  firstFrame: null,
   isDeleted: false,
-  visibility: "Public",
-  createdAt: "",
-  updatedAt: "",
+  visibility: "PUBLIC" as const,
+  createdAt: "2024-04-01T12:00:00Z",
+  updatedAt: "2024-04-01T12:00:00Z",
 };
 
-const userId = "1";
+const renderCard = (props?: {
+  onClick?: () => void;
+  handleDelete?: (sequenceId: string | number) => void;
+  sequenceOverrides?: Partial<typeof baseSequence>;
+  userId?: string;
+}) => {
+  const { onClick, handleDelete, sequenceOverrides, userId } = props ?? {};
 
-const renderCard = (overrides?: Partial<typeof baseSequence>) =>
-  render(
+  return render(
     <Theme appearance="dark">
       <SequenceCard
-        userId={userId}
-        sequence={{ ...baseSequence, ...overrides }}
+        userId={userId ?? "1"}
+        onClick={onClick ?? vi.fn()}
+        handleDelete={handleDelete}
+        sequence={{ ...baseSequence, ...sequenceOverrides }}
       />
     </Theme>
   );
+};
 
 describe("SequenceCard", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockSequenceQueryState.data = {
-      frames: [{ id: 1, content: "Frame content", description: "Details" }],
-      FrameOrder: [1],
-    };
-    mockSequenceQueryState.isFetching = false;
-    mockSequenceQueryState.isError = false;
-    deleteSequenceMock.mockReturnValue({
-      unwrap: () => Promise.resolve({ message: "deleted" }),
-    });
   });
 
-  it("renders default visibility label and sequence metadata", () => {
+  it("renders sequence metadata and author link", () => {
     renderCard();
 
     expect(screen.getByText("Sequence Title")).toBeInTheDocument();
-    expect(screen.getByText("Public")).toBeInTheDocument();
-    expect(screen.getByText("#7")).toBeInTheDocument();
+    expect(screen.getByText("A nice description")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "creator" })).toHaveAttribute(
+      "href",
+      "/explore/1"
+    );
   });
 
-  it("opens the dialog and fetches sequence details when clicked", async () => {
+  it("triggers the click handler when the card content is clicked", async () => {
     const user = userEvent.setup();
-    renderCard();
+    const onClick = vi.fn();
+    renderCard({ onClick });
 
     await user.click(screen.getByText("Sequence Title"));
 
-    expect(fetchSequenceMock).toHaveBeenCalledWith(baseSequence.id);
-    expect(await screen.findByText("Frame content")).toBeInTheDocument();
+    expect(onClick).toHaveBeenCalledTimes(1);
   });
 
-  it("calls the delete mutation when the delete button is clicked", async () => {
+  it("stops propagation when clicking the author link", async () => {
     const user = userEvent.setup();
-    renderCard();
+    const onClick = vi.fn();
+    renderCard({ onClick });
+
+    await user.click(screen.getByRole("link", { name: "creator" }));
+
+    expect(onClick).not.toHaveBeenCalled();
+  });
+
+  it("calls the delete handler when the delete button is clicked", async () => {
+    const user = userEvent.setup();
+    const handleDelete = vi.fn();
+    renderCard({ handleDelete });
 
     await user.click(screen.getByLabelText("Delete sequence"));
 
-    expect(deleteSequenceMock).toHaveBeenCalledWith(baseSequence.id);
-    expect(fetchSequenceMock).not.toHaveBeenCalled();
+    expect(handleDelete).toHaveBeenCalledWith(baseSequence.id);
   });
 });

@@ -100,7 +100,8 @@
     "profile": "Profile",
     "search": "Search",
     "studio": "Studio",
-    "explore": "Explore"
+    "explore": "Explore",
+    "exploreDescription": "Every Sequence tells a story through frames"
   },
   "profile": {
     "cta": {

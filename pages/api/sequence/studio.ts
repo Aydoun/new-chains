@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
 import { requireApiSession } from "@/lib/api/auth";
+import { resolveTimeFilterDate } from "@/lib/time-filter";
 
 const DEFAULT_PAGE_SIZE = 20;
 const MAX_PAGE_SIZE = 50;
@@ -34,6 +35,7 @@ export default async function handler(
       : sessionResult.userId;
 
   const limit = Math.min(Math.max(requestedLimit, 1), MAX_PAGE_SIZE);
+  const createdAfter = resolveTimeFilterDate(req.query.timeFilter);
 
   try {
     const sequences = await prisma.sequence.findMany({
@@ -41,6 +43,7 @@ export default async function handler(
         userId: clientId,
         isDeleted: false,
         visibility: "PUBLIC",
+        ...(createdAfter ? { createdAt: { gte: createdAfter } } : {}),
       },
       skip: (page - 1) * limit,
       take: limit + 1,

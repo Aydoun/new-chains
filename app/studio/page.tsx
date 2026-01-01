@@ -24,7 +24,6 @@ export default function StudioPage() {
   } = useInfinitePagination<Sequence, { page?: number; limit?: number }>({
     fetchPage: (params) => fetchStudioSequences(params).unwrap(),
     initialParams: studioQueryParams,
-    enabled: status === "authenticated",
   });
   const [deleteSequence, { isLoading: isDeleting }] =
     useDeleteSequenceMutation();

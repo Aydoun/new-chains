@@ -1,10 +1,10 @@
-import { SequenceTimeFilter } from "@/app/services/sequences";
+import { TimeFilter } from "@/app/services/sequences";
 import { translate } from "@/lib/i18n";
 import { DropdownMenu, Text } from "@radix-ui/themes";
 import { Filter } from "lucide-react";
 
 type TimeFilterOption = {
-  value: SequenceTimeFilter;
+  value: TimeFilter;
 };
 
 const FILTER_OPTIONS: TimeFilterOption[] = [
@@ -14,11 +14,11 @@ const FILTER_OPTIONS: TimeFilterOption[] = [
   { value: "this-month" },
 ];
 
-function isSequenceTimeFilter(value: string): value is SequenceTimeFilter {
+function isTimeFilter(value: string): value is TimeFilter {
   return FILTER_OPTIONS.some((option) => option.value === value);
 }
 
-function getLabelForFilter(value?: SequenceTimeFilter) {
+function getLabelForFilter(value?: TimeFilter) {
   const translationKey = FILTER_OPTIONS.find(
     (option) => option.value === value
   )?.value;
@@ -27,8 +27,8 @@ function getLabelForFilter(value?: SequenceTimeFilter) {
 }
 
 type Props = {
-  value?: SequenceTimeFilter;
-  onChange: (value: SequenceTimeFilter | undefined) => void;
+  value?: TimeFilter;
+  onChange: (value: TimeFilter | undefined) => void;
 };
 
 export function FilterDropdown({ value, onChange }: Props) {
@@ -51,7 +51,7 @@ export function FilterDropdown({ value, onChange }: Props) {
         <DropdownMenu.RadioGroup
           value={value ?? ""}
           onValueChange={(selected) =>
-            onChange(isSequenceTimeFilter(selected) ? selected : undefined)
+            onChange(isTimeFilter(selected) ? selected : undefined)
           }
         >
           {FILTER_OPTIONS.map((option) => (

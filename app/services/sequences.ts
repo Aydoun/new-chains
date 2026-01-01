@@ -4,11 +4,7 @@ import type { Sequence, SingleSequence } from "../types";
 const API_BASE_URL = `/api/`;
 const DEFAULT_PAGE_SIZE = 20;
 
-export type SequenceTimeFilter =
-  | "last-hour"
-  | "today"
-  | "this-week"
-  | "this-month";
+export type TimeFilter = "last-hour" | "today" | "this-week" | "this-month";
 
 export type BulkCreateFramesResponse = {
   ids: number[];
@@ -47,9 +43,14 @@ export const sequenceApi = createApi({
   endpoints: (builder) => ({
     getSequencesByUser: builder.query<
       PaginatedSequencesResponse,
-      (PaginationParams & { userId?: string }) | void
+      (PaginationParams & { userId?: string; timeFilter?: TimeFilter }) | void
     >({
-      query: ({ userId, page = 1, limit = DEFAULT_PAGE_SIZE } = {}) => {
+      query: ({
+        userId,
+        page = 1,
+        limit = DEFAULT_PAGE_SIZE,
+        timeFilter,
+      } = {}) => {
         const params = new URLSearchParams({
           page: String(page),
           limit: String(limit),
@@ -58,21 +59,40 @@ export const sequenceApi = createApi({
         if (userId) {
           params.set("id", userId);
         }
+        if (timeFilter) {
+          params.set("timeFilter", timeFilter);
+        }
 
         return `sequence/fetch?${params.toString()}`;
       },
     }),
     getStudioSequences: builder.query<
       PaginatedSequencesResponse,
-      PaginationParams
+      PaginationParams & { timeFilter?: TimeFilter }
     >({
-      query: ({ page = 1, limit = DEFAULT_PAGE_SIZE, userId } = {}) =>
-        `sequence/studio?page=${page}&limit=${limit}${
-          userId ? `&userId=${userId}` : ""
-        }`,
+      query: ({
+        page = 1,
+        limit = DEFAULT_PAGE_SIZE,
+        userId,
+        timeFilter,
+      } = {}) => {
+        const params = new URLSearchParams({
+          page: String(page),
+          limit: String(limit),
+        });
+
+        if (timeFilter) {
+          params.set("timeFilter", timeFilter);
+        }
+        if (userId) {
+          params.set("id", userId);
+        }
+
+        return `sequence/studio?${params.toString()}`;
+      },
     }),
     getSequenceById: builder.query<SingleSequence, number | string>({
-      query: (sequenceId) => `sequence/read?id=${sequenceId}`,
+      query: (sequenceId) => `sequence/${sequenceId}`,
     }),
     createSequence: builder.mutation<Sequence, SequenceInput>({
       query: (input) => ({

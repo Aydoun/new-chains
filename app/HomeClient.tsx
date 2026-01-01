@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import {
-  SequenceTimeFilter,
+  TimeFilter,
   useLazyGetSequencesByUserQuery,
 } from "./services/sequences";
 import { SequenceCard } from "@/components/sequence-card";
@@ -31,13 +31,12 @@ export default function Home({
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [showCreationSuccess, setShowCreationSuccess] = useState(false);
-  const [timeFilter, setTimeFilter] = useState<SequenceTimeFilter>();
+  const [timeFilter, setTimeFilter] = useState<TimeFilter>();
   const sequenceIdRef = useRef<string | number | null>(null);
   const sequenceTitleRef = useRef<string>("");
   const userId = session?.user?.id;
   const [fetchSequences] = useLazyGetSequencesByUserQuery();
-  const queryParams = { limit: 20, timeFilter };
-  const canFetch = status === "authenticated";
+  const queryParams = useMemo(() => ({ limit: 20, timeFilter }), [timeFilter]);
   const {
     items: sequences,
     hasMore,
@@ -46,19 +45,15 @@ export default function Home({
     loadMore,
   } = useInfinitePagination<
     Sequence,
-    { userId?: string; limit?: number; timeFilter?: SequenceTimeFilter }
+    { userId?: string; limit?: number; timeFilter?: TimeFilter }
   >({
     fetchPage: (params) => fetchSequences(params).unwrap(),
     initialParams: queryParams,
-    enabled: canFetch,
   });
   const isError = Boolean(error);
   const isBusy =
     status === "loading" ||
-    (canFetch &&
-      isLoading &&
-      Array.isArray(sequences) &&
-      sequences.length === 0);
+    (isLoading && Array.isArray(sequences) && sequences.length === 0);
 
   useEffect(() => {
     if (showCreationSuccess) {

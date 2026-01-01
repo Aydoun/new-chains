@@ -19,7 +19,6 @@ export function ViewSequence({ sequenceId, onClose }: Props) {
   const { data, isFetching, isError } = useGetSequenceByIdQuery(
     sequenceId ?? skipToken
   );
-
   const guardedFrames = data?.frames ?? [];
 
   const handleDialogChange = (open: boolean) => {
@@ -57,8 +56,8 @@ export function ViewSequence({ sequenceId, onClose }: Props) {
                   ? guardedFrames.map((frame, index) => (
                       <SequenceFrame
                         key={frame?.id ?? index}
-                        text={frame?.content || "Empty frame"}
-                        description={frame?.description || ""}
+                        text={frame?.content}
+                        description={frame?.description}
                       />
                     ))
                   : [

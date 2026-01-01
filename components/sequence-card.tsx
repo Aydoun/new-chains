@@ -181,7 +181,7 @@ export const SequenceFrame: FC<SequenceFrameProps> = ({
           </p>
         </blockquote>
         {description && (
-          <p className="px-8 text-sm font-medium text-zinc-800">
+          <p className="px-8 text-sm text-amber-700 font-medium text-zinc-800">
             {description}
           </p>
         )}

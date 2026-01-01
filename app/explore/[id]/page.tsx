@@ -34,7 +34,6 @@ export default function ExplorePage() {
   >({
     fetchPage: (params) => fetchStudioSequences(params).unwrap(),
     initialParams: { limit: 20, userId: profileId },
-    enabled: Boolean(profileId),
   });
   const isBusy =
     status === "loading" ||

@@ -17,6 +17,8 @@ import { SequenceCard } from "./sequence-card";
 import { SequenceEmptyState } from "./sequence-empty-state";
 import { SequenceErrorState } from "./sequence-error-state";
 import { ViewSequence } from "./view-sequence";
+import { FilterDropdown } from "./filter-dropdown";
+import { TimeFilter } from "@/app/services/sequences";
 
 type StatCard = {
   icon: LucideIcon;
@@ -41,6 +43,8 @@ type Props = {
   isError: boolean;
   loadMore: () => void;
   handleDelete?: (sequenceId: string | number) => void;
+  onFilterChange: (value: TimeFilter) => void;
+  filter: TimeFilter;
   viewerId?: string;
   omitAuthor?: boolean;
 };
@@ -54,6 +58,8 @@ export function StudioView({
   handleDelete,
   viewerId,
   omitAuthor = true,
+  onFilterChange,
+  filter,
 }: Props) {
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const currentSequenceId = useRef<number | string | null>(null);
@@ -116,12 +122,7 @@ export function StudioView({
                 </div>
                 <div className="flex items-center gap-2 self-end md:self-auto">
                   <div className="mx-1 hidden h-8 w-px bg-[#233348] md:block" />
-                  <button className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-[#92a9c9] transition hover:bg-[#1a2533] hover:text-white">
-                    <Filter className="h-5 w-5" aria-hidden="true" />
-                    <Text size="2" weight="medium" className="hidden sm:inline">
-                      {translate("common.filter")}
-                    </Text>
-                  </button>
+                  <FilterDropdown value={filter} onChange={onFilterChange} />
                 </div>
               </div>
               <section className="mt-4 pb-24">

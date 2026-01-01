@@ -1,7 +1,9 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import {
+  TimeFilter,
   useDeleteSequenceMutation,
   useLazyGetStudioSequencesQuery,
 } from "@/app/services/sequences";
@@ -14,16 +16,23 @@ import { StudioView } from "@/components/studio-view";
 export default function StudioPage() {
   const { data: session, status } = useSession();
   const [fetchStudioSequences] = useLazyGetStudioSequencesQuery();
-  const studioQueryParams = { limit: 20 };
+  const [timeFilter, setTimeFilter] = useState<TimeFilter>();
+  const initialParams = useMemo(
+    () => ({ limit: 20, timeFilter }),
+    [timeFilter]
+  );
   const {
     items: sequences,
     hasMore,
     isLoading,
     error,
     loadMore,
-  } = useInfinitePagination<Sequence, { page?: number; limit?: number }>({
+  } = useInfinitePagination<
+    Sequence,
+    { page?: number; limit?: number; timeFilter?: TimeFilter }
+  >({
     fetchPage: (params) => fetchStudioSequences(params).unwrap(),
-    initialParams: studioQueryParams,
+    initialParams,
   });
   const [deleteSequence, { isLoading: isDeleting }] =
     useDeleteSequenceMutation();
@@ -47,12 +56,14 @@ export default function StudioPage() {
       greeting={translate("studio.greetings", {
         name: session?.user?.name ?? "",
       })}
-      sequences={sequences ?? []}
+      sequences={sequences}
       hasMore={hasMore}
       isError={isError}
       loadMore={loadMore}
       handleDelete={handleDelete}
       viewerId={session?.user?.id}
+      filter={timeFilter}
+      onFilterChange={setTimeFilter}
     />
   );
 }

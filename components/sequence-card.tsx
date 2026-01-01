@@ -60,7 +60,7 @@ export const SequenceCard: FC<Props> = ({
     <>
       <div
         onClick={onClick}
-        className="group flex cursor-pointer flex-col overflow-hidden rounded-xl border border-[#233348] bg-[#1a2533] transition-all duration-300 hover:border-[#136dec]/50 hover:shadow-xl hover:shadow-black/20"
+        className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-xl bg-[#1a2533]"
       >
         <div className="h-44 w-full overflow-hidden">
           <SequenceFrame
@@ -68,17 +68,17 @@ export const SequenceCard: FC<Props> = ({
             count={sequence.FrameOrder.length}
           />
         </div>
-        <div className="flex flex-col gap-3 p-5">
+        <div className="flex flex-1 flex-col gap-3 p-5">
           <div className="space-y-1">
             <Text
               size="4"
               weight="bold"
-              className="leading-snug text-white transition-colors group-hover:text-primary-main"
+              className="line-clamp-2leading-snug text-white transition-colors group-hover:text-primary-main"
               as="div"
             >
               {sequence.title}
             </Text>
-            <Text size="2" className="text-[#92a9c9]">
+            <Text size="2" className="line-clamp-3 text-[#92a9c9]">
               {sequence.description}
             </Text>
           </div>
@@ -181,7 +181,7 @@ export const SequenceFrame: FC<SequenceFrameProps> = ({
           </p>
         </blockquote>
         {description && (
-          <p className="px-8 text-sm text-amber-700 font-medium text-zinc-800">
+          <p className="px-8 text-sm text-amber-700 font-medium">
             {description}
           </p>
         )}

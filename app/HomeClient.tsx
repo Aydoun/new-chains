@@ -36,7 +36,10 @@ export default function Home({
   const sequenceTitleRef = useRef<string>("");
   const userId = session?.user?.id;
   const [fetchSequences] = useLazyGetSequencesByUserQuery();
-  const queryParams = useMemo(() => ({ limit: 20, timeFilter }), [timeFilter]);
+  const initialParams = useMemo(
+    () => ({ limit: 20, timeFilter }),
+    [timeFilter]
+  );
   const {
     items: sequences,
     hasMore,
@@ -48,7 +51,7 @@ export default function Home({
     { userId?: string; limit?: number; timeFilter?: TimeFilter }
   >({
     fetchPage: (params) => fetchSequences(params).unwrap(),
-    initialParams: queryParams,
+    initialParams,
   });
   const isError = Boolean(error);
   const isBusy =

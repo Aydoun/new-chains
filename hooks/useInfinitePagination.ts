@@ -14,19 +14,17 @@ type UseInfinitePaginationArgs<TItem, TParams extends object> = {
   ) => Promise<PaginatedResult<TItem>>;
   initialParams: TParams;
   initialPage?: number;
-  enabled?: boolean;
 };
 
 export function useInfinitePagination<TItem, TParams extends object>({
   fetchPage,
   initialParams,
   initialPage = 1,
-  enabled = true,
 }: UseInfinitePaginationArgs<TItem, TParams>) {
   const [items, setItems] = useState<TItem[]>([]);
   const [page, setPage] = useState(initialPage);
   const [hasMore, setHasMore] = useState(true);
-  const [isLoading, setIsLoading] = useState(enabled);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<unknown>(null);
 
   const reset = useCallback(() => {
@@ -57,17 +55,15 @@ export function useInfinitePagination<TItem, TParams extends object>({
   );
 
   const loadMore = useCallback(async () => {
-    if (!hasMore || isLoading || !enabled) return;
+    if (!hasMore || isLoading) return;
     await fetchAndSet(page);
-  }, [enabled, hasMore, isLoading]);
+  }, [hasMore, isLoading]);
 
   useEffect(() => {
-    if (!enabled) return;
-
     setIsLoading(true);
     reset();
     fetchAndSet(initialPage, true);
-  }, [enabled, initialPage]);
+  }, [initialPage, initialParams]);
 
   return {
     items,

@@ -1,22 +1,23 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useLazyGetSequencesByUserQuery } from "./services/sequences";
 import { SequenceCard } from "@/components/sequence-card";
 import { CreateSequenceForm } from "@/components/ui/create-sequence";
 import { translate } from "@/lib/i18n";
-import { Callout, Separator, Text, TextField } from "@radix-ui/themes";
+import { Callout, Separator, Spinner, Text, TextField } from "@radix-ui/themes";
 import Link from "next/link";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { SessionLoader } from "@/components/ui/spinner";
 import { ViewSequence } from "@/components/view-sequence";
-import { Filter, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { SequenceEmptyState } from "@/components/sequence-empty-state";
 import { SequenceErrorState } from "@/components/sequence-error-state";
 import { CreateSequenceCta } from "@/components/create-sequence-cta";
-import { Sequence } from "./types";
+import { Sequence, TimeFilter } from "./types";
 import { useInfinitePagination } from "@/hooks/useInfinitePagination";
+import { FilterDropdown } from "@/components/filter-dropdown";
 
 export default function Home({
   sequenceId,
@@ -27,34 +28,36 @@ export default function Home({
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [showCreationSuccess, setShowCreationSuccess] = useState(false);
+  const [timeFilter, setTimeFilter] = useState<TimeFilter>();
   const sequenceIdRef = useRef<string | number | null>(null);
   const sequenceTitleRef = useRef<string>("");
   const userId = session?.user?.id;
   const [fetchSequences] = useLazyGetSequencesByUserQuery();
-  const queryParams = { limit: 20 };
-  const canFetch = status === "authenticated";
+  const initialParams = useMemo(
+    () => ({ limit: 20, timeFilter }),
+    [timeFilter]
+  );
   const {
     items: sequences,
     hasMore,
     isLoading,
     error,
     loadMore,
-  } = useInfinitePagination<Sequence, { userId?: string; limit?: number }>({
+  } = useInfinitePagination<
+    Sequence,
+    { userId?: string; limit?: number; timeFilter?: TimeFilter }
+  >({
     fetchPage: (params) => fetchSequences(params).unwrap(),
-    initialParams: queryParams,
-    enabled: canFetch,
+    initialParams,
   });
   const isError = Boolean(error);
   const isBusy =
     status === "loading" ||
-    (canFetch &&
-      isLoading &&
-      Array.isArray(sequences) &&
-      sequences.length === 0);
+    (isLoading && Array.isArray(sequences) && sequences.length === 0);
 
   useEffect(() => {
     if (showCreationSuccess) {
-      setTimeout(() => setShowCreationSuccess(false), 5000);
+      setTimeout(() => setShowCreationSuccess(false), 1000 * 10);
     }
   }, [showCreationSuccess]);
 
@@ -68,7 +71,7 @@ export default function Home({
   if (isBusy) return <SessionLoader />;
 
   return (
-    <div className="flex flex-col gap-4 px-6 py-0 px-6 mt-12 md:mt-6">
+    <div className="flex flex-col gap-4 px-6 py-0 px-6 mt-20 md:mt-6">
       <div className="flex justify-between">
         <div className="flex gap-4">
           <Text
@@ -78,6 +81,15 @@ export default function Home({
             size="6"
           >
             {translate("navigation.explore")}
+            <Text
+              data-testid="homepage-description"
+              weight="bold"
+              size="3"
+              className="text-amber-700"
+              as="div"
+            >
+              {translate("navigation.exploreDescription")}
+            </Text>
           </Text>
           <div className="min-h-[52px]">
             {showCreationSuccess && (
@@ -100,11 +112,10 @@ export default function Home({
           </div>
         </div>
         <div className="self-center">
-          <button className=" rounded-lg px-3 py-2 text-sm font-medium text-[#92a9c9] transition hover:bg-[#1a2533] hover:text-white hidden md:block">
-            <Filter className="h-5 w-5" aria-hidden="true" />
-          </button>
+          <FilterDropdown value={timeFilter} onChange={setTimeFilter} />
         </div>
       </div>
+
       <div className="relative flex-1 md:max-w-md">
         <TextField.Root
           type="text"
@@ -126,7 +137,7 @@ export default function Home({
                 hasMore={hasMore}
                 loader={
                   <div className="flex justify-center py-4">
-                    <Text>{translate("common.loading")}</Text>
+                    <Spinner />
                   </div>
                 }
                 endMessage={<Separator className="mt-6 w-full" />}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import {
   useDeleteSequenceMutation,
@@ -8,33 +9,39 @@ import {
 import { SessionLoader } from "@/components/ui/spinner";
 import { translate } from "@/lib/i18n";
 import { useInfinitePagination } from "@/hooks/useInfinitePagination";
-import { Sequence } from "@/app/types";
+import { Sequence, TimeFilter } from "@/app/types";
 import { StudioView } from "@/components/studio-view";
 
 export default function StudioPage() {
   const { data: session, status } = useSession();
   const [fetchStudioSequences] = useLazyGetStudioSequencesQuery();
-  const studioQueryParams = { limit: 20 };
+  const [timeFilter, setTimeFilter] = useState<TimeFilter>();
+  const sequenceToDelete = useRef<string | number>("");
+  const initialParams = useMemo(
+    () => ({ limit: 20, timeFilter }),
+    [timeFilter]
+  );
   const {
     items: sequences,
     hasMore,
     isLoading,
     error,
     loadMore,
-  } = useInfinitePagination<Sequence, { page?: number; limit?: number }>({
+  } = useInfinitePagination<
+    Sequence,
+    { page?: number; limit?: number; timeFilter?: TimeFilter }
+  >({
     fetchPage: (params) => fetchStudioSequences(params).unwrap(),
-    initialParams: studioQueryParams,
-    enabled: status === "authenticated",
+    initialParams,
   });
   const [deleteSequence, { isLoading: isDeleting }] =
     useDeleteSequenceMutation();
-  const isBusy =
-    status === "loading" ||
-    (isLoading && Array.isArray(sequences) && sequences.length === 0);
+  const isBusy = status === "loading" || isLoading;
   const isError = Boolean(error);
 
   const handleDelete = async (sequenceId: string | number) => {
     try {
+      sequenceToDelete.current = sequenceId;
       await deleteSequence(sequenceId).unwrap();
     } catch (error) {
       console.error("Unable to delete sequence right now.", error);
@@ -48,12 +55,15 @@ export default function StudioPage() {
       greeting={translate("studio.greetings", {
         name: session?.user?.name ?? "",
       })}
-      sequences={sequences ?? []}
+      sequences={sequences}
       hasMore={hasMore}
       isError={isError}
       loadMore={loadMore}
       handleDelete={handleDelete}
       viewerId={session?.user?.id}
+      filter={timeFilter}
+      onFilterChange={setTimeFilter}
+      deletingSequenceRef={isDeleting ? sequenceToDelete.current : ""}
     />
   );
 }

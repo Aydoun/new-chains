@@ -4,7 +4,7 @@ export type TimeFilterValue =
   | "this-week"
   | "this-month";
 
-function normalizeTimeFilter(
+export function normalizeTimeFilter(
   value?: string | string[]
 ): TimeFilterValue | null {
   const filterValue = Array.isArray(value) ? value[0] : value;
@@ -23,13 +23,13 @@ function normalizeTimeFilter(
     : null;
 }
 
-function startOfDay(now: Date) {
+export function startOfDay(now: Date) {
   const start = new Date(now);
   start.setHours(0, 0, 0, 0);
   return start;
 }
 
-function startOfWeek(now: Date) {
+export function startOfWeek(now: Date) {
   const start = startOfDay(now);
   const day = start.getDay();
   const diffFromMonday = (day + 6) % 7;

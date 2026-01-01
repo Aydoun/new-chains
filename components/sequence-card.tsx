@@ -3,7 +3,7 @@ import { Sequence } from "@/app/types";
 import { Clock3, Pencil, Share2, Trash2, User } from "lucide-react";
 import { translate } from "@/lib/i18n";
 import { cn, timeAgo } from "@/lib/utils";
-import { IconButton, Text } from "@radix-ui/themes";
+import { IconButton, Spinner, Text } from "@radix-ui/themes";
 import Link from "next/link";
 
 export interface SequenceCardProps {
@@ -17,6 +17,7 @@ interface Props {
   sequence: Sequence;
   userId: string | undefined;
   onClick: () => void;
+  deletingSequenceRef?: string | number;
   handleDelete?: (sequenceId: string | number) => void;
   omitAuthor?: boolean;
 }
@@ -27,6 +28,7 @@ export const SequenceCard: FC<Props> = ({
   onClick,
   handleDelete,
   omitAuthor = false,
+  deletingSequenceRef,
 }) => {
   const [isLinkCopied, setIsLinkCopied] = useState(false);
   const isOwner = userId === `${sequence.userId}`;
@@ -60,7 +62,7 @@ export const SequenceCard: FC<Props> = ({
     <>
       <div
         onClick={onClick}
-        className="group flex cursor-pointer flex-col overflow-hidden rounded-xl border border-[#233348] bg-[#1a2533] transition-all duration-300 hover:border-[#136dec]/50 hover:shadow-xl hover:shadow-black/20"
+        className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-xl bg-[#1a2533]"
       >
         <div className="h-44 w-full overflow-hidden">
           <SequenceFrame
@@ -68,17 +70,17 @@ export const SequenceCard: FC<Props> = ({
             count={sequence.FrameOrder.length}
           />
         </div>
-        <div className="flex flex-col gap-3 p-5">
+        <div className="flex flex-1 flex-col gap-3 p-5">
           <div className="space-y-1">
             <Text
               size="4"
               weight="bold"
-              className="leading-snug text-white transition-colors group-hover:text-primary-main"
+              className="line-clamp-2leading-snug text-white transition-colors group-hover:text-primary-main"
               as="div"
             >
               {sequence.title}
             </Text>
-            <Text size="2" className="text-[#92a9c9]">
+            <Text size="2" className="line-clamp-3 text-[#92a9c9]">
               {sequence.description}
             </Text>
           </div>
@@ -103,48 +105,59 @@ export const SequenceCard: FC<Props> = ({
                 {timeAgo(sequence.createdAt)}
               </Text>
             </div>
-            <div className="flex items-center gap-2">
-              {isOwner && (
-                <>
+            {deletingSequenceRef === sequence.id ? (
+              <Spinner />
+            ) : (
+              <>
+                <div
+                  data-testid="sequence-menu"
+                  className="flex items-center gap-2"
+                >
+                  {isOwner && (
+                    <>
+                      <IconButton
+                        aria-label="Edit sequence"
+                        size="1"
+                        variant="ghost"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          event.preventDefault();
+                        }}
+                        className="text-amber-600 hover:bg-amber-500/15 cursor-pointer"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </IconButton>
+                      <IconButton
+                        aria-label="Delete sequence"
+                        size="1"
+                        variant="ghost"
+                        onClick={onDelete}
+                        className={cn(
+                          "text-red-600 hover:bg-red-600/15 cursor-pointer"
+                        )}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </IconButton>
+                    </>
+                  )}
                   <IconButton
-                    aria-label="Edit sequence"
+                    aria-label="Share sequence"
                     size="1"
                     variant="ghost"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      event.preventDefault();
-                    }}
-                    className="text-amber-300 hover:bg-amber-500/15 focus-visible:ring-2 focus-visible:ring-amber-500"
+                    onClick={handleShareLink}
+                    className="cursor-pointer"
                   >
-                    <Pencil className="h-4 w-4" />
-                  </IconButton>
-                  <IconButton
-                    aria-label="Delete sequence"
-                    size="1"
-                    variant="ghost"
-                    onClick={onDelete}
-                    className={cn(
-                      "text-red-600 hover:bg-red-600/15 focus-visible:ring-2 focus-visible:ring-red-600"
+                    {isLinkCopied ? (
+                      <Text size="1">
+                        {translate("sequence.cta.url-copied")}
+                      </Text>
+                    ) : (
+                      <Share2 className="text-primary-main h-4 w-4" />
                     )}
-                  >
-                    <Trash2 className="h-4 w-4" />
                   </IconButton>
-                </>
-              )}
-              <IconButton
-                aria-label="Share sequence"
-                size="1"
-                variant="ghost"
-                onClick={handleShareLink}
-                className="cursor-pointer"
-              >
-                {isLinkCopied ? (
-                  <Text size="1">{translate("sequence.cta.url-copied")}</Text>
-                ) : (
-                  <Share2 className="text-primary-main h-4 w-4" />
-                )}
-              </IconButton>
-            </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -181,7 +194,7 @@ export const SequenceFrame: FC<SequenceFrameProps> = ({
           </p>
         </blockquote>
         {description && (
-          <p className="px-8 text-sm font-medium text-zinc-800">
+          <p className="px-8 text-sm text-amber-700 font-medium">
             {description}
           </p>
         )}

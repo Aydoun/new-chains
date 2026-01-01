@@ -79,6 +79,13 @@
     "self": "Frame",
     "selfs": "Frames"
   },
+  "filter": {
+    "label": "created",
+    "last-hour": "Last hour",
+    "today": "Today",
+    "this-week": "This week",
+    "this-month": "This month"
+  },
   "footer": {
     "privacyPolicy": "Privacy Policy",
     "terms": "Terms Of Service",
@@ -93,7 +100,8 @@
     "profile": "Profile",
     "search": "Search",
     "studio": "Studio",
-    "explore": "Explore"
+    "explore": "Explore",
+    "exploreDescription": "Every Sequence tells a story through frames"
   },
   "profile": {
     "cta": {
@@ -105,16 +113,18 @@
     "header": "Profile Settings",
     "description": "Manage your personal information and connected accounts",
     "googleAuth": "Managed via Google Auth",
+    "image-alt": "camera_alt",
     "verified": "verified",
     "selfDesc": "Brief description for your profile."
   },
   "sequence": {
     "countLabel": "1/{count}",
     "cta": {
-      "title": "Name your new Sequence",
+      "title": "Name your Sequence",
       "publish": "Publish",
       "creation-message": "Sequence created successfully.",
-      "url-copied": "Link is copied"
+      "url-copied": "Link is copied",
+      "label": "Create a Sequence"
     },
     "draft": {
       "appendFrame": "Next Frame",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
 import {
   ArrowUpRight,
   Check,
@@ -23,6 +23,8 @@ type DirectChannel = {
 export default function ContactPage() {
   const emailAddress = translate("contact.email-value");
   const [copiedEmail, setCopiedEmail] = useState(false);
+  const [message, setMessage] = useState("");
+  const [submitting, setIsSubmitting] = useState(false);
 
   const directChannels: DirectChannel[] = useMemo(
     () => [
@@ -51,8 +53,30 @@ export default function ContactPage() {
     }
   };
 
+  const handleSubmitMessage = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const trimmedMessage = message.trim();
+
+    if (!trimmedMessage) return;
+
+    try {
+      setIsSubmitting(true);
+      await fetch("/api/contact/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: trimmedMessage }),
+      });
+      setMessage("");
+    } catch (error) {
+      console.error("Failed to send contact message", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-8 mt-8 md:mt-6 py-8 px-6 md:px-14">
+    <div className="mx-auto flex max-w-6xl flex-col gap-8 mt-12 md:mt-6 py-8 px-6 md:px-14">
       <section className="space-y-3">
         <p className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary">
           {translate("navigation.contact")}
@@ -134,41 +158,10 @@ export default function ContactPage() {
                 {translate("contact.replyTime")}
               </p>
             </div>
-            {/* <Separator /> */}
             <form
               className="flex flex-col gap-6 px-6 py-6 sm:px-8 sm:py-8"
-              onSubmit={(event) => event.preventDefault()}
+              onSubmit={handleSubmitMessage}
             >
-              {/* <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <label className="flex flex-col gap-2">
-                  <span className="text-sm font-medium text-foreground">
-                    {translate("contact.form.name")}
-                  </span>
-                  <TextField.Root
-                    id="contactName"
-                    aria-label="Contact-Name"
-                    placeholder={translate("contact.form.namePlaceholder")}
-                    className="h-12 p-4 border-border bg-background text-foreground placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-primary/60"
-                    // {...register(`contactName`, {
-                    //   required: translate("common.required"),
-                    // })}
-                  />
-                </label>
-                <label className="flex flex-col gap-2">
-                  <span className="text-sm font-medium text-foreground">
-                    {translate("contact.form.email")}
-                  </span>
-                  <TextField.Root
-                    id="contactEmail"
-                    aria-label="Contact-email"
-                    placeholder="you@example.com"
-                    className="h-12 p-4 border-border bg-background text-foreground placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-primary/60"
-                    // {...register(`contactEmail`, {
-                    //   required: translate("common.required"),
-                    // })}
-                  />
-                </label>
-              </div> */}
               <label className="flex flex-col gap-2">
                 <span className="text-sm font-medium text-foreground">
                   {translate("contact.form.messageLabel")}
@@ -176,10 +169,15 @@ export default function ContactPage() {
                 <TextArea
                   aria-label="Message"
                   placeholder={translate("contact.form.messagePlaceholder")}
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
                 />
               </label>
               <div className="flex items-center justify-end">
-                <Button className="h-12 min-w-[150px] text-base font-semibold">
+                <Button
+                  loading={submitting}
+                  className="h-12 min-w-[150px] text-base font-semibold"
+                >
                   {translate("common.send")}
                   <Send className="h-4 w-4" aria-hidden="true" />
                 </Button>

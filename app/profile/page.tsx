@@ -1,22 +1,56 @@
 "use client";
 
 import { translate } from "@/lib/i18n";
-import { Heading, Text, TextArea } from "@radix-ui/themes";
+import { Button, Heading, Text, TextArea } from "@radix-ui/themes";
 import { CheckCircle, Lock, Save } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import {
+  useGetUserByIdQuery,
+  useUpdateUserMutation,
+} from "@/app/services/users";
+import { BIO_MAX_LENGTH } from "@/lib/constants";
+import { SessionLoader } from "@/components/ui/spinner";
 
 export default function ProfilePage() {
   const { data: session } = useSession();
   const [bioText, setBioText] = useState("");
+  const userId = session?.user?.id;
+  const { data: user, isFetching: isFetchingUser } = useGetUserByIdQuery(
+    userId ?? "",
+    { skip: !userId }
+  );
+  const [updateUser, { isLoading: isUpdatingBio }] = useUpdateUserMutation();
 
   const handleBioChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = e.target;
-    if (value.length <= 240) setBioText(value);
+    if (value.length <= BIO_MAX_LENGTH) setBioText(value);
   };
 
+  const handleBioSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    try {
+      await updateUser({
+        id: userId,
+        bio: bioText.trim(),
+      }).unwrap();
+    } catch (error) {
+      console.error("Failed to update bio", error);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      const bio = user.bio ?? "";
+      setBioText(bio);
+    }
+  }, [user]);
+
+  if (isFetchingUser) return <SessionLoader />;
+
   return (
-    <div className={`flex w-full justify-center px-6 py-8 mt-8 md:mt-6`}>
+    <div className={`flex w-full justify-center px-6 py-8 mt-12 md:mt-6`}>
       <div className="flex w-full max-w-5xl flex-col gap-8 text-white">
         <div className="flex flex-col gap-2">
           <Heading size="7">{translate("profile.header")}</Heading>
@@ -36,7 +70,7 @@ export default function ProfilePage() {
                 />
                 <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
                   <span className="material-symbols-outlined text-white">
-                    camera_alt
+                    {translate("profile.image-alt")}
                   </span>
                 </div>
               </div>
@@ -57,7 +91,7 @@ export default function ProfilePage() {
               </div>
             </div>
             <div className="p-6 md:p-8">
-              <form className="flex flex-col gap-6">
+              <form className="flex flex-col gap-6" onSubmit={handleBioSubmit}>
                 <div className="flex flex-col gap-2">
                   <label className="flex justify-between text-sm font-medium">
                     <span>Email Address</span>
@@ -79,7 +113,6 @@ export default function ProfilePage() {
                     </div>
                   </div>
                 </div>
-
                 <div className="flex flex-col gap-2">
                   <label className="text-sm font-medium">Bio</label>
                   <div className="relative">
@@ -91,7 +124,7 @@ export default function ProfilePage() {
                   </div>
                   <div className="mt-1 flex items-center justify-between text-xs text-[#92a9c9]">
                     <Text>{translate("profile.selfDesc")}</Text>
-                    <Text>{`${bioText.length}/240`}</Text>
+                    <Text>{`${bioText.length}/${BIO_MAX_LENGTH}`}</Text>
                   </div>
                 </div>
                 <div className="flex flex-col gap-4 border-t border-[#233348] pt-4">
@@ -134,13 +167,14 @@ export default function ProfilePage() {
                   </div>
                 </div>
                 <div className="mt-2 flex items-center justify-end gap-3 border-t border-[#233348] pt-4">
-                  <button
+                  <Button
                     className="flex items-center gap-2 rounded-lg bg-[#136dec] px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-900/20 transition hover:bg-[#0f5dc9]"
-                    type="button"
+                    type="submit"
+                    loading={isUpdatingBio}
                   >
                     <Save />
                     {translate("common.save")}
-                  </button>
+                  </Button>
                 </div>
               </form>
             </div>

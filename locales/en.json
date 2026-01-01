@@ -61,7 +61,11 @@
       "name": "Name",
       "namePlaceholder": "Your Name",
       "messageLabel": "Message",
-      "messagePlaceholder": "Your Message..."
+      "messagePlaceholder": "Your Message...",
+      "messageRequired": "Please enter a message before sending.",
+      "loginRequired": "You need to be signed in to send a message.",
+      "success": "Message sent! We'll get back to you soon.",
+      "error": "Unable to send your message right now. Please try again."
     },
     "mail": "e-mail",
     "email-value": "mohamed.amine.aydoun@gmail.com",
@@ -106,7 +110,9 @@
     "description": "Manage your personal information and connected accounts",
     "googleAuth": "Managed via Google Auth",
     "verified": "verified",
-    "selfDesc": "Brief description for your profile."
+    "selfDesc": "Brief description for your profile.",
+    "bioSaved": "Bio updated successfully.",
+    "bioSaveError": "Unable to update your bio. Please try again."
   },
   "sequence": {
     "countLabel": "1/{count}",

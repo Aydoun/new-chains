@@ -1,8 +1,14 @@
+export type Role = "USER" | "MODERATOR" | "ADMIN";
+
 export interface User {
-  id: string;
+  id: number;
   username: string;
   email: string;
-  passwordHash: string;
+  avatarUrl?: string | null;
+  role: Role;
+  bio?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export type FrameType = "PHRASE" | "IMAGE" | "VIDEO" | "AUDIO" | "DOCUMENT";

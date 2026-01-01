@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import {
   ArrowUpRight,
   Check,
@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { translate } from "@/lib/i18n";
 import { Button, TextArea } from "@radix-ui/themes";
+import { useSession } from "next-auth/react";
+import { CONTACT_MESSAGE_MAX_LENGTH } from "@/constants";
 
 type DirectChannel = {
   icon: LucideIcon;
@@ -22,7 +24,14 @@ type DirectChannel = {
 
 export default function ContactPage() {
   const emailAddress = translate("contact.email-value");
+  const { status } = useSession();
   const [copiedEmail, setCopiedEmail] = useState(false);
+  const [message, setMessage] = useState("");
+  const [submissionStatus, setSubmissionStatus] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const directChannels: DirectChannel[] = useMemo(
     () => [
@@ -48,6 +57,57 @@ export default function ContactPage() {
       setTimeout(() => setCopiedEmail(false), 2000);
     } catch (error) {
       console.error("Failed to copy email address", error);
+    }
+  };
+
+  const handleSubmitMessage = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (status !== "authenticated") {
+      setSubmissionStatus({
+        type: "error",
+        message: translate("contact.form.loginRequired"),
+      });
+      return;
+    }
+
+    const trimmedMessage = message.trim();
+
+    if (!trimmedMessage) {
+      setSubmissionStatus({
+        type: "error",
+        message: translate("contact.form.messageRequired"),
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmissionStatus(null);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: trimmedMessage }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Unable to submit");
+      }
+
+      setMessage("");
+      setSubmissionStatus({
+        type: "success",
+        message: translate("contact.form.success"),
+      });
+    } catch (error) {
+      console.error("Failed to send contact message", error);
+      setSubmissionStatus({
+        type: "error",
+        message: translate("contact.form.error"),
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -137,7 +197,7 @@ export default function ContactPage() {
             {/* <Separator /> */}
             <form
               className="flex flex-col gap-6 px-6 py-6 sm:px-8 sm:py-8"
-              onSubmit={(event) => event.preventDefault()}
+              onSubmit={handleSubmitMessage}
             >
               {/* <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <label className="flex flex-col gap-2">
@@ -176,13 +236,40 @@ export default function ContactPage() {
                 <TextArea
                   aria-label="Message"
                   placeholder={translate("contact.form.messagePlaceholder")}
+                  value={message}
+                  maxLength={CONTACT_MESSAGE_MAX_LENGTH}
+                  onChange={(event) => {
+                    setMessage(event.target.value);
+                    if (submissionStatus) setSubmissionStatus(null);
+                  }}
+                  disabled={isSubmitting}
                 />
               </label>
-              <div className="flex items-center justify-end">
-                <Button className="h-12 min-w-[150px] text-base font-semibold">
-                  {translate("common.send")}
-                  <Send className="h-4 w-4" aria-hidden="true" />
-                </Button>
+              <div className="flex items-center justify-between text-sm text-muted-foreground">
+                <span>
+                  {message.length}/{CONTACT_MESSAGE_MAX_LENGTH}
+                </span>
+                <div className="flex items-center gap-3">
+                  {submissionStatus && (
+                    <span
+                      className={`text-xs ${
+                        submissionStatus.type === "success"
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }`}
+                    >
+                      {submissionStatus.message}
+                    </span>
+                  )}
+                  <Button
+                    className="h-12 min-w-[150px] text-base font-semibold"
+                    type="submit"
+                    disabled={isSubmitting || message.trim().length === 0}
+                  >
+                    {translate("common.send")}
+                    <Send className="h-4 w-4" aria-hidden="true" />
+                  </Button>
+                </div>
               </div>
             </form>
           </div>

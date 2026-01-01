@@ -1,9 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
 import { requireApiSession } from "@/lib/api/auth";
-
-const DEFAULT_PAGE_SIZE = 20;
-const MAX_PAGE_SIZE = 50;
+import { DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE } from "@/constants";
 
 export default async function handler(
   req: NextApiRequest,

@@ -4,16 +4,79 @@ import { translate } from "@/lib/i18n";
 import { Heading, Text, TextArea } from "@radix-ui/themes";
 import { CheckCircle, Lock, Save } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { useGetUserByIdQuery, useUpdateUserMutation } from "@/app/services/users";
+import { SessionLoader } from "@/components/ui/spinner";
+import { BIO_MAX_LENGTH } from "@/constants";
 
 export default function ProfilePage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  const userId = session?.user?.id;
+  const { data: user, isFetching: isFetchingUser } = useGetUserByIdQuery(
+    userId ?? "",
+    { skip: !userId }
+  );
+  const [updateUser, { isLoading: isUpdatingBio }] = useUpdateUserMutation();
   const [bioText, setBioText] = useState("");
+  const [savedBio, setSavedBio] = useState("");
+  const [bioStatus, setBioStatus] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      const bio = user.bio ?? "";
+      setBioText(bio);
+      setSavedBio(bio);
+    }
+  }, [user]);
 
   const handleBioChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = e.target;
-    if (value.length <= 240) setBioText(value);
+    if (value.length <= BIO_MAX_LENGTH) {
+      setBioText(value);
+      if (bioStatus) setBioStatus(null);
+    }
   };
+
+  const handleBioSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!userId) {
+      setBioStatus({
+        type: "error",
+        message: translate("auth.login"),
+      });
+      return;
+    }
+
+    try {
+      const updatedUser = await updateUser({
+        id: userId,
+        bio: bioText.trim(),
+      }).unwrap();
+      const updatedBio = updatedUser.bio ?? "";
+      setSavedBio(updatedBio);
+      setBioText(updatedBio);
+      setBioStatus({
+        type: "success",
+        message: translate("profile.bioSaved"),
+      });
+    } catch (error) {
+      console.error("Failed to update bio", error);
+      setBioStatus({
+        type: "error",
+        message: translate("profile.bioSaveError"),
+      });
+    }
+  };
+
+  if (status === "loading" || isFetchingUser) {
+    return <SessionLoader />;
+  }
+
+  const isBioUnchanged = savedBio === bioText.trim();
 
   return (
     <div className={`flex w-full justify-center px-6 py-8 mt-8 md:mt-6`}>
@@ -57,7 +120,7 @@ export default function ProfilePage() {
               </div>
             </div>
             <div className="p-6 md:p-8">
-              <form className="flex flex-col gap-6">
+              <form className="flex flex-col gap-6" onSubmit={handleBioSubmit}>
                 <div className="flex flex-col gap-2">
                   <label className="flex justify-between text-sm font-medium">
                     <span>Email Address</span>
@@ -87,12 +150,25 @@ export default function ProfilePage() {
                       rows={4}
                       value={bioText}
                       onChange={handleBioChange}
+                      maxLength={BIO_MAX_LENGTH}
+                      disabled={isUpdatingBio}
                     />
                   </div>
                   <div className="mt-1 flex items-center justify-between text-xs text-[#92a9c9]">
                     <Text>{translate("profile.selfDesc")}</Text>
-                    <Text>{`${bioText.length}/240`}</Text>
+                    <Text>{`${bioText.length}/${BIO_MAX_LENGTH}`}</Text>
                   </div>
+                  {bioStatus && (
+                    <Text
+                      className={`text-xs ${
+                        bioStatus.type === "success"
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }`}
+                    >
+                      {bioStatus.message}
+                    </Text>
+                  )}
                 </div>
                 <div className="flex flex-col gap-4 border-t border-[#233348] pt-4">
                   <h4 className="text-sm font-medium">Connected Accounts</h4>
@@ -136,7 +212,8 @@ export default function ProfilePage() {
                 <div className="mt-2 flex items-center justify-end gap-3 border-t border-[#233348] pt-4">
                   <button
                     className="flex items-center gap-2 rounded-lg bg-[#136dec] px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-900/20 transition hover:bg-[#0f5dc9]"
-                    type="button"
+                    type="submit"
+                    disabled={isBioUnchanged || isUpdatingBio}
                   >
                     <Save />
                     {translate("common.save")}

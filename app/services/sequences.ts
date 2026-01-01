@@ -1,8 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { API_BASE_URL, DEFAULT_PAGE_SIZE } from "@/constants";
 import type { Sequence, SingleSequence } from "../types";
-
-const API_BASE_URL = `/api/`;
-const DEFAULT_PAGE_SIZE = 20;
 
 export type SequenceTimeFilter =
   | "last-hour"

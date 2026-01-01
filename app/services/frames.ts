@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { API_BASE_URL } from "@/constants";
 
 export type FrameInput = {
   content: string;
@@ -8,8 +9,6 @@ export type FrameInput = {
 export type BulkCreateFramesResponse = {
   ids: number[];
 };
-
-const API_BASE_URL = `/api/`;
 
 export const frameApi = createApi({
   reducerPath: "frameApi",

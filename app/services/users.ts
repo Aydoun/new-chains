@@ -1,7 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { API_BASE_URL } from "@/constants";
 import type { User } from "../types";
-
-const API_BASE_URL = `/api/`;
 
 export const userApi = createApi({
   reducerPath: "userApi",
@@ -10,10 +9,20 @@ export const userApi = createApi({
     credentials: "include",
   }),
   endpoints: (builder) => ({
-    getUserById: builder.query<User, string>({
+    getUserById: builder.query<User, string | number>({
       query: (id) => `user/${id}`,
+    }),
+    updateUser: builder.mutation<
+      User,
+      Partial<Omit<User, "id">> & { id: string | number }
+    >({
+      query: ({ id, ...updates }) => ({
+        url: `user/update?id=${id}`,
+        method: "PUT",
+        body: updates,
+      }),
     }),
   }),
 });
 
-export const { useGetUserByIdQuery } = userApi;
+export const { useGetUserByIdQuery, useUpdateUserMutation } = userApi;

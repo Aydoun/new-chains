@@ -119,7 +119,7 @@
   "sequence": {
     "countLabel": "1/{count}",
     "cta": {
-      "title": "Name your new Sequence",
+      "title": "Name your Sequence",
       "publish": "Publish",
       "creation-message": "Sequence created successfully.",
       "url-copied": "Link is copied"

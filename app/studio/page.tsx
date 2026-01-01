@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import {
   TimeFilter,
@@ -17,6 +17,7 @@ export default function StudioPage() {
   const { data: session, status } = useSession();
   const [fetchStudioSequences] = useLazyGetStudioSequencesQuery();
   const [timeFilter, setTimeFilter] = useState<TimeFilter>();
+  const sequenceToDelete = useRef<string | number>("");
   const initialParams = useMemo(
     () => ({ limit: 20, timeFilter }),
     [timeFilter]
@@ -36,13 +37,12 @@ export default function StudioPage() {
   });
   const [deleteSequence, { isLoading: isDeleting }] =
     useDeleteSequenceMutation();
-  const isBusy =
-    status === "loading" ||
-    (isLoading && Array.isArray(sequences) && sequences.length === 0);
+  const isBusy = status === "loading" || isLoading;
   const isError = Boolean(error);
 
   const handleDelete = async (sequenceId: string | number) => {
     try {
+      sequenceToDelete.current = sequenceId;
       await deleteSequence(sequenceId).unwrap();
     } catch (error) {
       console.error("Unable to delete sequence right now.", error);
@@ -64,6 +64,7 @@ export default function StudioPage() {
       viewerId={session?.user?.id}
       filter={timeFilter}
       onFilterChange={setTimeFilter}
+      deletingSequenceRef={isDeleting ? sequenceToDelete.current : ""}
     />
   );
 }

@@ -9,7 +9,7 @@ import {
 import { SequenceCard } from "@/components/sequence-card";
 import { CreateSequenceForm } from "@/components/ui/create-sequence";
 import { translate } from "@/lib/i18n";
-import { Callout, Separator, Text, TextField } from "@radix-ui/themes";
+import { Callout, Separator, Spinner, Text, TextField } from "@radix-ui/themes";
 import Link from "next/link";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { SessionLoader } from "@/components/ui/spinner";
@@ -60,7 +60,7 @@ export default function Home({
 
   useEffect(() => {
     if (showCreationSuccess) {
-      setTimeout(() => setShowCreationSuccess(false), 5000);
+      setTimeout(() => setShowCreationSuccess(false), 1000 * 10);
     }
   }, [showCreationSuccess]);
 
@@ -140,7 +140,7 @@ export default function Home({
                 hasMore={hasMore}
                 loader={
                   <div className="flex justify-center py-4">
-                    <Text>{translate("common.loading")}</Text>
+                    <Spinner />
                   </div>
                 }
                 endMessage={<Separator className="mt-6 w-full" />}

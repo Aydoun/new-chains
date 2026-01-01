@@ -2,7 +2,7 @@
 
 import { translate } from "@/lib/i18n";
 import { timeAgo } from "@/lib/utils";
-import { Separator, Text, TextField } from "@radix-ui/themes";
+import { Separator, Spinner, Text, TextField } from "@radix-ui/themes";
 import {
   Filter,
   History,
@@ -45,6 +45,7 @@ type Props = {
   handleDelete?: (sequenceId: string | number) => void;
   onFilterChange: (value: TimeFilter) => void;
   filter: TimeFilter;
+  deletingSequenceRef: string | number;
   viewerId?: string;
   omitAuthor?: boolean;
 };
@@ -60,6 +61,7 @@ export function StudioView({
   omitAuthor = true,
   onFilterChange,
   filter,
+  deletingSequenceRef,
 }: Props) {
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const currentSequenceId = useRef<number | string | null>(null);
@@ -135,7 +137,7 @@ export function StudioView({
                         hasMore={hasMore}
                         loader={
                           <div className="flex justify-center py-4">
-                            <Text>{translate("common.loading")}</Text>
+                            <Spinner />
                           </div>
                         }
                         endMessage={<Separator className="mt-6 w-full" />}
@@ -152,6 +154,7 @@ export function StudioView({
                                 currentSequenceId.current = sequence.id;
                                 setIsViewDialogOpen(true);
                               }}
+                              deletingSequenceRef={deletingSequenceRef}
                             />
                           ))}
                         </div>

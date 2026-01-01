@@ -3,7 +3,7 @@ import { Sequence } from "@/app/types";
 import { Clock3, Pencil, Share2, Trash2, User } from "lucide-react";
 import { translate } from "@/lib/i18n";
 import { cn, timeAgo } from "@/lib/utils";
-import { IconButton, Text } from "@radix-ui/themes";
+import { IconButton, Spinner, Text } from "@radix-ui/themes";
 import Link from "next/link";
 
 export interface SequenceCardProps {
@@ -17,6 +17,7 @@ interface Props {
   sequence: Sequence;
   userId: string | undefined;
   onClick: () => void;
+  deletingSequenceRef?: string | number;
   handleDelete?: (sequenceId: string | number) => void;
   omitAuthor?: boolean;
 }
@@ -27,6 +28,7 @@ export const SequenceCard: FC<Props> = ({
   onClick,
   handleDelete,
   omitAuthor = false,
+  deletingSequenceRef,
 }) => {
   const [isLinkCopied, setIsLinkCopied] = useState(false);
   const isOwner = userId === `${sequence.userId}`;
@@ -103,48 +105,58 @@ export const SequenceCard: FC<Props> = ({
                 {timeAgo(sequence.createdAt)}
               </Text>
             </div>
-            <div className="flex items-center gap-2">
-              {isOwner && (
-                <>
+            {deletingSequenceRef === sequence.id ? (
+              <Spinner />
+            ) : (
+              <>
+                <div
+                  data-testid="sequence-menu"
+                  className="flex items-center gap-2"
+                >
+                  {isOwner && (
+                    <>
+                      <IconButton
+                        aria-label="Edit sequence"
+                        size="1"
+                        variant="ghost"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          event.preventDefault();
+                        }}
+                        className="text-amber-600 hover:bg-amber-500/15 cursor-pointer"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </IconButton>
+                      <IconButton
+                        aria-label="Delete sequence"
+                        size="1"
+                        variant="ghost"
+                        onClick={onDelete}
+                        className={cn(
+                          "text-red-600 hover:bg-red-600/15 cursor-pointer"
+                        )}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </IconButton>
+                    </>
+                  )}
                   <IconButton
-                    aria-label="Edit sequence"
+                    aria-label="Share sequence"
                     size="1"
                     variant="ghost"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      event.preventDefault();
-                    }}
-                    className="text-amber-300 hover:bg-amber-500/15 focus-visible:ring-2 focus-visible:ring-amber-500"
+                    onClick={handleShareLink}
                   >
-                    <Pencil className="h-4 w-4" />
-                  </IconButton>
-                  <IconButton
-                    aria-label="Delete sequence"
-                    size="1"
-                    variant="ghost"
-                    onClick={onDelete}
-                    className={cn(
-                      "text-red-600 hover:bg-red-600/15 focus-visible:ring-2 focus-visible:ring-red-600"
+                    {isLinkCopied ? (
+                      <Text size="1">
+                        {translate("sequence.cta.url-copied")}
+                      </Text>
+                    ) : (
+                      <Share2 className="text-primary-main h-4 w-4" />
                     )}
-                  >
-                    <Trash2 className="h-4 w-4" />
                   </IconButton>
-                </>
-              )}
-              <IconButton
-                aria-label="Share sequence"
-                size="1"
-                variant="ghost"
-                onClick={handleShareLink}
-                className="cursor-pointer"
-              >
-                {isLinkCopied ? (
-                  <Text size="1">{translate("sequence.cta.url-copied")}</Text>
-                ) : (
-                  <Share2 className="text-primary-main h-4 w-4" />
-                )}
-              </IconButton>
-            </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

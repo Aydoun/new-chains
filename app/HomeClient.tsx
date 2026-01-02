@@ -18,6 +18,7 @@ import { CreateSequenceCta } from "@/components/create-sequence-cta";
 import { Sequence, TimeFilter } from "./types";
 import { useInfinitePagination } from "@/hooks/useInfinitePagination";
 import { FilterDropdown } from "@/components/filter-dropdown";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 
 export default function Home({
   sequenceId,
@@ -29,13 +30,19 @@ export default function Home({
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [showCreationSuccess, setShowCreationSuccess] = useState(false);
   const [timeFilter, setTimeFilter] = useState<TimeFilter>();
+  const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearch = useDebouncedValue(searchTerm);
   const sequenceIdRef = useRef<string | number | null>(null);
   const sequenceTitleRef = useRef<string>("");
   const userId = session?.user?.id;
   const [fetchSequences] = useLazyGetSequencesByUserQuery();
   const initialParams = useMemo(
-    () => ({ limit: 20, timeFilter }),
-    [timeFilter]
+    () => ({
+      limit: 20,
+      timeFilter,
+      search: debouncedSearch || undefined,
+    }),
+    [debouncedSearch, timeFilter]
   );
   const {
     items: sequences,
@@ -45,7 +52,7 @@ export default function Home({
     loadMore,
   } = useInfinitePagination<
     Sequence,
-    { userId?: string; limit?: number; timeFilter?: TimeFilter }
+    { userId?: string; limit?: number; timeFilter?: TimeFilter; search?: string }
   >({
     fetchPage: (params) => fetchSequences(params).unwrap(),
     initialParams,
@@ -121,6 +128,8 @@ export default function Home({
           type="text"
           placeholder={translate("common.search")}
           className="w-full rounded-lg border border-[#233348] text-sm text-white placeholder:text-[#92a9c9] outline-none transition"
+          value={searchTerm}
+          onChange={(event) => setSearchTerm(event.target.value)}
         >
           <TextField.Slot>
             <Search className="h-5 w-5" aria-hidden="true" />

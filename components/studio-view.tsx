@@ -56,6 +56,8 @@ type Props = {
   deletingSequenceRef?: string | number;
   viewerId?: string;
   omitAuthor?: boolean;
+  searchTerm: string;
+  onSearchChange: (value: string) => void;
 };
 
 export function StudioView({
@@ -70,6 +72,8 @@ export function StudioView({
   onFilterChange,
   filter,
   deletingSequenceRef,
+  searchTerm,
+  onSearchChange,
 }: Props) {
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -145,6 +149,8 @@ export function StudioView({
                     type="text"
                     placeholder={translate("common.search")}
                     className="w-full rounded-lg border border-[#233348] text-sm text-white placeholder:text-[#92a9c9] outline-none transition"
+                    value={searchTerm}
+                    onChange={(event) => onSearchChange(event.target.value)}
                   >
                     <TextField.Slot>
                       <Search className="h-5 w-5" aria-hidden="true" />

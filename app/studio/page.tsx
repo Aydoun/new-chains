@@ -11,15 +11,22 @@ import { translate } from "@/lib/i18n";
 import { useInfinitePagination } from "@/hooks/useInfinitePagination";
 import { Sequence, TimeFilter } from "@/app/types";
 import { StudioView } from "@/components/studio-view";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 
 export default function StudioPage() {
   const { data: session, status } = useSession();
   const [fetchStudioSequences] = useLazyGetStudioSequencesQuery();
   const [timeFilter, setTimeFilter] = useState<TimeFilter>();
+  const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearch = useDebouncedValue(searchTerm);
   const sequenceToDelete = useRef<string | number>("");
   const initialParams = useMemo(
-    () => ({ limit: 20, timeFilter }),
-    [timeFilter]
+    () => ({
+      limit: 20,
+      timeFilter,
+      search: debouncedSearch || undefined,
+    }),
+    [debouncedSearch, timeFilter]
   );
   const {
     items: sequences,
@@ -29,7 +36,7 @@ export default function StudioPage() {
     loadMore,
   } = useInfinitePagination<
     Sequence,
-    { page?: number; limit?: number; timeFilter?: TimeFilter }
+    { page?: number; limit?: number; timeFilter?: TimeFilter; search?: string }
   >({
     fetchPage: (params) => fetchStudioSequences(params).unwrap(),
     initialParams,
@@ -64,6 +71,8 @@ export default function StudioPage() {
       filter={timeFilter}
       onFilterChange={setTimeFilter}
       deletingSequenceRef={isDeleting ? sequenceToDelete.current : ""}
+      searchTerm={searchTerm}
+      onSearchChange={setSearchTerm}
     />
   );
 }

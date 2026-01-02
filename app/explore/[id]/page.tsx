@@ -10,11 +10,14 @@ import { Sequence, TimeFilter } from "@/app/types";
 import { SessionLoader } from "@/components/ui/spinner";
 import { useGetUserByIdQuery } from "@/app/services/users";
 import { StudioView } from "@/components/studio-view";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 
 export default function ExplorePage() {
   const { data: session, status } = useSession();
   const params = useParams<{ id: string }>();
   const [timeFilter, setTimeFilter] = useState<TimeFilter>();
+  const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearch = useDebouncedValue(searchTerm);
 
   const profileId = params?.id ?? "";
 
@@ -25,8 +28,13 @@ export default function ExplorePage() {
     }
   );
   const initialParams = useMemo(
-    () => ({ limit: 20, userId: profileId, timeFilter }),
-    [timeFilter]
+    () => ({
+      limit: 20,
+      userId: profileId,
+      timeFilter,
+      search: debouncedSearch || undefined,
+    }),
+    [debouncedSearch, profileId, timeFilter]
   );
   const [fetchStudioSequences] = useLazyGetStudioSequencesQuery();
   const {
@@ -37,7 +45,13 @@ export default function ExplorePage() {
     loadMore,
   } = useInfinitePagination<
     Sequence,
-    { page?: number; limit?: number; userId?: string; timeFilter?: TimeFilter }
+    {
+      page?: number;
+      limit?: number;
+      userId?: string;
+      timeFilter?: TimeFilter;
+      search?: string;
+    }
   >({
     fetchPage: (params) => fetchStudioSequences(params).unwrap(),
     initialParams,
@@ -62,6 +76,8 @@ export default function ExplorePage() {
       viewerId={session?.user?.id}
       filter={timeFilter}
       onFilterChange={setTimeFilter}
+      searchTerm={searchTerm}
+      onSearchChange={setSearchTerm}
     />
   );
 }

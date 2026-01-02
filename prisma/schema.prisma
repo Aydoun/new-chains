@@ -35,6 +35,8 @@ model Sequence {
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
+  @@index([title])
+  @@index([description])
   @@index([title, userId])
 }
 

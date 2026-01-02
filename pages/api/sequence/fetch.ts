@@ -28,6 +28,12 @@ export default async function handler(
       : DEFAULT_PAGE_SIZE;
   const limit = Math.min(Math.max(requestedLimit, 1), MAX_PAGE_SIZE);
   const createdAfter = resolveTimeFilterDate(req.query.timeFilter);
+  const searchTerm =
+    typeof req.query.search === "string"
+      ? req.query.search.trim()
+      : Array.isArray(req.query.search)
+        ? req.query.search[0]?.trim()
+        : "";
 
   try {
     const sequences = await prisma.sequence.findMany({
@@ -36,6 +42,24 @@ export default async function handler(
         isDeleted: false,
         visibility: "PUBLIC",
         ...(createdAfter ? { createdAt: { gte: createdAfter } } : {}),
+        ...(searchTerm
+          ? {
+              OR: [
+                {
+                  title: {
+                    contains: searchTerm,
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  description: {
+                    contains: searchTerm,
+                    mode: "insensitive",
+                  },
+                },
+              ],
+            }
+          : {}),
       },
       skip: (page - 1) * limit,
       take: limit + 1,

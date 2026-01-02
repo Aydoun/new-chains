@@ -59,6 +59,7 @@ export type PaginationParams = {
   limit?: number;
   userId?: string;
   timeFilter?: TimeFilter;
+  search?: string;
 };
 
 export type TimeFilter =

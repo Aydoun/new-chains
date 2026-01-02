@@ -53,14 +53,14 @@ export function timeAgo(
 }
 
 export function getQueryParams(query: PaginationParams) {
-  const { page, limit, userId, timeFilter } = query;
-  const params = new URLSearchParams({
-    page: `${page}`,
-    limit: `${limit}`,
-  });
+  const { page, limit, userId, timeFilter, search } = query;
+  const params = new URLSearchParams();
 
+  if (typeof page !== "undefined") params.set("page", `${page}`);
+  if (typeof limit !== "undefined") params.set("limit", `${limit}`);
   if (userId) params.set("userId", userId);
   if (timeFilter) params.set("timeFilter", timeFilter);
+  if (search) params.set("search", search);
 
   return params.toString();
 }

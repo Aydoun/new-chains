@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 
+type WithId = {
+  id: string | number;
+};
+
 export type PaginatedResult<TItem> = {
   items: TItem[];
   page: number;
@@ -16,7 +20,10 @@ type UseInfinitePaginationArgs<TItem, TParams extends object> = {
   initialPage?: number;
 };
 
-export function useInfinitePagination<TItem, TParams extends object>({
+export function useInfinitePagination<
+  TItem extends WithId,
+  TParams extends object
+>({
   fetchPage,
   initialParams,
   initialPage = 1,
@@ -59,6 +66,15 @@ export function useInfinitePagination<TItem, TParams extends object>({
     await fetchAndSet(page);
   }, [hasMore, isLoading]);
 
+  const exludeItem = useCallback(
+    (targetId: string | number) => {
+      const filteredItems = items.filter((item) => item.id !== targetId);
+
+      setItems(filteredItems);
+    },
+    [items]
+  );
+
   useEffect(() => {
     setIsLoading(true);
     reset();
@@ -72,5 +88,6 @@ export function useInfinitePagination<TItem, TParams extends object>({
     error,
     loadMore,
     setItems,
+    exludeItem,
   };
 }

@@ -102,7 +102,7 @@ export function StudioView({
                       role="status"
                     >
                       <Callout.Text>
-                        {translate("sequence.cta.creation-message")}{" "}
+                        {translate("sequence.cta.creation-message")}
                       </Callout.Text>
                     </Callout.Root>
                   )}

@@ -27,6 +27,7 @@ export default function StudioPage() {
     isLoading,
     error,
     loadMore,
+    exludeItem,
   } = useInfinitePagination<
     Sequence,
     { page?: number; limit?: number; timeFilter?: TimeFilter }
@@ -43,6 +44,7 @@ export default function StudioPage() {
     try {
       sequenceToDelete.current = sequenceId;
       await deleteSequence(sequenceId).unwrap();
+      exludeItem(sequenceId);
     } catch (error) {
       console.error("Unable to delete sequence right now.", error);
     }

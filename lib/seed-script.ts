@@ -38,7 +38,7 @@ const ENDPOINTS = {
 };
 
 // Uniform random userId pool
-const USER_ID_POOL = [1, 2, 12, 13, 35, 36, 38];
+const USER_ID_POOL = [1, 4];
 
 // ----------------------------
 // Utilities

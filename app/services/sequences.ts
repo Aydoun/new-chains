@@ -42,8 +42,13 @@ export const sequenceApi = createApi({
       PaginatedSequencesResponse,
       PaginationParams | void
     >({
-      query: ({ page = 1, limit = DEFAULT_PAGE_SIZE, timeFilter } = {}) => {
-        const params = getQueryParams({ page, limit, timeFilter });
+      query: ({
+        page = 1,
+        limit = DEFAULT_PAGE_SIZE,
+        timeFilter,
+        search,
+      } = {}) => {
+        const params = getQueryParams({ page, limit, timeFilter, search });
 
         return `sequence/fetch?${params}`;
       },
@@ -57,8 +62,15 @@ export const sequenceApi = createApi({
         limit = DEFAULT_PAGE_SIZE,
         userId,
         timeFilter,
+        search,
       } = {}) => {
-        const params = getQueryParams({ page, userId, limit, timeFilter });
+        const params = getQueryParams({
+          page,
+          userId,
+          limit,
+          timeFilter,
+          search,
+        });
 
         return `sequence/studio?${params}`;
       },

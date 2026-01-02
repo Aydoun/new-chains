@@ -6,10 +6,11 @@ import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import { useLazyGetStudioSequencesQuery } from "@/app/services/sequences";
 import { useInfinitePagination } from "@/hooks/useInfinitePagination";
-import { Sequence, TimeFilter } from "@/app/types";
+import { PaginationParams, Sequence, TimeFilter } from "@/app/types";
 import { SessionLoader } from "@/components/ui/spinner";
 import { useGetUserByIdQuery } from "@/app/services/users";
 import { StudioView } from "@/components/studio-view";
+import { DEFAULT_PAGE_SIZE } from "@/lib/constants";
 
 export default function ExplorePage() {
   const { data: session, status } = useSession();
@@ -25,7 +26,7 @@ export default function ExplorePage() {
     }
   );
   const initialParams = useMemo(
-    () => ({ limit: 20, userId: profileId, timeFilter }),
+    () => ({ limit: DEFAULT_PAGE_SIZE, userId: profileId, timeFilter }),
     [timeFilter]
   );
   const [fetchStudioSequences] = useLazyGetStudioSequencesQuery();
@@ -35,10 +36,7 @@ export default function ExplorePage() {
     isLoading,
     error,
     loadMore,
-  } = useInfinitePagination<
-    Sequence,
-    { page?: number; limit?: number; userId?: string; timeFilter?: TimeFilter }
-  >({
+  } = useInfinitePagination<Sequence, PaginationParams>({
     fetchPage: (params) => fetchStudioSequences(params).unwrap(),
     initialParams,
   });

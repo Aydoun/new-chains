@@ -9,8 +9,9 @@ import {
 import { SessionLoader } from "@/components/ui/spinner";
 import { translate } from "@/lib/i18n";
 import { useInfinitePagination } from "@/hooks/useInfinitePagination";
-import { Sequence, TimeFilter } from "@/app/types";
+import { PaginationParams, Sequence, TimeFilter } from "@/app/types";
 import { StudioView } from "@/components/studio-view";
+import { DEFAULT_PAGE_SIZE } from "@/lib/constants";
 
 export default function StudioPage() {
   const { data: session, status } = useSession();
@@ -18,7 +19,7 @@ export default function StudioPage() {
   const [timeFilter, setTimeFilter] = useState<TimeFilter>();
   const sequenceToDelete = useRef<string | number>("");
   const initialParams = useMemo(
-    () => ({ limit: 20, timeFilter }),
+    () => ({ limit: DEFAULT_PAGE_SIZE, timeFilter }),
     [timeFilter]
   );
   const {
@@ -28,10 +29,7 @@ export default function StudioPage() {
     error,
     loadMore,
     exludeItem,
-  } = useInfinitePagination<
-    Sequence,
-    { page?: number; limit?: number; timeFilter?: TimeFilter }
-  >({
+  } = useInfinitePagination<Sequence, PaginationParams>({
     fetchPage: (params) => fetchStudioSequences(params).unwrap(),
     initialParams,
   });

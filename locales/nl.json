@@ -1,5 +1,9 @@
 {
-    "common": {
-        "close": "Fermer"
-    }
+  "common": {
+    "close": "Fermer"
+  },
+  "auth": {
+    "openProfileMenu": "Profielmenu openen",
+    "avatarAlt": "Avatar voor {name}"
+  }
 }

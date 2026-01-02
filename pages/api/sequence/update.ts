@@ -13,12 +13,28 @@ export default async function handler(
   if (!sessionResult) return;
 
   const { id } = req.query;
-  // description, visibility
   const { isDeleted, title } = req.body;
+  const sequenceId = parseInt(id as string, 10);
+
+  if (Number.isNaN(sequenceId)) {
+    return res.status(400).json({ message: "Sequence id is required" });
+  }
 
   try {
+    const existingSequence = await prisma.sequence.findUnique({
+      where: { id: sequenceId },
+    });
+
+    if (
+      !existingSequence ||
+      existingSequence.isDeleted ||
+      existingSequence.userId !== sessionResult.userId
+    ) {
+      return res.status(404).json({ message: "Sequence not found" });
+    }
+
     const updatedSequence = await prisma.sequence.update({
-      where: { id: parseInt(id as string, 10) },
+      where: { id: sequenceId },
       data: { isDeleted, ...(title ? { title } : {}) },
     });
     res.status(200).json(updatedSequence);

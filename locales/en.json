@@ -43,7 +43,9 @@
     "status": {
       "label": "System Status",
       "operational": "Operational"
-    }
+    },
+    "openProfileMenu": "Open profile menu",
+    "avatarAlt": "Avatar for {name}"
   },
   "carousel": {
     "frame": "Frame",

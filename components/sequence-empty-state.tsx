@@ -30,7 +30,7 @@ export function SequenceEmptyState({
               justify="center"
               className="relative h-24 w-24 rounded-full border border-slate-200 bg-slate-50 shadow-xl dark:border-slate-800 dark:bg-slate-800"
             >
-              <SearchX className="h-12 w-12 text-slate-400" aria-hidden />
+              <SearchX className="h-12 w-12 text-slate-600 dark:text-slate-300" aria-hidden />
             </Flex>
             <Flex
               align="center"

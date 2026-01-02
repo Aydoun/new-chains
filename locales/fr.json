@@ -1,6 +1,10 @@
 {
-    "common": {
-        "close": "Fermer",
-        "required": ""
-    }
+  "common": {
+    "close": "Fermer",
+    "required": ""
+  },
+  "auth": {
+    "openProfileMenu": "Ouvrir le menu du profil",
+    "avatarAlt": "Avatar de {name}"
+  }
 }

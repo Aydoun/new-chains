@@ -39,7 +39,7 @@ export default function LoginClient({ callbackUrl }: { callbackUrl: string }) {
             <h2 className="text-xl font-semibold sm:text-2xl">
               {translate("auth.welcome")}
             </h2>
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-slate-200">
               {translate("auth.subtitle")}
             </p>
           </div>
@@ -80,7 +80,7 @@ export default function LoginClient({ callbackUrl }: { callbackUrl: string }) {
             </button>
           </div>
         </div>
-        <footer className="mt-8 flex flex-col gap-4 text-center text-sm text-slate-400">
+        <footer className="mt-8 flex flex-col gap-4 text-center text-sm text-slate-200">
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
             <a
               className="transition-colors hover:text-white"
@@ -89,7 +89,7 @@ export default function LoginClient({ callbackUrl }: { callbackUrl: string }) {
             >
               {translate("footer.privacyPolicy")}
             </a>
-            <span className="text-slate-600">•</span>
+            <span className="text-slate-300">•</span>
             <a
               className="transition-colors hover:text-white"
               href="#"
@@ -98,7 +98,7 @@ export default function LoginClient({ callbackUrl }: { callbackUrl: string }) {
               {translate("footer.terms")}
             </a>
           </div>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-slate-300">
             © {`${new Date().getFullYear()} ${translate("footer.rights")}`}
           </p>
         </footer>

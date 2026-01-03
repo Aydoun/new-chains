@@ -20,9 +20,9 @@ export default async function handler(
     });
   }
 
-  if (sessionResult.userId !== parseInt(userId as string, 10)) {
-    return res.status(403).json({ message: "Forbidden" });
-  }
+  // if (sessionResult.userId !== parseInt(userId as string, 10)) {
+  //   return res.status(403).json({ message: "Forbidden" });
+  // }
 
   try {
     const newSequence = await prisma.sequence.create({

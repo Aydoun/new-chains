@@ -57,25 +57,30 @@ export function SequenceEmptyState({
             gap="3"
             className="w-full sm:w-auto"
           >
-            <Button
-              size="3"
-              onClick={onClear}
-              className="w-full sm:w-auto"
-              aria-label={translate("states.emptySequences.clear")}
-            >
-              <FilterX className="h-5 w-5" aria-hidden />
-              {translate("states.emptySequences.clear")}
-            </Button>
-            <Button
-              size="3"
-              variant="outline"
-              onClick={onCreate}
-              className="w-full sm:w-auto"
-              aria-label={translate("states.emptySequences.create")}
-            >
-              <Plus className="h-5 w-5" aria-hidden />
-              {translate("states.emptySequences.create")}
-            </Button>
+            {onClear && (
+              <Button
+                size="3"
+                onClick={onClear}
+                className="w-full sm:w-auto"
+                aria-label={translate("states.emptySequences.clear")}
+              >
+                <FilterX className="h-5 w-5" aria-hidden />
+                {translate("states.emptySequences.clear")}
+              </Button>
+            )}
+
+            {onCreate && (
+              <Button
+                size="3"
+                variant="outline"
+                onClick={onCreate}
+                className="w-full sm:w-auto"
+                aria-label={translate("states.emptySequences.create")}
+              >
+                <Plus className="h-5 w-5" aria-hidden />
+                {translate("states.emptySequences.create")}
+              </Button>
+            )}
           </Flex>
         </Flex>
       </Card>

@@ -35,14 +35,20 @@ export type PaginatedSequencesResponse = {
 
 export const sequenceApi = createApi({
   reducerPath: "sequenceApi",
+  tagTypes: ["StudioSequences"],
   baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL, credentials: "include" }),
   endpoints: (builder) => ({
     getSequencesByUser: builder.query<
       PaginatedSequencesResponse,
       PaginationParams | void
     >({
-      query: ({ page = 1, limit = DEFAULT_PAGE_SIZE, timeFilter } = {}) => {
-        const params = getQueryParams({ page, limit, timeFilter });
+      query: ({
+        page = 1,
+        limit = DEFAULT_PAGE_SIZE,
+        timeFilter,
+        search,
+      } = {}) => {
+        const params = getQueryParams({ page, limit, timeFilter, search });
 
         return `sequence/fetch?${params}`;
       },
@@ -56,11 +62,21 @@ export const sequenceApi = createApi({
         limit = DEFAULT_PAGE_SIZE,
         userId,
         timeFilter,
+        search,
       } = {}) => {
-        const params = getQueryParams({ page, userId, limit, timeFilter });
+        const params = getQueryParams({
+          page,
+          userId,
+          limit,
+          timeFilter,
+          search,
+        });
 
         return `sequence/studio?${params}`;
       },
+      providesTags: (_result, _error, { timeFilter, userId } = {}) => [
+        { type: "StudioSequences", id: "LIST" },
+      ],
     }),
     getSequenceById: builder.query<SingleSequence, number | string>({
       query: (sequenceId) => `sequence/${sequenceId}`,
@@ -71,12 +87,14 @@ export const sequenceApi = createApi({
         method: "POST",
         body: input,
       }),
+      invalidatesTags: [{ type: "StudioSequences", id: "LIST" }],
     }),
     deleteSequence: builder.mutation<{ message: string }, number | string>({
       query: (sequenceId) => ({
         url: `sequence/delete?id=${sequenceId}`,
         method: "DELETE",
       }),
+      invalidatesTags: [{ type: "StudioSequences", id: "LIST" }],
     }),
     updateSequence: builder.mutation<
       Sequence,

@@ -6,20 +6,27 @@ import {
   useDeleteSequenceMutation,
   useLazyGetStudioSequencesQuery,
 } from "@/app/services/sequences";
-import { SessionLoader } from "@/components/ui/spinner";
 import { translate } from "@/lib/i18n";
 import { useInfinitePagination } from "@/hooks/useInfinitePagination";
-import { Sequence, TimeFilter } from "@/app/types";
+import { PaginationParams, Sequence, TimeFilter } from "@/app/types";
 import { StudioView } from "@/components/studio-view";
+import { DEFAULT_PAGE_SIZE, SEARCH_DEBOUNCE_DELAY } from "@/lib/constants";
+import { useDebounce } from "use-debounce";
 
 export default function StudioPage() {
   const { data: session, status } = useSession();
   const [fetchStudioSequences] = useLazyGetStudioSequencesQuery();
   const [timeFilter, setTimeFilter] = useState<TimeFilter>();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch] = useDebounce(searchTerm, SEARCH_DEBOUNCE_DELAY);
   const sequenceToDelete = useRef<string | number>("");
   const initialParams = useMemo(
-    () => ({ limit: 20, timeFilter }),
-    [timeFilter]
+    () => ({
+      limit: DEFAULT_PAGE_SIZE,
+      timeFilter,
+      search: debouncedSearch || undefined,
+    }),
+    [timeFilter, debouncedSearch]
   );
   const {
     items: sequences,
@@ -27,10 +34,8 @@ export default function StudioPage() {
     isLoading,
     error,
     loadMore,
-  } = useInfinitePagination<
-    Sequence,
-    { page?: number; limit?: number; timeFilter?: TimeFilter }
-  >({
+    exludeItem,
+  } = useInfinitePagination<Sequence, PaginationParams>({
     fetchPage: (params) => fetchStudioSequences(params).unwrap(),
     initialParams,
   });
@@ -43,12 +48,11 @@ export default function StudioPage() {
     try {
       sequenceToDelete.current = sequenceId;
       await deleteSequence(sequenceId).unwrap();
+      exludeItem(sequenceId);
     } catch (error) {
       console.error("Unable to delete sequence right now.", error);
     }
   };
-
-  if (isBusy) return <SessionLoader />;
 
   return (
     <StudioView
@@ -64,6 +68,10 @@ export default function StudioPage() {
       filter={timeFilter}
       onFilterChange={setTimeFilter}
       deletingSequenceRef={isDeleting ? sequenceToDelete.current : ""}
+      isLoading={isBusy}
+      searchTerm={searchTerm}
+      onSearchChange={setSearchTerm}
+      isMyStudio
     />
   );
 }

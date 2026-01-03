@@ -11,11 +11,11 @@ import {
   TextField,
 } from "@radix-ui/themes";
 import {
-  Filter,
   History,
   Link as LinkIcon,
   Search,
   SquarePlus,
+  X,
   type LucideIcon,
 } from "lucide-react";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -27,6 +27,7 @@ import { SequenceErrorState } from "./sequence-error-state";
 import { ViewSequence } from "./view-sequence";
 import { FilterDropdown } from "./filter-dropdown";
 import { CreateSequenceForm } from "./ui/create-sequence";
+import { SessionLoader } from "./ui/spinner";
 
 type StatCard = {
   icon: LucideIcon;
@@ -51,11 +52,14 @@ type Props = {
   isError: boolean;
   loadMore: () => void;
   handleDelete?: (sequenceId: string | number) => void;
+  isLoading: boolean;
   onFilterChange: (value: TimeFilter) => void;
   filter: TimeFilter;
+  searchTerm: string;
+  onSearchChange: (value: string) => void;
   deletingSequenceRef?: string | number;
   viewerId?: string;
-  omitAuthor?: boolean;
+  isMyStudio?: boolean;
 };
 
 export function StudioView({
@@ -63,13 +67,16 @@ export function StudioView({
   sequences,
   hasMore,
   isError,
+  isLoading,
   loadMore,
   handleDelete,
   viewerId,
-  omitAuthor = true,
   onFilterChange,
   filter,
+  searchTerm,
+  onSearchChange,
   deletingSequenceRef,
+  isMyStudio = false,
 }: Props) {
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -102,7 +109,7 @@ export function StudioView({
                       role="status"
                     >
                       <Callout.Text>
-                        {translate("sequence.cta.creation-message")}{" "}
+                        {translate("sequence.cta.creation-message")}
                       </Callout.Text>
                     </Callout.Root>
                   )}
@@ -129,9 +136,15 @@ export function StudioView({
                         weight="bold"
                         className="leading-tight text-white"
                       >
-                        {index === 0
-                          ? sequences.length ?? 0
-                          : timeAgo(sequences[0]?.updatedAt)}
+                        {isLoading ? (
+                          "-"
+                        ) : (
+                          <>
+                            {index === 0
+                              ? sequences.length ?? 0
+                              : timeAgo(sequences[0]?.updatedAt)}
+                          </>
+                        )}
                       </Text>
                     </div>
                   </div>
@@ -143,11 +156,20 @@ export function StudioView({
                 <div className="relative flex-1 md:max-w-md">
                   <TextField.Root
                     type="text"
+                    value={searchTerm}
+                    onChange={(e) => onSearchChange(e.target.value)}
                     placeholder={translate("common.search")}
                     className="w-full rounded-lg border border-[#233348] text-sm text-white placeholder:text-[#92a9c9] outline-none transition"
                   >
                     <TextField.Slot>
                       <Search className="h-5 w-5" aria-hidden="true" />
+                    </TextField.Slot>
+                    <TextField.Slot>
+                      <X
+                        onClick={() => onSearchChange("")}
+                        size="20"
+                        className="cursor-pointer"
+                      />
                     </TextField.Slot>
                   </TextField.Root>
                 </div>
@@ -156,56 +178,70 @@ export function StudioView({
                   <FilterDropdown value={filter} onChange={onFilterChange} />
                 </div>
               </div>
-              <div className="flex justify-end">
-                <Button
-                  variant="surface"
-                  onClick={() => setIsCreateDialogOpen(true)}
-                  className="flex cursor-pointer h-10 w-60 items-center gap-2 px-4 text-sm font-bold"
-                >
-                  <SquarePlus />
-                  <Text size="2" weight="bold" className="tracking-[0.015em]">
-                    {translate("sequence.cta.label")}
-                  </Text>
-                </Button>
-              </div>
+              {isMyStudio && (
+                <div className="flex justify-end">
+                  <Button
+                    variant="surface"
+                    onClick={() => setIsCreateDialogOpen(true)}
+                    className="flex cursor-pointer h-10 w-60 items-center gap-2 px-4 text-sm font-bold"
+                  >
+                    <SquarePlus />
+                    <Text size="2" weight="bold" className="tracking-[0.015em]">
+                      {translate("sequence.cta.label")}
+                    </Text>
+                  </Button>
+                </div>
+              )}
+
               <section className="mt-4 pb-24">
-                {!isError ? (
+                {isLoading ? (
+                  <SessionLoader className="mt-64 md:mt-48" />
+                ) : (
                   <>
-                    {Array.isArray(sequences) && sequences.length > 0 ? (
-                      <InfiniteScroll
-                        dataLength={sequences.length}
-                        next={loadMore}
-                        hasMore={hasMore}
-                        loader={
-                          <div className="flex justify-center py-4">
-                            <Spinner />
-                          </div>
-                        }
-                        endMessage={<Separator className="mt-6 w-full" />}
-                      >
-                        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                          {sequences?.map((sequence) => (
-                            <SequenceCard
-                              key={sequence.id}
-                              userId={viewerId}
-                              sequence={sequence}
-                              handleDelete={handleDelete}
-                              omitAuthor={omitAuthor}
-                              onClick={() => {
-                                currentSequenceId.current = sequence.id;
-                                setIsViewDialogOpen(true);
-                              }}
-                              deletingSequenceRef={deletingSequenceRef}
-                            />
-                          ))}
-                        </div>
-                      </InfiniteScroll>
+                    {!isError ? (
+                      <>
+                        {Array.isArray(sequences) && sequences.length > 0 ? (
+                          <InfiniteScroll
+                            dataLength={sequences.length}
+                            next={loadMore}
+                            hasMore={hasMore}
+                            loader={
+                              <div className="flex justify-center py-4">
+                                <Spinner />
+                              </div>
+                            }
+                            endMessage={<Separator className="mt-6 w-full" />}
+                          >
+                            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                              {sequences?.map((sequence) => (
+                                <SequenceCard
+                                  key={sequence.id}
+                                  userId={viewerId}
+                                  sequence={sequence}
+                                  handleDelete={handleDelete}
+                                  omitAuthor
+                                  onClick={() => {
+                                    currentSequenceId.current = sequence.id;
+                                    setIsViewDialogOpen(true);
+                                  }}
+                                  deletingSequenceRef={deletingSequenceRef}
+                                />
+                              ))}
+                            </div>
+                          </InfiniteScroll>
+                        ) : (
+                          <SequenceEmptyState
+                            onClear={() => onSearchChange("")}
+                            {...(isMyStudio && {
+                              onCreate: () => () => setIsCreateDialogOpen(true),
+                            })}
+                          />
+                        )}
+                      </>
                     ) : (
-                      <SequenceEmptyState />
+                      <SequenceErrorState />
                     )}
                   </>
-                ) : (
-                  <SequenceErrorState />
                 )}
               </section>
             </div>

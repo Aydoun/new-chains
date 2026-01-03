@@ -6,15 +6,19 @@ import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import { useLazyGetStudioSequencesQuery } from "@/app/services/sequences";
 import { useInfinitePagination } from "@/hooks/useInfinitePagination";
-import { Sequence, TimeFilter } from "@/app/types";
+import { PaginationParams, Sequence, TimeFilter } from "@/app/types";
 import { SessionLoader } from "@/components/ui/spinner";
 import { useGetUserByIdQuery } from "@/app/services/users";
 import { StudioView } from "@/components/studio-view";
+import { DEFAULT_PAGE_SIZE, SEARCH_DEBOUNCE_DELAY } from "@/lib/constants";
+import { useDebounce } from "use-debounce";
 
 export default function ExplorePage() {
   const { data: session, status } = useSession();
   const params = useParams<{ id: string }>();
   const [timeFilter, setTimeFilter] = useState<TimeFilter>();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch] = useDebounce(searchTerm, SEARCH_DEBOUNCE_DELAY);
 
   const profileId = params?.id ?? "";
 
@@ -25,9 +29,15 @@ export default function ExplorePage() {
     }
   );
   const initialParams = useMemo(
-    () => ({ limit: 20, userId: profileId, timeFilter }),
-    [timeFilter]
+    () => ({
+      limit: DEFAULT_PAGE_SIZE,
+      timeFilter,
+      search: debouncedSearch || undefined,
+      userId: profileId,
+    }),
+    [timeFilter, debouncedSearch]
   );
+
   const [fetchStudioSequences] = useLazyGetStudioSequencesQuery();
   const {
     items: sequences,
@@ -35,20 +45,12 @@ export default function ExplorePage() {
     isLoading,
     error,
     loadMore,
-  } = useInfinitePagination<
-    Sequence,
-    { page?: number; limit?: number; userId?: string; timeFilter?: TimeFilter }
-  >({
+  } = useInfinitePagination<Sequence, PaginationParams>({
     fetchPage: (params) => fetchStudioSequences(params).unwrap(),
     initialParams,
   });
-  const isBusy =
-    status === "loading" ||
-    isFetchingUser ||
-    (isLoading && Array.isArray(sequences) && sequences.length === 0);
+  const isBusy = status === "loading" || isFetchingUser || isLoading;
   const isError = Boolean(error);
-
-  if (isBusy) return <SessionLoader />;
 
   return (
     <StudioView
@@ -62,6 +64,9 @@ export default function ExplorePage() {
       viewerId={session?.user?.id}
       filter={timeFilter}
       onFilterChange={setTimeFilter}
+      searchTerm={searchTerm}
+      onSearchChange={setSearchTerm}
+      isLoading={isBusy}
     />
   );
 }

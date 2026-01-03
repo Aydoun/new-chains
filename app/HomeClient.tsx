@@ -31,8 +31,8 @@ export default function Home({
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [showCreationSuccess, setShowCreationSuccess] = useState(false);
   const [timeFilter, setTimeFilter] = useState<TimeFilter>();
-  const [searchText, setSearchText] = useState("");
-  const [debouncedSearch] = useDebounce(searchText, SEARCH_DEBOUNCE_DELAY);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch] = useDebounce(searchTerm, SEARCH_DEBOUNCE_DELAY);
   const sequenceIdRef = useRef<string | number | null>(null);
   const sequenceTitleRef = useRef<string>("");
   const userId = session?.user?.id;
@@ -57,9 +57,7 @@ export default function Home({
     initialParams,
   });
   const isError = Boolean(error);
-  const isBusy =
-    status === "loading" ||
-    (isLoading && Array.isArray(sequences) && sequences.length === 0);
+  const isBusy = status === "loading" || isLoading;
 
   useEffect(() => {
     if (showCreationSuccess) {
@@ -119,12 +117,11 @@ export default function Home({
           <FilterDropdown value={timeFilter} onChange={setTimeFilter} />
         </div>
       </div>
-
       <div className="relative flex-1 md:max-w-md">
         <TextField.Root
           type="text"
-          onChange={(e) => setSearchText(e.target.value)}
-          value={searchText}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          value={searchTerm}
           placeholder={translate("common.search")}
           className="w-full rounded-lg border border-[#233348] text-sm text-white placeholder:text-[#92a9c9] outline-none transition"
         >
@@ -133,7 +130,7 @@ export default function Home({
           </TextField.Slot>
           <TextField.Slot>
             <X
-              onClick={() => setSearchText("")}
+              onClick={() => setSearchTerm("")}
               size="20"
               className="cursor-pointer"
             />
@@ -173,7 +170,10 @@ export default function Home({
                     </div>
                   </InfiniteScroll>
                 ) : (
-                  <SequenceEmptyState />
+                  <SequenceEmptyState
+                    onClear={() => setSearchTerm("")}
+                    onCreate={() => setIsCreateDialogOpen(true)}
+                  />
                 )}
               </>
             ) : (

@@ -6,21 +6,27 @@ import {
   useDeleteSequenceMutation,
   useLazyGetStudioSequencesQuery,
 } from "@/app/services/sequences";
-import { SessionLoader } from "@/components/ui/spinner";
 import { translate } from "@/lib/i18n";
 import { useInfinitePagination } from "@/hooks/useInfinitePagination";
 import { PaginationParams, Sequence, TimeFilter } from "@/app/types";
 import { StudioView } from "@/components/studio-view";
-import { DEFAULT_PAGE_SIZE } from "@/lib/constants";
+import { DEFAULT_PAGE_SIZE, SEARCH_DEBOUNCE_DELAY } from "@/lib/constants";
+import { useDebounce } from "use-debounce";
 
 export default function StudioPage() {
   const { data: session, status } = useSession();
   const [fetchStudioSequences] = useLazyGetStudioSequencesQuery();
   const [timeFilter, setTimeFilter] = useState<TimeFilter>();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch] = useDebounce(searchTerm, SEARCH_DEBOUNCE_DELAY);
   const sequenceToDelete = useRef<string | number>("");
   const initialParams = useMemo(
-    () => ({ limit: DEFAULT_PAGE_SIZE, timeFilter }),
-    [timeFilter]
+    () => ({
+      limit: DEFAULT_PAGE_SIZE,
+      timeFilter,
+      search: debouncedSearch || undefined,
+    }),
+    [timeFilter, debouncedSearch]
   );
   const {
     items: sequences,
@@ -48,8 +54,6 @@ export default function StudioPage() {
     }
   };
 
-  if (isBusy) return <SessionLoader />;
-
   return (
     <StudioView
       greeting={translate("studio.greetings", {
@@ -64,6 +68,10 @@ export default function StudioPage() {
       filter={timeFilter}
       onFilterChange={setTimeFilter}
       deletingSequenceRef={isDeleting ? sequenceToDelete.current : ""}
+      isLoading={isBusy}
+      searchTerm={searchTerm}
+      onSearchChange={setSearchTerm}
+      isMyStudio
     />
   );
 }

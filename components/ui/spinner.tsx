@@ -1,6 +1,13 @@
-export function SessionLoader() {
+import { cn } from "@/lib/utils";
+
+export function SessionLoader({ className }: { className?: string }) {
   return (
-    <div className="fixed inset-0 grid left-1/2 top-1/2 -translate-x-6 -translate-y-16 md:translate-x-28 md:-translate-y-20">
+    <div
+      className={cn(
+        "fixed inset-0 grid left-1/2 top-1/2 -translate-x-6 -translate-y-16 md:translate-x-28 md:-translate-y-20",
+        className
+      )}
+    >
       <div
         className="
           relative h-16 w-16 rounded-full

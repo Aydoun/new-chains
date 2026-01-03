@@ -49,8 +49,12 @@ export default function ExplorePage() {
     fetchPage: (params) => fetchStudioSequences(params).unwrap(),
     initialParams,
   });
-  const isBusy = status === "loading" || isFetchingUser || isLoading;
+  const isBusy =
+    isFetchingUser ||
+    (isLoading && Array.isArray(sequences) && sequences.length === 0);
   const isError = Boolean(error);
+
+  if (status === "loading") return <SessionLoader />;
 
   return (
     <StudioView

@@ -9,7 +9,7 @@ import { translate } from "@/lib/i18n";
 import { Callout, Separator, Spinner, Text, TextField } from "@radix-ui/themes";
 import Link from "next/link";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { SessionLoader } from "@/components/ui/spinner";
+import { DataLoader, SessionLoader } from "@/components/ui/spinner";
 import { ViewSequence } from "@/components/view-sequence";
 import { Search, X } from "lucide-react";
 import { SequenceEmptyState } from "@/components/sequence-empty-state";
@@ -57,7 +57,8 @@ export default function Home({
     initialParams,
   });
   const isError = Boolean(error);
-  const isBusy = status === "loading" || isLoading;
+  const isBusy =
+    isLoading && Array.isArray(sequences) && sequences.length === 0;
 
   useEffect(() => {
     if (showCreationSuccess) {
@@ -71,6 +72,8 @@ export default function Home({
       setIsViewDialogOpen(true);
     }
   }, [sequenceId]);
+
+  if (status === "loading") return <SessionLoader />;
 
   return (
     <div className="flex flex-col gap-4 px-6 py-0 px-6 mt-20 md:mt-6">
@@ -139,7 +142,7 @@ export default function Home({
       </div>
       <section className="mt-4 pb-24">
         {isBusy ? (
-          <SessionLoader />
+          <DataLoader />
         ) : (
           <>
             {!isError ? (

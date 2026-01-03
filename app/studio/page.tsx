@@ -12,6 +12,7 @@ import { PaginationParams, Sequence, TimeFilter } from "@/app/types";
 import { StudioView } from "@/components/studio-view";
 import { DEFAULT_PAGE_SIZE, SEARCH_DEBOUNCE_DELAY } from "@/lib/constants";
 import { useDebounce } from "use-debounce";
+import { SessionLoader } from "@/components/ui/spinner";
 
 export default function StudioPage() {
   const { data: session, status } = useSession();
@@ -41,7 +42,8 @@ export default function StudioPage() {
   });
   const [deleteSequence, { isLoading: isDeleting }] =
     useDeleteSequenceMutation();
-  const isBusy = status === "loading" || isLoading;
+  const isBusy =
+    isLoading && Array.isArray(sequences) && sequences.length === 0;
   const isError = Boolean(error);
 
   const handleDelete = async (sequenceId: string | number) => {
@@ -53,6 +55,8 @@ export default function StudioPage() {
       console.error("Unable to delete sequence right now.", error);
     }
   };
+
+  if (status === "loading") return <SessionLoader />;
 
   return (
     <StudioView

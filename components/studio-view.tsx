@@ -152,8 +152,8 @@ export function StudioView({
               </div>
             </div>
             <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-4 py-2 md:flex-row md:items-center md:justify-between">
-                <div className="relative flex-1 md:max-w-md">
+              <div className="flex flex-wrap py-2 justify-between">
+                <div className="md:min-w-72">
                   <TextField.Root
                     type="text"
                     value={searchTerm}
@@ -174,7 +174,6 @@ export function StudioView({
                   </TextField.Root>
                 </div>
                 <div className="flex items-center gap-2 self-end md:self-auto">
-                  <div className="mx-1 hidden h-8 w-px bg-[#233348] md:block" />
                   <FilterDropdown value={filter} onChange={onFilterChange} />
                 </div>
               </div>
@@ -192,7 +191,6 @@ export function StudioView({
                   </Button>
                 </div>
               )}
-
               <section className="mt-4 pb-24">
                 {isLoading ? (
                   <DataLoader className="mt-64 md:mt-48" />
@@ -210,7 +208,6 @@ export function StudioView({
                                 <Spinner />
                               </div>
                             }
-                            endMessage={<Separator className="mt-6 w-full" />}
                           >
                             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                               {sequences?.map((sequence) => (

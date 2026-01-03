@@ -1,6 +1,7 @@
 import { translate } from "@/lib/i18n";
 import { Button, DropdownMenu } from "@radix-ui/themes";
 import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 
 export function UserMenu() {
   const { data: session } = useSession();
@@ -10,25 +11,30 @@ export function UserMenu() {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
-        <div className="p-4 rounded-2xl bg-gray-50 bg-white/5 cursor-pointer">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div
-                className="rounded-full bg-cover bg-center shadow-xl"
-                style={{
-                  backgroundImage: `url(${session?.user?.image})`,
-                  width: "2rem",
-                  height: "2rem",
-                }}
-              />
-              <div className="flex flex-col">
-                <span className="text-sm font-medium dark:text-white leading-none">
-                  {session?.user?.name}
-                </span>
-              </div>
+        <Button
+          variant="ghost"
+          radius="large"
+          aria-label="open profile menu"
+          className="w-full justify-start cursor-pointer bg-white/5 p-4 shadow-sm hover:bg-white/10"
+        >
+          <div className="flex items-center gap-3">
+            <Image
+              src={session.user.image ?? "/avatar-placeholder.png"}
+              alt={translate("auth.avatarAlt", {
+                name: session.user.name ?? "User",
+              })}
+              width={32}
+              height={32}
+              unoptimized
+              className="h-8 w-8 rounded-full bg-cover bg-center shadow-xl"
+            />
+            <div className="text-left">
+              <span className="text-sm font-medium leading-none dark:text-white">
+                {session.user.name}
+              </span>
             </div>
           </div>
-        </div>
+        </Button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content align="end">
         <DropdownMenu.Label>

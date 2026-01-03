@@ -64,7 +64,7 @@ const ModalRoot = ({ open, onOpenChange, children }: ModalProps) => {
   return portalContent;
 };
 
-interface ModalContentProps extends HTMLAttributes<HTMLDivElement> {}
+type ModalContentProps = HTMLAttributes<HTMLDivElement>;
 
 const ModalContent = ({ className, children, ...props }: ModalContentProps) => (
   <div
@@ -78,7 +78,7 @@ const ModalContent = ({ className, children, ...props }: ModalContentProps) => (
   </div>
 );
 
-interface ModalCloseProps extends ButtonHTMLAttributes<HTMLButtonElement> {}
+type ModalCloseProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
 const ModalClose = ({
   className,

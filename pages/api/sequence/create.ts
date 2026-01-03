@@ -16,13 +16,13 @@ export default async function handler(
 
   if (!title || !userId || !Array.isArray(frameOrder)) {
     return res.status(400).json({
-      message: "Missing required fields title",
+      message: "Missing required fields title, userId, frameOrder",
     });
   }
 
-  // if (sessionResult.userId !== parseInt(userId as string, 10)) {
-  //   return res.status(403).json({ message: "Forbidden" });
-  // }
+  if (sessionResult.userId !== parseInt(userId as string, 10)) {
+    return res.status(403).json({ message: "Forbidden" });
+  }
 
   try {
     const newSequence = await prisma.sequence.create({

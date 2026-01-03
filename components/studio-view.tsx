@@ -27,7 +27,7 @@ import { SequenceErrorState } from "./sequence-error-state";
 import { ViewSequence } from "./view-sequence";
 import { FilterDropdown } from "./filter-dropdown";
 import { CreateSequenceForm } from "./ui/create-sequence";
-import { SessionLoader } from "./ui/spinner";
+import { DataLoader, SessionLoader } from "./ui/spinner";
 
 type StatCard = {
   icon: LucideIcon;
@@ -195,7 +195,7 @@ export function StudioView({
 
               <section className="mt-4 pb-24">
                 {isLoading ? (
-                  <SessionLoader className="mt-64 md:mt-48" />
+                  <DataLoader className="mt-64 md:mt-48" />
                 ) : (
                   <>
                     {!isError ? (

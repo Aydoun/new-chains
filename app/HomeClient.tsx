@@ -73,72 +73,73 @@ export default function Home({
     }
   }, [sequenceId]);
 
+  const clearSearchAndFilter = () => {
+    setSearchTerm("");
+    setTimeFilter(undefined);
+  };
+
   if (status === "loading") return <SessionLoader />;
 
   return (
     <div className="flex flex-col gap-4 px-6 py-0 px-6 mt-20 md:mt-6">
-      <div className="flex justify-between">
-        <div className="flex gap-4">
+      <div className="flex gap-4">
+        <Text
+          data-testid="homepage-title"
+          className="self-center"
+          weight="bold"
+          size="6"
+        >
+          {translate("navigation.explore")}
           <Text
-            data-testid="homepage-title"
-            className="self-center"
+            data-testid="homepage-description"
             weight="bold"
-            size="6"
+            size="3"
+            className="text-amber-700"
+            as="div"
           >
-            {translate("navigation.explore")}
-            <Text
-              data-testid="homepage-description"
-              weight="bold"
-              size="3"
-              className="text-amber-700"
-              as="div"
-            >
-              {translate("navigation.exploreDescription")}
-            </Text>
+            {translate("navigation.exploreDescription")}
           </Text>
-          <div className="min-h-[52px]">
-            {showCreationSuccess && (
-              <Callout.Root
-                className="mt-1 p-3 px-4"
-                color="green"
-                role="status"
-              >
-                <Callout.Text>
-                  {translate("sequence.cta.creation-message")}{" "}
-                  <Link
-                    href="/studio"
-                    className="font-semibold underline underline-offset-4"
-                  >
-                    {translate("navigation.cta.studio-redirect")}
-                  </Link>
-                </Callout.Text>
-              </Callout.Root>
-            )}
-          </div>
-        </div>
-        <div className="self-center">
-          <FilterDropdown value={timeFilter} onChange={setTimeFilter} />
+        </Text>
+        <div className="min-h-[52px]">
+          {showCreationSuccess && (
+            <Callout.Root className="mt-1 p-3 px-4" color="green" role="status">
+              <Callout.Text>
+                {translate("sequence.cta.creation-message")}{" "}
+                <Link
+                  href="/studio"
+                  className="font-semibold underline underline-offset-4"
+                >
+                  {translate("navigation.cta.studio-redirect")}
+                </Link>
+              </Callout.Text>
+            </Callout.Root>
+          )}
         </div>
       </div>
-      <div className="relative flex-1 md:max-w-md">
-        <TextField.Root
-          type="text"
-          onChange={(e) => setSearchTerm(e.target.value)}
-          value={searchTerm}
-          placeholder={translate("common.search")}
-          className="w-full rounded-lg border border-[#233348] text-sm text-white placeholder:text-[#92a9c9] outline-none transition"
-        >
-          <TextField.Slot>
-            <Search className="h-5 w-5" aria-hidden="true" />
-          </TextField.Slot>
-          <TextField.Slot>
-            <X
-              onClick={() => setSearchTerm("")}
-              size="20"
-              className="cursor-pointer"
-            />
-          </TextField.Slot>
-        </TextField.Root>
+      <div className="flex flex-wrap justify-between">
+        <div className="md:min-w-72">
+          <TextField.Root
+            type="text"
+            onChange={(e) => setSearchTerm(e.target.value)}
+            value={searchTerm}
+            placeholder={translate("common.search")}
+            className="w-full rounded-lg border border-[#233348] text-sm text-white placeholder:text-[#92a9c9] outline-none transition"
+          >
+            <TextField.Slot>
+              <Search className="h-5 w-5" aria-hidden="true" />
+            </TextField.Slot>
+            <TextField.Slot>
+              <X
+                onClick={() => setSearchTerm("")}
+                size="20"
+                className="cursor-pointer"
+              />
+            </TextField.Slot>
+          </TextField.Root>
+        </div>
+        <div>
+          <FilterDropdown value={timeFilter} onChange={setTimeFilter} />
+        </div>
       </div>
       <section className="mt-4 pb-24">
         {isBusy ? (
@@ -174,7 +175,7 @@ export default function Home({
                   </InfiniteScroll>
                 ) : (
                   <SequenceEmptyState
-                    onClear={() => setSearchTerm("")}
+                    onClear={clearSearchAndFilter}
                     onCreate={() => setIsCreateDialogOpen(true)}
                   />
                 )}

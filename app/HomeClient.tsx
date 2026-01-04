@@ -15,6 +15,7 @@ import { Search, X } from "lucide-react";
 import { SequenceEmptyState } from "@/components/sequence-empty-state";
 import { SequenceErrorState } from "@/components/sequence-error-state";
 import { CreateSequenceCta } from "@/components/create-sequence-cta";
+import { OnboardingChecklist } from "@/components/onboarding-checklist";
 import { PaginationParams, Sequence, TimeFilter } from "@/app/types";
 import { useInfinitePagination } from "@/hooks/useInfinitePagination";
 import { FilterDropdown } from "@/components/filter-dropdown";
@@ -82,6 +83,7 @@ export default function Home({
 
   return (
     <div className="flex flex-col gap-4 px-6 py-0 px-6 mt-20 md:mt-6">
+      <OnboardingChecklist onCreate={() => setIsCreateDialogOpen(true)} />
       <div className="flex gap-4">
         <Text
           data-testid="homepage-title"

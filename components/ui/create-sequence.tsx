@@ -26,6 +26,12 @@ import { useBulkCreateFramesMutation } from "@/app/services/frames";
 import { useCreateSequenceMutation } from "@/app/services/sequences";
 import { translate } from "@/lib/i18n";
 import { SequenceCreationFormValues } from "@/app/types";
+import {
+  DEFAULT_MODEL,
+  DEFAULT_TIMEOUT_SECONDS,
+  MAX_TIMEOUT_SECONDS,
+  MIN_TIMEOUT_SECONDS,
+} from "@/lib/constants";
 
 interface Props {
   onClose: () => void;
@@ -55,12 +61,15 @@ export function CreateSequenceForm({
     register,
     watch,
     setError,
-    formState: { errors },
+    formState: { errors, isValid },
     handleSubmit,
   } = useForm<SequenceCreationFormValues>({
+    mode: "onChange",
     defaultValues: {
       title: initialSequenceTitle,
       description: "",
+      model: DEFAULT_MODEL,
+      timeout: DEFAULT_TIMEOUT_SECONDS,
       pages: [createEmptyFrame()],
     },
   });
@@ -71,6 +80,11 @@ export function CreateSequenceForm({
 
   const SequenceTitle = watch("title");
   const pages = watch("pages");
+  const trimmedTitle = SequenceTitle?.trim() ?? "";
+  const hasValidFrames = useMemo(
+    () => pages.some((frame) => frame.content.trim().length > 0),
+    [pages]
+  );
 
   const steps = useMemo(
     () => [
@@ -95,7 +109,7 @@ export function CreateSequenceForm({
   const onNextSlide = () => {
     const lastSlideContent = pages?.[activeFrame]?.content?.trim();
 
-    if (!lastSlideContent) {
+    if (!lastSlideContent || lastSlideContent.length === 0) {
       setError(`pages.${activeFrame}.content`, {
         type: "required",
         message: translate("common.required"),
@@ -136,8 +150,10 @@ export function CreateSequenceForm({
         const createdSequence = await createSequenceMutation({
           frameOrder: frameResult?.ids ?? [],
           userId: session?.user?.id ?? "",
-          title: values.title,
+          title: values.title.trim(),
           description: values.description?.trim() || undefined,
+          model: values.model.trim(),
+          timeout: values.timeout,
         }).unwrap();
 
         if (onSequenceCreated) onSequenceCreated(createdSequence.title);
@@ -164,11 +180,15 @@ export function CreateSequenceForm({
           </label>
           <TextField.Root
             id={`page-${index}-content`}
+            placeholder="e.g., Outline the goal for this step"
             {...register(`pages.${index}.content`, {
               required: translate("common.required"),
             })}
             radius="large"
           />
+          <Text size="1" color="gray">
+            Add the prompt, instruction, or message for this step.
+          </Text>
           {errors.pages?.[index]?.content && (
             <p className="text-sm text-destructive">
               {errors.pages[index]?.content?.message}
@@ -185,9 +205,13 @@ export function CreateSequenceForm({
         </label>
         <TextArea
           id={`page-${index}-description`}
+          placeholder="Optional: add context or expectations for this step"
           radius="large"
           {...register(`pages.${index}.description`)}
         />
+        <Text size="1" color="gray">
+          Give the model or collaborators more context for this frame.
+        </Text>
       </div>
     </div>
   ));
@@ -269,16 +293,100 @@ export function CreateSequenceForm({
                     </label>
                     <TextField.Root
                       id="sequence-title"
+                      placeholder="e.g., Product feedback triage chain"
                       {...register("title", {
                         required: translate("common.required"),
+                        validate: (value) =>
+                          value?.trim().length > 0 ||
+                          translate("common.required"),
                       })}
                       radius="large"
                     />
+                    <Text size="1" color="gray">
+                      Give your chain a clear, searchable name.
+                    </Text>
                     {errors.title && (
                       <p className="text-sm text-destructive">
                         {errors.title.message}
                       </p>
                     )}
+                  </div>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <label
+                        className="flex items-center justify-between text-sm font-medium text-white"
+                        htmlFor="sequence-model"
+                      >
+                        <Text>Model</Text>
+                        <Badge color="orange" radius="full" variant="solid">
+                          {translate("common.required")}
+                        </Badge>
+                      </label>
+                      <TextField.Root
+                        id="sequence-model"
+                        placeholder="e.g., gpt-4o-mini"
+                        {...register("model", {
+                          required: translate("common.required"),
+                          validate: (value) =>
+                            value?.trim().length > 0 ||
+                            translate("common.required"),
+                        })}
+                        radius="large"
+                      />
+                      <Text size="1" color="gray">
+                        Choose the default model for this chain. You can adjust
+                        per-step prompts later.
+                      </Text>
+                      {errors.model && (
+                        <p className="text-sm text-destructive">
+                          {errors.model.message}
+                        </p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <label
+                        className="flex items-center justify-between text-sm font-medium text-white"
+                        htmlFor="sequence-timeout"
+                      >
+                        <Text>Request timeout (seconds)</Text>
+                        <Badge color="orange" radius="full" variant="solid">
+                          {translate("common.required")}
+                        </Badge>
+                      </label>
+                      <TextField.Root
+                        id="sequence-timeout"
+                        type="number"
+                        inputMode="numeric"
+                        placeholder={`e.g., ${DEFAULT_TIMEOUT_SECONDS}`}
+                        min={MIN_TIMEOUT_SECONDS}
+                        max={MAX_TIMEOUT_SECONDS}
+                        {...register("timeout", {
+                          valueAsNumber: true,
+                          required: translate("common.required"),
+                          min: {
+                            value: MIN_TIMEOUT_SECONDS,
+                            message: `Must be at least ${MIN_TIMEOUT_SECONDS} seconds.`,
+                          },
+                          max: {
+                            value: MAX_TIMEOUT_SECONDS,
+                            message: `Must be ${MAX_TIMEOUT_SECONDS} seconds or less.`,
+                          },
+                          validate: (value) =>
+                            Number.isFinite(value) ||
+                            "Timeout must be a number.",
+                        })}
+                        radius="large"
+                      />
+                      <Text size="1" color="gray">
+                        Keep requests responsive. Default: {DEFAULT_TIMEOUT_SECONDS}{" "}
+                        seconds.
+                      </Text>
+                      {errors.timeout && (
+                        <p className="text-sm text-destructive">
+                          {errors.timeout.message as string}
+                        </p>
+                      )}
+                    </div>
                   </div>
                   <div className="space-y-2 w-full">
                     <label
@@ -290,9 +398,13 @@ export function CreateSequenceForm({
                     </label>
                     <TextArea
                       id="sequence-description"
+                      placeholder="Briefly explain what this chain is for"
                       {...register("description")}
                       radius="large"
                     />
+                    <Text size="1" color="gray">
+                      Share context for teammates and future you.
+                    </Text>
                   </div>
                 </div>
               </div>
@@ -349,7 +461,7 @@ export function CreateSequenceForm({
             {currentStep === 0 ? (
               <Button
                 type="button"
-                disabled={!SequenceTitle}
+                disabled={!trimmedTitle}
                 variant="solid"
                 onClick={handleStepAdvance}
               >
@@ -359,7 +471,7 @@ export function CreateSequenceForm({
             ) : (
               <Button
                 type="submit"
-                disabled={pageFrames.length <= 1}
+                disabled={!isValid || !hasValidFrames}
                 loading={isSaving || isSequenceSaving}
               >
                 <Cloud />

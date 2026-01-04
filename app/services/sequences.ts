@@ -17,16 +17,12 @@ export type SequenceInput = {
   title: string;
   userId: string;
   description?: string;
-  model: string;
-  timeout: number;
 };
 
 export type SequenceUpdateInput = {
   title?: string;
   description?: string;
   visibility?: Sequence["visibility"];
-  model?: string;
-  timeout?: number;
 };
 
 export type PaginatedSequencesResponse = {

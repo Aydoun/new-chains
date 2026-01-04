@@ -21,8 +21,6 @@ export interface Sequence {
     username: string;
     avatarUrl?: string | null;
   };
-  model?: string;
-  timeout?: number;
   firstFrame: Frame | null;
   FrameOrder: number[];
   visibility: Visibility;
@@ -50,8 +48,6 @@ export type Visibility = "PUBLIC" | "PRIVATE" | "FRIENDS_ONLY";
 export type SequenceCreationFormValues = {
   title: string;
   description?: string;
-  model: string;
-  timeout: number;
   pages: {
     content: string;
     description?: string;

@@ -26,12 +26,6 @@ import { useBulkCreateFramesMutation } from "@/app/services/frames";
 import { useCreateSequenceMutation } from "@/app/services/sequences";
 import { translate } from "@/lib/i18n";
 import { SequenceCreationFormValues } from "@/app/types";
-import {
-  DEFAULT_MODEL,
-  DEFAULT_TIMEOUT_SECONDS,
-  MAX_TIMEOUT_SECONDS,
-  MIN_TIMEOUT_SECONDS,
-} from "@/lib/constants";
 
 interface Props {
   onClose: () => void;
@@ -68,8 +62,6 @@ export function CreateSequenceForm({
     defaultValues: {
       title: initialSequenceTitle,
       description: "",
-      model: DEFAULT_MODEL,
-      timeout: DEFAULT_TIMEOUT_SECONDS,
       pages: [createEmptyFrame()],
     },
   });
@@ -180,14 +172,14 @@ export function CreateSequenceForm({
           </label>
           <TextField.Root
             id={`page-${index}-content`}
-            placeholder="e.g., Outline the goal for this step"
+            placeholder={translate("sequence.draft.frameContent-placeholder")}
             {...register(`pages.${index}.content`, {
               required: translate("common.required"),
             })}
             radius="large"
           />
           <Text size="1" color="gray">
-            Add the prompt, instruction, or message for this step.
+            {translate("sequence.draft.frameContent-advice")}
           </Text>
           {errors.pages?.[index]?.content && (
             <p className="text-sm text-destructive">
@@ -205,13 +197,10 @@ export function CreateSequenceForm({
         </label>
         <TextArea
           id={`page-${index}-description`}
-          placeholder="Optional: add context or expectations for this step"
+          placeholder={translate("sequence.draft.frameDescription-placeholder")}
           radius="large"
           {...register(`pages.${index}.description`)}
         />
-        <Text size="1" color="gray">
-          Give the model or collaborators more context for this frame.
-        </Text>
       </div>
     </div>
   ));
@@ -293,7 +282,9 @@ export function CreateSequenceForm({
                     </label>
                     <TextField.Root
                       id="sequence-title"
-                      placeholder="e.g., Product feedback triage chain"
+                      placeholder={translate(
+                        "sequence.draft.title-placeholder"
+                      )}
                       {...register("title", {
                         required: translate("common.required"),
                         validate: (value) =>
@@ -303,7 +294,7 @@ export function CreateSequenceForm({
                       radius="large"
                     />
                     <Text size="1" color="gray">
-                      Give your chain a clear, searchable name.
+                      {translate("sequence.draft.title-advice")}
                     </Text>
                     {errors.title && (
                       <p className="text-sm text-destructive">
@@ -311,100 +302,22 @@ export function CreateSequenceForm({
                       </p>
                     )}
                   </div>
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <label
-                        className="flex items-center justify-between text-sm font-medium text-white"
-                        htmlFor="sequence-model"
-                      >
-                        <Text>Model</Text>
-                        <Badge color="orange" radius="full" variant="solid">
-                          {translate("common.required")}
-                        </Badge>
-                      </label>
-                      <TextField.Root
-                        id="sequence-model"
-                        placeholder="e.g., gpt-4o-mini"
-                        {...register("model", {
-                          required: translate("common.required"),
-                          validate: (value) =>
-                            value?.trim().length > 0 ||
-                            translate("common.required"),
-                        })}
-                        radius="large"
-                      />
-                      <Text size="1" color="gray">
-                        Choose the default model for this chain. You can adjust
-                        per-step prompts later.
-                      </Text>
-                      {errors.model && (
-                        <p className="text-sm text-destructive">
-                          {errors.model.message}
-                        </p>
-                      )}
-                    </div>
-                    <div className="space-y-2">
-                      <label
-                        className="flex items-center justify-between text-sm font-medium text-white"
-                        htmlFor="sequence-timeout"
-                      >
-                        <Text>Request timeout (seconds)</Text>
-                        <Badge color="orange" radius="full" variant="solid">
-                          {translate("common.required")}
-                        </Badge>
-                      </label>
-                      <TextField.Root
-                        id="sequence-timeout"
-                        type="number"
-                        inputMode="numeric"
-                        placeholder={`e.g., ${DEFAULT_TIMEOUT_SECONDS}`}
-                        min={MIN_TIMEOUT_SECONDS}
-                        max={MAX_TIMEOUT_SECONDS}
-                        {...register("timeout", {
-                          valueAsNumber: true,
-                          required: translate("common.required"),
-                          min: {
-                            value: MIN_TIMEOUT_SECONDS,
-                            message: `Must be at least ${MIN_TIMEOUT_SECONDS} seconds.`,
-                          },
-                          max: {
-                            value: MAX_TIMEOUT_SECONDS,
-                            message: `Must be ${MAX_TIMEOUT_SECONDS} seconds or less.`,
-                          },
-                          validate: (value) =>
-                            Number.isFinite(value) ||
-                            "Timeout must be a number.",
-                        })}
-                        radius="large"
-                      />
-                      <Text size="1" color="gray">
-                        Keep requests responsive. Default: {DEFAULT_TIMEOUT_SECONDS}{" "}
-                        seconds.
-                      </Text>
-                      {errors.timeout && (
-                        <p className="text-sm text-destructive">
-                          {errors.timeout.message as string}
-                        </p>
-                      )}
-                    </div>
-                  </div>
+
                   <div className="space-y-2 w-full">
                     <label
                       className="text-sm font-medium text-white"
                       htmlFor="sequence-description"
                     >
-                      {translate("sequence.draft.description") ||
-                        "Description (optional)"}
+                      {translate("sequence.draft.description")}
                     </label>
                     <TextArea
                       id="sequence-description"
-                      placeholder="Briefly explain what this chain is for"
+                      placeholder={translate(
+                        "sequence.draft.description-placeholder"
+                      )}
                       {...register("description")}
                       radius="large"
                     />
-                    <Text size="1" color="gray">
-                      Share context for teammates and future you.
-                    </Text>
                   </div>
                 </div>
               </div>

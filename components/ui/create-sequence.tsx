@@ -25,12 +25,13 @@ import {
 import { useBulkCreateFramesMutation } from "@/app/services/frames";
 import { useCreateSequenceMutation } from "@/app/services/sequences";
 import { translate } from "@/lib/i18n";
-import { SequenceCreationFormValues } from "@/app/types";
+import { SequenceCreationFormValues, SequenceTemplate } from "@/app/types";
 
 interface Props {
   onClose: () => void;
   onSequenceCreated?: (title: string) => void;
   initialSequenceTitle: string;
+  initialTemplate?: SequenceTemplate | null;
 }
 
 const createEmptyFrame = () => ({
@@ -42,10 +43,11 @@ export function CreateSequenceForm({
   onClose,
   onSequenceCreated,
   initialSequenceTitle,
+  initialTemplate = null,
 }: Props) {
   const { data: session } = useSession();
   const [activeFrame, setActiveFrame] = useState(0);
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(initialTemplate ? 1 : 0);
   const [bulkCreateFrames, { isLoading: isSaving }] =
     useBulkCreateFramesMutation();
   const [createSequenceMutation, { isLoading: isSequenceSaving }] =
@@ -59,9 +61,15 @@ export function CreateSequenceForm({
     handleSubmit,
   } = useForm<SequenceCreationFormValues>({
     defaultValues: {
-      title: initialSequenceTitle,
-      description: "",
-      pages: [createEmptyFrame()],
+      title: initialTemplate?.title ?? initialSequenceTitle,
+      description: initialTemplate?.description ?? "",
+      pages:
+        initialTemplate?.steps && initialTemplate.steps.length > 0
+          ? initialTemplate.steps.map((step) => ({
+              content: step.content,
+              description: step.description,
+            }))
+          : [createEmptyFrame()],
     },
   });
   const { append } = useFieldArray({
@@ -154,6 +162,13 @@ export function CreateSequenceForm({
       append(createEmptyFrame());
     }
   }, [activeFrame, pages.length, append]);
+
+  useEffect(() => {
+    if (initialTemplate) {
+      setCurrentStep(1);
+      setActiveFrame(0);
+    }
+  }, [initialTemplate]);
 
   const pageFrames = pages.map((_, index) => (
     <div className="flex flex-col gap-4 w-full" key={`page-${index}`}>

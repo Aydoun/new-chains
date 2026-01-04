@@ -14,13 +14,15 @@ import {
   History,
   Link as LinkIcon,
   Search,
+  Sparkles,
   SquarePlus,
   X,
   type LucideIcon,
 } from "lucide-react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useEffect, useRef, useState } from "react";
-import { Sequence, TimeFilter } from "@/app/types";
+import { Sequence, SequenceTemplate, TimeFilter } from "@/app/types";
+import { sequenceTemplates } from "@/app/templates/config";
 import { SequenceCard } from "./sequence-card";
 import { SequenceEmptyState } from "./sequence-empty-state";
 import { SequenceErrorState } from "./sequence-error-state";
@@ -28,6 +30,7 @@ import { ViewSequence } from "./view-sequence";
 import { FilterDropdown } from "./filter-dropdown";
 import { CreateSequenceForm } from "./ui/create-sequence";
 import { DataLoader, SessionLoader } from "./ui/spinner";
+import { SequenceTemplateSelector } from "./sequence-template-selector";
 
 type StatCard = {
   icon: LucideIcon;
@@ -81,6 +84,9 @@ export function StudioView({
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [showCreationSuccess, setShowCreationSuccess] = useState(false);
+  const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<SequenceTemplate | null>(null);
   const currentSequenceId = useRef<number | string | null>(null);
 
   useEffect(() => {
@@ -88,6 +94,12 @@ export function StudioView({
       setTimeout(() => setShowCreationSuccess(false), 1000 * 10);
     }
   }, [showCreationSuccess]);
+
+  const handleTemplateSelect = (template: SequenceTemplate) => {
+    setSelectedTemplate(template);
+    setIsTemplateDialogOpen(false);
+    setIsCreateDialogOpen(true);
+  };
 
   return (
     <div className="flex w-full overflow-hidden mt-12 md:mt-6">
@@ -178,10 +190,30 @@ export function StudioView({
                 </div>
               </div>
               {isMyStudio && (
-                <div className="flex justify-end">
+                <div className="flex flex-wrap justify-end gap-3">
+                  <Button
+                    variant="soft"
+                    onClick={() => {
+                      setSelectedTemplate(null);
+                      setIsTemplateDialogOpen(true);
+                    }}
+                    className="flex h-10 items-center gap-2 px-4 text-sm font-bold"
+                  >
+                    <Sparkles />
+                    <Text
+                      size="2"
+                      weight="bold"
+                      className="tracking-[0.015em]"
+                    >
+                      Start from template
+                    </Text>
+                  </Button>
                   <Button
                     variant="surface"
-                    onClick={() => setIsCreateDialogOpen(true)}
+                    onClick={() => {
+                      setSelectedTemplate(null);
+                      setIsCreateDialogOpen(true);
+                    }}
                     className="flex cursor-pointer h-10 w-60 items-center gap-2 px-4 text-sm font-bold"
                   >
                     <SquarePlus />
@@ -252,13 +284,27 @@ export function StudioView({
         />
       )}
 
+      {isTemplateDialogOpen && (
+        <SequenceTemplateSelector
+          open={isTemplateDialogOpen}
+          onOpenChange={setIsTemplateDialogOpen}
+          templates={sequenceTemplates}
+          onSelect={handleTemplateSelect}
+        />
+      )}
+
       {isCreateDialogOpen && (
         <CreateSequenceForm
           onClose={() => {
+            setSelectedTemplate(null);
             setIsCreateDialogOpen(false);
           }}
-          initialSequenceTitle=""
-          onSequenceCreated={() => setShowCreationSuccess(true)}
+          initialSequenceTitle={selectedTemplate?.title ?? ""}
+          initialTemplate={selectedTemplate}
+          onSequenceCreated={() => {
+            setShowCreationSuccess(true);
+            setSelectedTemplate(null);
+          }}
         />
       )}
     </div>

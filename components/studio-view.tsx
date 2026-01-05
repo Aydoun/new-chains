@@ -2,14 +2,7 @@
 
 import { translate } from "@/lib/i18n";
 import { timeAgo } from "@/lib/utils";
-import {
-  Button,
-  Callout,
-  Separator,
-  Spinner,
-  Text,
-  TextField,
-} from "@radix-ui/themes";
+import { Button, Callout, Spinner, Text, TextField } from "@radix-ui/themes";
 import {
   History,
   Link as LinkIcon,
@@ -29,7 +22,7 @@ import { SequenceErrorState } from "./sequence-error-state";
 import { ViewSequence } from "./view-sequence";
 import { FilterDropdown } from "./filter-dropdown";
 import { CreateSequenceForm } from "./ui/create-sequence";
-import { DataLoader, SessionLoader } from "./ui/spinner";
+import { DataLoader } from "./ui/spinner";
 import { SequenceTemplateSelector } from "./sequence-template-selector";
 
 type StatCard = {

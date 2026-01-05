@@ -144,8 +144,6 @@ export function CreateSequenceForm({
           userId: session?.user?.id ?? "",
           title: values.title.trim(),
           description: values.description?.trim() || undefined,
-          model: values.model.trim(),
-          timeout: values.timeout,
         }).unwrap();
 
         if (onSequenceCreated) onSequenceCreated(createdSequence.title);

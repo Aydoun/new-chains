@@ -1,7 +1,7 @@
 {
   "author": "Mohamed Amine Aydoun <mohamed.amine.aydoun@gmail.com> (http://linkntell.com/)",
-  "name": "new-chains",
-  "version": "1.0.0",
+  "name": "linkntell",
+  "version": "1.0.1",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",

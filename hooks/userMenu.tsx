@@ -1,5 +1,6 @@
 import { translate } from "@/lib/i18n";
-import { Button, DropdownMenu } from "@radix-ui/themes";
+import { DropdownMenu } from "@radix-ui/themes";
+import { LogOut } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 
@@ -11,11 +12,9 @@ export function UserMenu() {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
-        <Button
-          variant="ghost"
-          radius="large"
+        <button
           aria-label="open profile menu"
-          className="w-full justify-start cursor-pointer bg-white/5 p-4 shadow-sm hover:bg-white/10"
+          className="w-full justify-start rounded-xl cursor-pointer bg-white/5 p-4 hover:bg-white/10"
         >
           <div className="flex items-center gap-3">
             <Image
@@ -34,7 +33,7 @@ export function UserMenu() {
               </span>
             </div>
           </div>
-        </Button>
+        </button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content align="end">
         <DropdownMenu.Label>
@@ -42,6 +41,7 @@ export function UserMenu() {
         </DropdownMenu.Label>
         <DropdownMenu.Separator />
         <DropdownMenu.Item onClick={() => signOut({ callbackUrl: "/login" })}>
+          <LogOut className="w-5 h-5 text-primary-main" />
           {translate("auth.logout")}
         </DropdownMenu.Item>
       </DropdownMenu.Content>

@@ -135,7 +135,14 @@
       "description": "Description Optional",
       "descriptionLabel": "Optional Description",
       "previousStep": "Previous Step",
-      "step": "Step {current} of {total}"
+      "step": "Step {current} of {total}",
+      "title-placeholder": "e.g., The 10 minutes morning routine",
+      "title-advice": "Give your sequence a clear, searchable name.",
+      "description-placeholder": "Briefly explain what this sequence is about",
+      "frameContent-placeholder": "e.g., Outline the goal for this step",
+      "frameContent-advice": "Add the prompt, instruction, or message for this step.",
+      "frameDescription-placeholder": "add context or expectations for this step"
+
     },
     "self": "Sequence"
   },

@@ -55,9 +55,10 @@ export function CreateSequenceForm({
     register,
     watch,
     setError,
-    formState: { errors },
+    formState: { errors, isValid },
     handleSubmit,
   } = useForm<SequenceCreationFormValues>({
+    mode: "onChange",
     defaultValues: {
       title: initialSequenceTitle,
       description: "",
@@ -71,6 +72,11 @@ export function CreateSequenceForm({
 
   const SequenceTitle = watch("title");
   const pages = watch("pages");
+  const trimmedTitle = SequenceTitle?.trim() ?? "";
+  const hasValidFrames = useMemo(
+    () => pages.some((frame) => frame.content.trim().length > 0),
+    [pages]
+  );
 
   const steps = useMemo(
     () => [
@@ -95,7 +101,7 @@ export function CreateSequenceForm({
   const onNextSlide = () => {
     const lastSlideContent = pages?.[activeFrame]?.content?.trim();
 
-    if (!lastSlideContent) {
+    if (!lastSlideContent || lastSlideContent.length === 0) {
       setError(`pages.${activeFrame}.content`, {
         type: "required",
         message: translate("common.required"),
@@ -136,7 +142,7 @@ export function CreateSequenceForm({
         const createdSequence = await createSequenceMutation({
           frameOrder: frameResult?.ids ?? [],
           userId: session?.user?.id ?? "",
-          title: values.title,
+          title: values.title.trim(),
           description: values.description?.trim() || undefined,
         }).unwrap();
 
@@ -164,11 +170,15 @@ export function CreateSequenceForm({
           </label>
           <TextField.Root
             id={`page-${index}-content`}
+            placeholder={translate("sequence.draft.frameContent-placeholder")}
             {...register(`pages.${index}.content`, {
               required: translate("common.required"),
             })}
             radius="large"
           />
+          <Text size="1" color="gray">
+            {translate("sequence.draft.frameContent-advice")}
+          </Text>
           {errors.pages?.[index]?.content && (
             <p className="text-sm text-destructive">
               {errors.pages[index]?.content?.message}
@@ -185,6 +195,7 @@ export function CreateSequenceForm({
         </label>
         <TextArea
           id={`page-${index}-description`}
+          placeholder={translate("sequence.draft.frameDescription-placeholder")}
           radius="large"
           {...register(`pages.${index}.description`)}
         />
@@ -269,27 +280,39 @@ export function CreateSequenceForm({
                     </label>
                     <TextField.Root
                       id="sequence-title"
+                      placeholder={translate(
+                        "sequence.draft.title-placeholder"
+                      )}
                       {...register("title", {
                         required: translate("common.required"),
+                        validate: (value) =>
+                          value?.trim().length > 0 ||
+                          translate("common.required"),
                       })}
                       radius="large"
                     />
+                    <Text size="1" color="gray">
+                      {translate("sequence.draft.title-advice")}
+                    </Text>
                     {errors.title && (
                       <p className="text-sm text-destructive">
                         {errors.title.message}
                       </p>
                     )}
                   </div>
+
                   <div className="space-y-2 w-full">
                     <label
                       className="text-sm font-medium text-white"
                       htmlFor="sequence-description"
                     >
-                      {translate("sequence.draft.description") ||
-                        "Description (optional)"}
+                      {translate("sequence.draft.description")}
                     </label>
                     <TextArea
                       id="sequence-description"
+                      placeholder={translate(
+                        "sequence.draft.description-placeholder"
+                      )}
                       {...register("description")}
                       radius="large"
                     />
@@ -349,7 +372,7 @@ export function CreateSequenceForm({
             {currentStep === 0 ? (
               <Button
                 type="button"
-                disabled={!SequenceTitle}
+                disabled={!trimmedTitle}
                 variant="solid"
                 onClick={handleStepAdvance}
               >
@@ -359,7 +382,7 @@ export function CreateSequenceForm({
             ) : (
               <Button
                 type="submit"
-                disabled={pageFrames.length <= 1}
+                disabled={!isValid || !hasValidFrames}
                 loading={isSaving || isSequenceSaving}
               >
                 <Cloud />

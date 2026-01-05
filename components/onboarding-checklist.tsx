@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import { ArrowRight, CheckCircle2, Circle, Sparkles, X } from "lucide-react";
 import { translate } from "@/lib/i18n";
 
@@ -14,7 +13,6 @@ type ChecklistItem = {
   title: string;
   description: string;
   actionLabel: string;
-  href?: string;
   onAction?: () => void;
 };
 
@@ -60,16 +58,8 @@ function persistState(state: ChecklistState) {
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
-export function OnboardingChecklist({
-  onCreate,
-}: {
-  onCreate?: () => void;
-}) {
-  const [state, setState] = useState<ChecklistState | null>(null);
-
-  useEffect(() => {
-    setState(loadState());
-  }, []);
+export function OnboardingChecklist({ onCreate }: { onCreate?: () => void }) {
+  const [state, setState] = useState<ChecklistState | null>(loadState());
 
   useEffect(() => {
     if (state) persistState(state);
@@ -89,14 +79,12 @@ export function OnboardingChecklist({
         title: translate("onboarding.items.run.title"),
         description: translate("onboarding.items.run.description"),
         actionLabel: translate("onboarding.items.run.action"),
-        href: "/studio",
       },
       {
         id: "share",
         title: translate("onboarding.items.share.title"),
         description: translate("onboarding.items.share.description"),
         actionLabel: translate("onboarding.items.share.action"),
-        href: "/",
       },
     ],
     [onCreate]
@@ -136,7 +124,9 @@ export function OnboardingChecklist({
   };
 
   const markAllDone = () => {
-    const allCompleted = checklistItems.reduce<Record<ChecklistItemId, boolean>>(
+    const allCompleted = checklistItems.reduce<
+      Record<ChecklistItemId, boolean>
+    >(
       (acc, item) => ({
         ...acc,
         [item.id]: true,
@@ -153,7 +143,7 @@ export function OnboardingChecklist({
   if (!state || state.dismissed) return null;
 
   return (
-    <section className="rounded-2xl border border-slate-800 bg-[#0b1320] p-6 shadow-xl">
+    <section className="hidden md:block rounded-2xl border border-slate-800 bg-[#0b1320] p-6 shadow-xl">
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-primary-main">
@@ -194,7 +184,6 @@ export function OnboardingChecklist({
           })}
         </span>
       </div>
-
       <div className="mt-6 grid gap-4 lg:grid-cols-3">
         {checklistItems.map((item) => {
           const isDone = state.completed[item.id];
@@ -226,11 +215,9 @@ export function OnboardingChecklist({
                       {item.title}
                     </h3>
                   </div>
-                  <p className="text-sm text-[#9ab6da]">
-                    {item.description}
-                  </p>
+                  <p className="text-sm text-[#9ab6da]">{item.description}</p>
                   <div className="flex flex-wrap items-center gap-2">
-                    {item.onAction ? (
+                    {item.onAction && (
                       <button
                         type="button"
                         onClick={() => {
@@ -241,15 +228,7 @@ export function OnboardingChecklist({
                         {item.actionLabel}
                         <ArrowRight className="h-4 w-4" />
                       </button>
-                    ) : item.href ? (
-                      <Link
-                        href={item.href}
-                        className="inline-flex items-center gap-2 rounded-lg bg-primary-main/10 px-3 py-2 text-sm font-semibold text-primary-main hover:bg-primary-main/20"
-                      >
-                        {item.actionLabel}
-                        <ArrowRight className="h-4 w-4" />
-                      </Link>
-                    ) : null}
+                    )}
                     <button
                       type="button"
                       onClick={() => toggleItem(item.id)}
@@ -266,7 +245,6 @@ export function OnboardingChecklist({
           );
         })}
       </div>
-
       <div className="mt-6 flex flex-wrap gap-3 text-sm font-semibold">
         <button
           type="button"

@@ -103,6 +103,35 @@
     "explore": "Explore",
     "exploreDescription": "Every Sequence tells a story through frames"
   },
+  "onboarding": {
+    "actions": {
+      "complete": "Mark done",
+      "markDone": "Mark done",
+      "markItem": "Toggle completion for {item}",
+      "skip": "Skip for now",
+      "undo": "Undo"
+    },
+    "description": "Follow this quick checklist to get your first sequence live.",
+    "items": {
+      "create": {
+        "action": "Lunch",
+        "description": "Start a new sequence and outline the frames you want to tell your story.",
+        "title": "Create a Sequence"
+      },
+      "run": {
+        "description": "Click on any Sequence Card To View The Story",
+        "title": "View a Sequence"
+      },
+      "share": {
+        "action": "View my Sequences",
+        "description": "Click on the share icon on the bottom right of every Sequence card",
+        "title": "Share a link"
+      }
+    },
+    "progress": "{completed}/{total} completed",
+    "subtitle": "Welcome to Link & Tell",
+    "title": "New here?"
+  },
   "profile": {
     "cta": {
       "avatar": "Change Avatar"

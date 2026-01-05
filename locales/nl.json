@@ -1,5 +1,35 @@
 {
     "common": {
         "close": "Fermer"
+    },
+    "onboarding": {
+        "actions": {
+            "complete": "Mark done",
+            "markDone": "Mark done",
+            "markItem": "Toggle completion for {item}",
+            "skip": "Skip for now",
+            "undo": "Undo"
+        },
+        "description": "Follow this quick checklist to get your first chain live.",
+        "items": {
+            "create": {
+                "action": "Create in Studio",
+                "description": "Start a new chain and outline the frames you want to tell your story.",
+                "title": "Create a chain"
+            },
+            "run": {
+                "action": "Open Studio",
+                "description": "Run your chain to preview the output and adjust any steps.",
+                "title": "Run a chain"
+            },
+            "share": {
+                "action": "View my chains",
+                "description": "Copy a shareable link from any chain card to send it to teammates.",
+                "title": "Share a link"
+            }
+        },
+        "progress": "{completed}/{total} completed",
+        "subtitle": "Welcome to Link & Tell",
+        "title": "New here?"
     }
 }

@@ -197,15 +197,11 @@ export function StudioView({
                       setSelectedTemplate(null);
                       setIsTemplateDialogOpen(true);
                     }}
-                    className="flex h-10 items-center gap-2 px-4 text-sm font-bold"
+                    className="flex h-10 items-center gap-2 px-4 text-sm font-bold cursor-pointer hidden md:flex"
                   >
                     <Sparkles />
-                    <Text
-                      size="2"
-                      weight="bold"
-                      className="tracking-[0.015em]"
-                    >
-                      Start from template
+                    <Text size="2" weight="bold" className="tracking-[0.015em]">
+                      {translate("studio.template-create")}
                     </Text>
                   </Button>
                   <Button

@@ -55,7 +55,6 @@ export type SequenceCreationFormValues = {
 };
 
 export type SequenceTemplate = {
-  id: string;
   title: string;
   description: string;
   outcome: string;

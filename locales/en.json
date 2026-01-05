@@ -172,15 +172,15 @@
       "steps": {
         "1": {
           "content": "List today’s top 3 priorities.",
-          "descripton": "Only tasks that move the needle. No busywork."
+          "description": "Only tasks that move the needle. No busywork."
         },
         "2": {
           "content": "Block time for each priority.",
-          "descripton": "Rough time windows, not a perfect schedule."
+          "description": "Rough time windows, not a perfect schedule."
         },
         "3": {
           "content": "Decide what you’ll ignore today.",
-          "descripton": "Consciously drop low-value tasks."
+          "description": "Consciously drop low-value tasks."
         }
       }
     },

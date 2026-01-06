@@ -108,6 +108,35 @@
     "explore": "Explore",
     "exploreDescription": "Every Sequence tells a story through frames"
   },
+  "onboarding": {
+    "actions": {
+      "complete": "Mark done",
+      "markDone": "Mark done",
+      "markItem": "Toggle completion for {item}",
+      "skip": "Skip for now",
+      "undo": "Undo"
+    },
+    "description": "Follow this quick checklist to get your first sequence live.",
+    "items": {
+      "create": {
+        "action": "Lunch",
+        "description": "Start a new sequence and outline the frames you want to tell your story.",
+        "title": "Create a Sequence"
+      },
+      "run": {
+        "description": "Click on any Sequence Card To View The Story",
+        "title": "View a Sequence"
+      },
+      "share": {
+        "action": "View my Sequences",
+        "description": "Click on the share icon on the bottom right of every Sequence card",
+        "title": "Share a link"
+      }
+    },
+    "progress": "{completed}/{total} completed",
+    "subtitle": "Welcome to Link & Tell",
+    "title": "New here?"
+  },
   "profile": {
     "cta": {
       "avatar": "Change Avatar"
@@ -140,7 +169,14 @@
       "description": "Description Optional",
       "descriptionLabel": "Optional Description",
       "previousStep": "Previous Step",
-      "step": "Step {current} of {total}"
+      "step": "Step {current} of {total}",
+      "title-placeholder": "e.g., The 10 minutes morning routine",
+      "title-advice": "Give your sequence a clear, searchable name.",
+      "description-placeholder": "Briefly explain what this sequence is about",
+      "frameContent-placeholder": "e.g., Outline the goal for this step",
+      "frameContent-advice": "Add the prompt, instruction, or message for this step.",
+      "frameDescription-placeholder": "add context or expectations for this step"
+
     },
     "self": "Sequence"
   },
@@ -162,6 +198,72 @@
     "total": "Total Sequences",
     "lastEdit": "Last Edited",
     "greetings": "Hello {name}",
-    "explorerWelcome": "Welcome To {name} Studio"
+    "explorerWelcome": "Welcome To {name} Studio",
+    "template-create": "Create from a Template"
+  },
+  "templates": {
+    "cta": "Use this Template",
+    "start": "Start from a Template",
+    "startDescription": "Pick a starting point to pre-populate your sequence with suggested steps.",
+    "outcome": "Expected outcome",
+    "template1": {
+      "title": "Plan My Day",
+      "description": "Get clarity on what actually matters today.",
+      "outcome": "A short, realistic plan you can finish without stress.",
+      "steps": {
+        "1": {
+          "content": "List today’s top 3 priorities.",
+          "description": "Only tasks that move the needle. No busywork."
+        },
+        "2": {
+          "content": "Block time for each priority.",
+          "description": "Rough time windows, not a perfect schedule."
+        },
+        "3": {
+          "content": "Decide what you’ll ignore today.",
+          "description": "Consciously drop low-value tasks."
+        }
+      }
+    },
+    "template2": {
+      "title": "Weekly Reset",
+      "description": "Clear your head and start the week clean.",
+      "outcome": "Mental clarity and a focused direction for the week.",
+      "steps": {
+        "1": {
+          "content": "Review last week quickly.",
+          "description": "What worked? What didnt? One sentence each."
+        },
+        "2": {    
+          "content": "Choose one main goal for this week.",
+          "description": "If this is done, the week is a win."
+        },
+        "3": {
+          "content": "Prepare your environment.",
+          "description": "Tidy workspace, files, or calendar."
+        }
+      }
+    },
+    "template3": {
+      "title": "Daily Health Check",
+      "description": "Stay aware of your body and energy.",
+      "outcome": "Better decisions based on how you actually feel.",
+      "steps": {
+        "1": {
+         "content": "Rate sleep, energy, and mood.",
+        "description": "Quick 1–5 ratings. No overthinking."
+        },
+        "2": {
+                
+        "content": "Pick one health action today.",
+        "description": "Walk, stretch, hydrate, or rest."
+
+        },
+        "3": {
+          "content": "Remove one unhealthy friction.",
+        "description": "Hide junk food, silence late notifications, etc."
+        }
+      }
+    }
   }
 }

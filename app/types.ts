@@ -54,6 +54,16 @@ export type SequenceCreationFormValues = {
   }[];
 };
 
+export type SequenceTemplate = {
+  title: string;
+  description: string;
+  outcome: string;
+  steps: {
+    content: string;
+    description: string;
+  }[];
+};
+
 export type PaginationParams = {
   page?: number;
   limit?: number;

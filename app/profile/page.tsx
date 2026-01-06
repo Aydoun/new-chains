@@ -107,7 +107,7 @@ export default function ProfilePage() {
                       readOnly
                       defaultValue={session?.user?.email ?? ""}
                     />
-                    <div className="absolute sm:hidden right-3 top-1/2 hidden md:flex -translate-y-1/2 items-center gap-1.5 rounded bg-green-500/10 px-2 py-1 text-xs font-medium text-green-400 ring-1 ring-green-500/20">
+                    <div className="absolute sm:hidden right-3 top-1/2 hidden md:flex -translate-y-1/2 items-center gap-1.5 rounded dark:bg-green-500/10 bg-green-500 px-2 py-1 text-white dark:text-green-400">
                       <CheckCircle />
                       {translate("profile.verified")}
                     </div>
@@ -168,7 +168,7 @@ export default function ProfilePage() {
                 </div>
                 <div className="mt-2 flex items-center justify-end gap-3 border-t border-border pt-4">
                   <Button
-                    className="flex items-center gap-2 rounded-lg bg-primary text-sm font-bold text-primary-foreground shadow-lg shadow-blue-900/20 transition hover:brightness-95"
+                    className="flex items-center gap-2 rounded-lg p-5 text-sm font-bold text-primary-foreground"
                     type="submit"
                     loading={isUpdatingBio}
                   >
@@ -181,12 +181,12 @@ export default function ProfilePage() {
           </div>
           <div className="flex flex-col items-start justify-between gap-4 rounded-xl border border-red-900/30 bg-red-900/10 p-6 text-red-300 md:flex-row md:items-center md:p-8">
             <div className="flex flex-col gap-1">
-              <h3 className="text-base font-bold text-red-400">
+              <Heading as="h3" className="text-base font-bold">
                 {translate("profile.delete")}
-              </h3>
-              <p className="text-sm text-red-300/70">
+              </Heading>
+              <Text className="text-sm text-red-300/70">
                 {translate("profile.deleteWarn")}
-              </p>
+              </Text>
             </div>
             <button className="whitespace-nowrap rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm font-bold text-red-400 transition-colors hover:bg-red-500/20">
               {translate("profile.delete")}

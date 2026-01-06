@@ -19,7 +19,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { Sequence, TimeFilter } from "@/app/types";
 import { SequenceCard } from "./sequence-card";
 import { SequenceEmptyState } from "./sequence-empty-state";
@@ -60,6 +60,7 @@ type Props = {
   deletingSequenceRef?: string | number;
   viewerId?: string;
   isMyStudio?: boolean;
+  advancedSettings?: ReactNode;
 };
 
 export function StudioView({
@@ -77,6 +78,7 @@ export function StudioView({
   onSearchChange,
   deletingSequenceRef,
   isMyStudio = false,
+  advancedSettings,
 }: Props) {
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -151,6 +153,7 @@ export function StudioView({
                 ))}
               </div>
             </div>
+            {isMyStudio && advancedSettings}
             <div className="flex flex-col gap-4">
               <div className="flex flex-wrap py-2 justify-between">
                 <div className="md:min-w-72">

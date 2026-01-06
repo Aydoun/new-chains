@@ -6,6 +6,7 @@ import {
   useDeleteSequenceMutation,
   useLazyGetStudioSequencesQuery,
 } from "@/app/services/sequences";
+import { AdvancedSettingsPanel } from "@/components/advanced-settings";
 import { translate } from "@/lib/i18n";
 import { useInfinitePagination } from "@/hooks/useInfinitePagination";
 import { PaginationParams, Sequence, TimeFilter } from "@/app/types";
@@ -76,6 +77,7 @@ export default function StudioPage() {
       searchTerm={searchTerm}
       onSearchChange={setSearchTerm}
       isMyStudio
+      advancedSettings={<AdvancedSettingsPanel />}
     />
   );
 }

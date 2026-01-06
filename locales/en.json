@@ -117,6 +117,38 @@
     "verified": "verified",
     "selfDesc": "Brief description for your profile."
   },
+  "settings": {
+    "advanced": {
+      "title": "Advanced settings",
+      "description": "Tune request-level controls. Defaults are safe for most runs.",
+      "tooltipLabel": "{field} details",
+      "timeout": {
+        "label": "Request timeout (seconds)",
+        "tooltip": "How long to wait before failing a request. Default 30s. Keep between 5–120s depending on model latency.",
+        "helper": "Default: 30s. Higher values trade speed for reliability."
+      },
+      "temperature": {
+        "label": "Temperature",
+        "tooltip": "0–1 range. Higher temperature = more creative, less consistent responses.",
+        "helper": "Default: 0.7. Lower for deterministic outputs."
+      },
+      "maxTokens": {
+        "label": "Max tokens",
+        "tooltip": "Upper bound on generated tokens. Typical range: 16–1024 depending on response length.",
+        "helper": "Default: 512. Smaller caps return faster, shorter answers."
+      },
+      "topP": {
+        "label": "Top P",
+        "tooltip": "Probability mass to sample from (0–1). Lower values focus on the most likely tokens.",
+        "helper": "Default: 1. Combine with temperature for finer control."
+      },
+      "retries": {
+        "label": "Retry attempts",
+        "tooltip": "How many times to retry on transient failures. Default 2. Keeping within 0–5 avoids long waits.",
+        "helper": "Default: 2 retries for flaky network/model responses."
+      }
+    }
+  },
   "sequence": {
     "countLabel": "1/{count}",
     "cta": {

@@ -171,56 +171,32 @@ interface SequenceFrameProps {
   count?: number;
 }
 
-interface FrameContainerProps {
-  className?: string;
-  children: React.ReactNode;
-}
-
 export const SequenceFrame: FC<SequenceFrameProps> = ({
   text,
   description,
   count,
 }) => {
   return (
-    <FrameContainer>
-      <div
-        className={cn(
-          "relative flex h-48 w-full flex-col items-center justify-center gap-2 text-amber-50"
-        )}
-      >
-        <blockquote className="max-w-2xl text-center text-gray-800">
-          <p className="font-serif text-1xl md:text-2xl leading-tight">
-            {text}
-          </p>
-        </blockquote>
-        {description && (
-          <p className="px-8 text-sm text-amber-700 font-medium">
-            {description}
-          </p>
-        )}
-        {count && (
-          <div className="absolute top-3 right-3 z-20">
-            <span className="inline-flex items-center gap-1 rounded-full bg-black/60 backdrop-blur-md px-2.5 py-1 text-xs font-medium text-white border border-white/10">
-              {translate("sequence.countLabel", {
-                count: count ?? 0,
-              })}
-            </span>
-          </div>
-        )}
-      </div>
-    </FrameContainer>
-  );
-};
-
-export function FrameContainer({ className, children }: FrameContainerProps) {
-  return (
     <div
       className={cn(
-        "flex h-48 w-full items-center justify-center bg-frame-primary font-[400] rounded-md",
-        className
+        "relative flex h-48 w-full flex-col items-center justify-center gap-2 text-amber-50 bg-frame-primary rounded-lg"
       )}
     >
-      {children}
+      <blockquote className="max-w-2xl text-center text-gray-800">
+        <p className="font-serif text-1xl md:text-2xl leading-tight">{text}</p>
+      </blockquote>
+      {description && (
+        <p className="px-8 text-sm text-amber-700 font-medium">{description}</p>
+      )}
+      {count && (
+        <div className="absolute top-3 right-3 z-20">
+          <span className="inline-flex items-center gap-1 rounded-full bg-black/60 backdrop-blur-md px-2.5 py-1 text-xs font-medium text-white border border-white/10">
+            {translate("sequence.countLabel", {
+              count: count ?? 0,
+            })}
+          </span>
+        </div>
+      )}
     </div>
   );
-}
+};

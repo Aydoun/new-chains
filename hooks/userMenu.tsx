@@ -3,11 +3,10 @@ import { Button, DropdownMenu, Text } from "@radix-ui/themes";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useTheme, ThemePreference } from "@/components/theme-provider";
-import { ThemeToggle } from "@/components/theme-toggle";
 
 export function UserMenu() {
   const { data: session } = useSession();
-  const { theme, resolvedTheme, setTheme, toggleTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
 
   if (!session?.user) return null;
 
@@ -18,7 +17,7 @@ export function UserMenu() {
           variant="ghost"
           radius="large"
           aria-label="open profile menu"
-          className="w-full justify-start cursor-pointer border border-border bg-card p-4 shadow-sm transition-colors hover:bg-accent"
+          className="w-full justify-start cursor-pointer bg-card p-4 hover:bg-accent outline-none"
         >
           <div className="flex items-center gap-3">
             <Image
@@ -32,9 +31,9 @@ export function UserMenu() {
               className="h-8 w-8 rounded-full bg-cover bg-center shadow-xl"
             />
             <div className="text-left">
-              <span className="text-sm font-medium leading-none dark:text-white">
+              <Text className="text-sm font-medium leading-none dark:text-white">
                 {session.user.name}
-              </span>
+              </Text>
             </div>
           </div>
         </Button>
@@ -44,26 +43,17 @@ export function UserMenu() {
           {session.user.email ?? translate("auth.error.email")}
         </DropdownMenu.Label>
         <DropdownMenu.Separator />
-        <DropdownMenu.Label>Appearance</DropdownMenu.Label>
-        <DropdownMenu.Item
-          aria-label="Toggle theme"
-          className="justify-between"
-          onClick={toggleTheme}
-        >
-          <Text>Quick toggle</Text>
-          <ThemeToggle
-            theme={theme}
-            resolvedTheme={resolvedTheme}
-            onToggle={toggleTheme}
-          />
-        </DropdownMenu.Item>
+        <DropdownMenu.Label>{translate("menu.appearance")}</DropdownMenu.Label>
         <DropdownMenu.RadioGroup
           value={theme}
           onValueChange={(value) => setTheme(value as ThemePreference)}
         >
-          <DropdownMenu.RadioItem value="light">Light</DropdownMenu.RadioItem>
-          <DropdownMenu.RadioItem value="dark">Dark</DropdownMenu.RadioItem>
-          <DropdownMenu.RadioItem value="system">System</DropdownMenu.RadioItem>
+          <DropdownMenu.RadioItem value="light">
+            {translate("menu.light")}
+          </DropdownMenu.RadioItem>
+          <DropdownMenu.RadioItem value="dark">
+            {translate("menu.dark")}
+          </DropdownMenu.RadioItem>
         </DropdownMenu.RadioGroup>
         <DropdownMenu.Separator />
         <DropdownMenu.Item onClick={() => signOut({ callbackUrl: "/login" })}>

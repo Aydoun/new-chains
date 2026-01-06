@@ -8,6 +8,7 @@ import { translate } from "@/lib/i18n";
 import { Modal } from "./ui/modal";
 import { SequenceFrame } from "./sequence-card";
 import { skipToken } from "@reduxjs/toolkit/query";
+import { Heading, Text } from "@radix-ui/themes";
 
 interface Props {
   sequenceId: string | number | null;
@@ -29,12 +30,12 @@ export function ViewSequence({ sequenceId, onClose }: Props) {
 
   return (
     <Modal open onOpenChange={handleDialogChange}>
-      <Modal.Content className="border rounded-2xl bg-gray-900 p-8 shadow-2xl">
+      <Modal.Content className="rounded-2xl bg-white dark:bg-gray-900 p-8 shadow-2xl">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-2 mb-4">
-            <h2 className="text-xl font-semibold text-white">
+            <Heading as="h2" className="font-semibold">
               {data?.title ?? ""}
-            </h2>
+            </Heading>
           </div>
           <Modal.Close aria-label="Close" onClick={onClose}>
             <X className="h-4 w-4" />
@@ -42,13 +43,14 @@ export function ViewSequence({ sequenceId, onClose }: Props) {
         </div>
         {!isFetching && !isError && (
           <div className="flex flex-col gap-3">
-            <div className="text-xs text-amber-100">
-              <span className="font-semibold uppercase tracking-wide">
-                {translate("frame.selfs")}
-              </span>
-              <span className="ml-2 rounded-full bg-primary-main px-3 py-1 font-semibold shadow-sm ring-1 ring-amber-700/60">
+            <div>
+              <Text size="2">{translate("frame.selfs")}</Text>
+              <Text
+                size="2"
+                className="ml-2 rounded-full bg-primary-main px-3 py-1 shadow-sm"
+              >
                 {data?.FrameOrder.length ?? 0} {translate("common.items")}
-              </span>
+              </Text>
             </div>
             <Carousel
               frames={

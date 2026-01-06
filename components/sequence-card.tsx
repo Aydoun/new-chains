@@ -62,7 +62,7 @@ export const SequenceCard: FC<Props> = ({
     <>
       <div
         onClick={onClick}
-        className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-xl border border-border bg-card transition-colors hover:border-primary/60"
+        className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-xl border border-border border-t-0"
       >
         <div className="h-44 w-full overflow-hidden">
           <SequenceFrame

@@ -96,7 +96,7 @@ const ModalClose = ({
       {...props}
       onClick={onClose}
       className={cn(
-        "rounded-full bg-gray-800 p-2 text-gray-300 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+        "rounded-full bg-red-600 p-2 text-white/80 transition hover:text-white",
         className
       )}
     >

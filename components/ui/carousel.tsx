@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 import { CircleArrowRight, CircleArrowLeft } from "lucide-react";
 import { translate } from "@/lib/i18n";
 import { IconButton, Text } from "@radix-ui/themes";
-import { FrameContainer } from "../sequence-card";
 
 export interface CarouselControlsRenderProps {
   currentIndex: number;
@@ -65,18 +64,11 @@ export function Carousel({
 
   return (
     <div className={cn("flex flex-col gap-4", className)}>
-      <div
-        className={cn(
-          "overflow-hidden rounded-lg border border-border shadow-sm"
-        )}
-      >
-        <div
-          className="flex items-center justify-center py-6"
-          aria-live="polite"
-        >
-          <FrameContainer className={cn("bg-bg-white/5")}>
+      <div>
+        <div className="flex items-center justify-center py-6">
+          <div className="flex h-48 w-full bg-frame-primary rounded-lg">
             {frames[currentMaxIndex]}
-          </FrameContainer>
+          </div>
         </div>
       </div>
       {renderControls ? (

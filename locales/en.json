@@ -91,6 +91,11 @@
     "terms": "Terms Of Service",
     "rights": "All rights reserved"
   },
+  "menu": {
+    "appearance": "Appearance",
+    "dark": "Dark",
+    "light": "Light"
+  },
   "navigation": {
     "cta": {
       "studio-redirect": "Go To Studio"

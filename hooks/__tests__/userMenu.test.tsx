@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
-import { Theme } from "@radix-ui/themes";
 import { UserMenu } from "../userMenu";
 import { vi } from "vitest";
+import { ThemeProvider } from "@/components/theme-provider";
 
 vi.mock("next-auth/react", () => ({
   useSession: () => ({
@@ -21,9 +21,9 @@ vi.mock("next-auth/react", () => ({
 describe("UserMenu accessibility", () => {
   it("renders a focusable trigger with a descriptive label", () => {
     render(
-      <Theme appearance="dark">
+      <ThemeProvider>
         <UserMenu />
-      </Theme>
+      </ThemeProvider>
     );
 
     expect(

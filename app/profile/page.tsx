@@ -51,19 +51,19 @@ export default function ProfilePage() {
 
   return (
     <div className={`flex w-full justify-center px-6 py-8 mt-12 md:mt-6`}>
-      <div className="flex w-full max-w-5xl flex-col gap-8 text-white">
+      <div className="flex w-full max-w-5xl flex-col gap-8 text-foreground">
         <div className="flex flex-col gap-2">
           <Heading size="7">{translate("profile.header")}</Heading>
-          <Text className="text-base text-[#92a9c9]">
+          <Text className="text-base text-muted-foreground">
             {translate("profile.description")}
           </Text>
         </div>
         <div className="flex flex-col gap-6">
-          <div className="flex flex-col overflow-hidden rounded-xl border border-[#233348] bg-[#1a2533] shadow-[0_10px_40px_-20px_rgba(0,0,0,0.6)]">
-            <div className="flex flex-col items-center gap-6 border-b border-[#233348] p-6 md:flex-row md:items-start md:p-8">
+          <div className="flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-[0_10px_40px_-20px_rgba(0,0,0,0.6)] transition-colors">
+            <div className="flex flex-col items-center gap-6 border-b border-border p-6 md:flex-row md:items-start md:p-8">
               <div className="group relative cursor-pointer">
                 <div
-                  className="size-24 rounded-full bg-cover bg-center shadow-xl ring-4 ring-[#101822]"
+                  className="size-24 rounded-full bg-cover bg-center shadow-xl ring-4 ring-border"
                   style={{
                     backgroundImage: `url(${session?.user?.image})`,
                   }}
@@ -84,7 +84,7 @@ export default function ProfilePage() {
                   </Heading>
                 </div>
                 <div className="mt-1 flex gap-3">
-                  <button className="rounded-lg border border-[#233348] bg-[#253242] px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#2f3e52]">
+                  <button className="rounded-lg border border-border bg-secondary px-4 py-2 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-secondary/70">
                     {translate("profile.cta.avatar")}
                   </button>
                 </div>
@@ -95,19 +95,19 @@ export default function ProfilePage() {
                 <div className="flex flex-col gap-2">
                   <label className="flex justify-between text-sm font-medium">
                     <span>Email Address</span>
-                    <span className="flex items-center gap-1 text-xs text-[#92a9c9]">
+                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
                       <Lock size={12} />
                       {translate("profile.googleAuth")}
                     </span>
                   </label>
                   <div className="relative opacity-75">
                     <input
-                      className="w-full cursor-not-allowed rounded-lg border border-[#233348] bg-[#101822] px-4 py-2.5 text-[#92a9c9] outline-none placeholder:text-[#92a9c9]/60"
+                      className="w-full cursor-not-allowed rounded-lg border border-border bg-muted px-4 py-2.5 text-muted-foreground outline-none placeholder:text-muted-foreground/80"
                       type="email"
                       readOnly
                       defaultValue={session?.user?.email ?? ""}
                     />
-                    <div className="absolute sm:hidden right-3 top-1/2 hidden md:flex -translate-y-1/2 items-center gap-1.5 rounded bg-green-500/10 px-2 py-1 text-xs font-medium text-green-400 ring-1 ring-green-500/20">
+                    <div className="absolute sm:hidden right-3 top-1/2 hidden md:flex -translate-y-1/2 items-center gap-1.5 rounded dark:bg-green-500/10 bg-green-500 px-2 py-1 text-white dark:text-green-400">
                       <CheckCircle />
                       {translate("profile.verified")}
                     </div>
@@ -122,16 +122,16 @@ export default function ProfilePage() {
                       onChange={handleBioChange}
                     />
                   </div>
-                  <div className="mt-1 flex items-center justify-between text-xs text-[#92a9c9]">
+                  <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground">
                     <Text>{translate("profile.selfDesc")}</Text>
                     <Text>{`${bioText.length}/${BIO_MAX_LENGTH}`}</Text>
                   </div>
                 </div>
-                <div className="flex flex-col gap-4 border-t border-[#233348] pt-4">
+                <div className="flex flex-col gap-4 border-t border-border pt-4">
                   <h4 className="text-sm font-medium">Connected Accounts</h4>
-                  <div className="flex items-center justify-between rounded-lg border border-[#233348] bg-[#101822]/50 p-3">
+                  <div className="flex items-center justify-between rounded-lg border border-border bg-muted/50 p-3">
                     <div className="flex items-center gap-3">
-                      <div className="flex size-10 items-center justify-center rounded-full bg-white">
+                      <div className="flex size-10 items-center justify-center rounded-full bg-card shadow-sm">
                         <svg
                           className="size-5"
                           viewBox="0 0 24 24"
@@ -157,7 +157,7 @@ export default function ProfilePage() {
                       </div>
                       <div className="flex flex-col">
                         <span className="text-sm font-medium">Google</span>
-                        <span className="text-xs text-[#92a9c9]">
+                        <span className="text-xs text-muted-foreground">
                           {translate("profile.connectedMessage", {
                             email: session?.user?.email ?? "",
                           })}
@@ -166,9 +166,9 @@ export default function ProfilePage() {
                     </div>
                   </div>
                 </div>
-                <div className="mt-2 flex items-center justify-end gap-3 border-t border-[#233348] pt-4">
+                <div className="mt-2 flex items-center justify-end gap-3 border-t border-border pt-4">
                   <Button
-                    className="flex items-center gap-2 rounded-lg bg-[#136dec] px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-900/20 transition hover:bg-[#0f5dc9]"
+                    className="flex items-center gap-2 rounded-lg p-5 text-sm font-bold text-primary-foreground"
                     type="submit"
                     loading={isUpdatingBio}
                   >
@@ -181,12 +181,12 @@ export default function ProfilePage() {
           </div>
           <div className="flex flex-col items-start justify-between gap-4 rounded-xl border border-red-900/30 bg-red-900/10 p-6 text-red-300 md:flex-row md:items-center md:p-8">
             <div className="flex flex-col gap-1">
-              <h3 className="text-base font-bold text-red-400">
+              <Heading as="h3" className="text-base font-bold">
                 {translate("profile.delete")}
-              </h3>
-              <p className="text-sm text-red-300/70">
+              </Heading>
+              <Text className="text-sm text-red-300/70">
                 {translate("profile.deleteWarn")}
-              </p>
+              </Text>
             </div>
             <button className="whitespace-nowrap rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm font-bold text-red-400 transition-colors hover:bg-red-500/20">
               {translate("profile.delete")}

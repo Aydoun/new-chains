@@ -19,7 +19,7 @@ export function SequenceEmptyState({
   return (
     <Flex align="center" justify="center" className={cn("w-full", className)}>
       <Card
-        className="w-full border border-slate-200/60 bg-white/80 p-8 shadow-2xl backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80"
+        className="w-full border-none bg-white/80 p-8 shadow-2xl dark:bg-slate-900/80"
         variant="surface"
       >
         <Flex direction="column" align="center" gap="4" className="text-center">
@@ -28,7 +28,7 @@ export function SequenceEmptyState({
             <Flex
               align="center"
               justify="center"
-              className="relative h-24 w-24 rounded-full border border-slate-200 bg-slate-50 shadow-xl dark:border-slate-800 dark:bg-slate-800"
+              className="relative h-24 w-24 rounded-full bg-slate-50 shadow-xl dark:bg-slate-800"
             >
               <SearchX
                 className="h-12 w-12 text-slate-600 dark:text-slate-300"
@@ -38,7 +38,7 @@ export function SequenceEmptyState({
             <Flex
               align="center"
               justify="center"
-              className="absolute -right-2 -top-2 h-8 w-8 rounded-full border border-slate-200 bg-white text-sky-500 shadow-md dark:border-slate-700 dark:bg-slate-900"
+              className="absolute -right-2 -top-2 h-8 w-8 rounded-full  bg-white text-sky-500 shadow-md dark:bg-slate-900"
             >
               <HelpCircle className="h-4 w-4" aria-hidden />
             </Flex>

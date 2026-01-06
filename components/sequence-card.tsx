@@ -62,7 +62,7 @@ export const SequenceCard: FC<Props> = ({
     <>
       <div
         onClick={onClick}
-        className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-xl bg-[#1a2533]"
+        className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-xl border border-border border-t-0"
       >
         <div className="h-44 w-full overflow-hidden">
           <SequenceFrame
@@ -75,19 +75,19 @@ export const SequenceCard: FC<Props> = ({
             <Text
               size="4"
               weight="bold"
-              className="line-clamp-2leading-snug text-white transition-colors group-hover:text-primary-main"
+              className="line-clamp-2 leading-snug text-foreground transition-colors group-hover:text-primary-main"
               as="div"
             >
               {sequence.title}
             </Text>
-            <Text size="2" className="line-clamp-3 text-[#92a9c9]">
+            <Text size="2" className="line-clamp-3 text-muted-foreground">
               {sequence.description}
             </Text>
           </div>
           {!omitAuthor && (
             <div
               onClick={(event) => event.stopPropagation()}
-              className="flex items-center gap-1 hover:underline text-[#92a9c9]"
+              className="flex items-center gap-1 text-muted-foreground hover:underline"
             >
               <User className="h-4 w-4" aria-hidden="true" />
               <Link href={`/explore/${sequence.userId}`}>
@@ -99,7 +99,7 @@ export const SequenceCard: FC<Props> = ({
             data-testid="card-menu"
             className="mt-auto flex items-center justify-between"
           >
-            <div className="flex items-center gap-1 text-[#92a9c9]">
+            <div className="flex items-center gap-1 text-muted-foreground">
               <Clock3 className="h-4 w-4" aria-hidden="true" />
               <Text size="1" weight="medium">
                 {timeAgo(sequence.createdAt)}
@@ -171,56 +171,32 @@ interface SequenceFrameProps {
   count?: number;
 }
 
-interface FrameContainerProps {
-  className?: string;
-  children: React.ReactNode;
-}
-
 export const SequenceFrame: FC<SequenceFrameProps> = ({
   text,
   description,
   count,
 }) => {
   return (
-    <FrameContainer>
-      <div
-        className={cn(
-          "relative flex h-48 w-full flex-col items-center justify-center gap-2 text-amber-50"
-        )}
-      >
-        <blockquote className="max-w-2xl text-center text-gray-800">
-          <p className="font-serif text-1xl md:text-2xl leading-tight">
-            {text}
-          </p>
-        </blockquote>
-        {description && (
-          <p className="px-8 text-sm text-amber-700 font-medium">
-            {description}
-          </p>
-        )}
-        {count && (
-          <div className="absolute top-3 right-3 z-20">
-            <span className="inline-flex items-center gap-1 rounded-full bg-black/60 backdrop-blur-md px-2.5 py-1 text-xs font-medium text-white border border-white/10">
-              {translate("sequence.countLabel", {
-                count: count ?? 0,
-              })}
-            </span>
-          </div>
-        )}
-      </div>
-    </FrameContainer>
-  );
-};
-
-export function FrameContainer({ className, children }: FrameContainerProps) {
-  return (
     <div
       className={cn(
-        "flex h-48 w-full items-center justify-center bg-frame-primary font-[400] rounded-md",
-        className
+        "relative flex h-48 w-full flex-col items-center justify-center gap-2 text-amber-50 bg-frame-primary rounded-lg"
       )}
     >
-      {children}
+      <blockquote className="max-w-2xl text-center text-gray-800">
+        <p className="font-serif text-1xl md:text-2xl leading-tight">{text}</p>
+      </blockquote>
+      {description && (
+        <p className="px-8 text-sm text-amber-700 font-medium">{description}</p>
+      )}
+      {count && (
+        <div className="absolute top-3 right-3 z-20">
+          <span className="inline-flex items-center gap-1 rounded-full bg-black/60 backdrop-blur-md px-2.5 py-1 text-xs font-medium text-white border border-white/10">
+            {translate("sequence.countLabel", {
+              count: count ?? 0,
+            })}
+          </span>
+        </div>
+      )}
     </div>
   );
-}
+};

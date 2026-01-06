@@ -13,10 +13,10 @@ export const CreateSequenceCta: FC<Props> = ({ onCreate }) => {
   return (
     <div className="fixed bottom-6 left-0 z-20 w-full md:left-[256px] md:w-[calc(100%-256px)]">
       <div className="mx-auto w-full max-w-xl">
-        <div className="flex items-center bg-gray-400 border border-gray-200 rounded-full gap-4 py-4 px-4 mx-4 md:mx-0">
+        <div className="flex items-center bg-gray-400 rounded-full gap-4 py-4 px-4 mx-4 md:mx-0">
           <TextField.Root
             placeholder={translate("sequence.cta.title")}
-            className="flex-1"
+            className="flex-1 outline-none"
             radius="full"
             size="3"
             onChange={(e) => setSequenceTitle(e.target.value)}

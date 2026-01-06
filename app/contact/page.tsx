@@ -11,7 +11,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { translate } from "@/lib/i18n";
-import { Button, TextArea } from "@radix-ui/themes";
+import { Button, TextArea, Text, Heading } from "@radix-ui/themes";
 
 type DirectChannel = {
   icon: LucideIcon;
@@ -78,28 +78,28 @@ export default function ContactPage() {
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-8 mt-12 md:mt-6 py-8 px-6 md:px-14">
       <section className="space-y-3">
-        <p className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary">
+        <Text className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase text-primary">
           {translate("navigation.contact")}
-        </p>
+        </Text>
         <div className="space-y-2">
-          <h1 className="text-4xl font-bold leading-tight text-foreground sm:text-5xl">
+          <Heading as="h1" className="font-bold text-foreground sm:text-5xl">
             {translate("contact.welcomeMessage")}
-          </h1>
-          <p className="max-w-3xl text-base text-muted-foreground sm:text-lg">
+          </Heading>
+          <Text className="max-w-3xl text-base text-muted-foreground sm:text-lg">
             {translate("contact.welcomeDescription")}
-          </p>
+          </Text>
         </div>
       </section>
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
         <section className="flex flex-col gap-5 lg:col-span-5">
-          <header className="space-y-1">
-            <h2 className="text-2xl font-semibold text-foreground">
+          <div className="space-y-1">
+            <Heading as="h2" className="text-2xl font-semibold text-foreground">
               {translate("contact.directChannels")}
-            </h2>
-            <p className="text-sm text-muted-foreground">
+            </Heading>
+            <Text className="text-sm text-muted-foreground">
               {translate("contact.directChannelsDescription")}
-            </p>
-          </header>
+            </Text>
+          </div>
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-1">
             {directChannels.map((channel) => (
               <article
@@ -110,12 +110,15 @@ export default function ContactPage() {
                   <channel.icon className="h-5 w-5" aria-hidden="true" />
                 </div>
                 <div className="flex flex-1 flex-col gap-1">
-                  <h3 className="text-base font-semibold text-foreground">
+                  <Heading
+                    as="h3"
+                    className="text-base font-semibold text-foreground"
+                  >
                     {channel.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
+                  </Heading>
+                  <Text className="text-sm text-muted-foreground">
                     {channel.description}
-                  </p>
+                  </Text>
                 </div>
                 {channel.href ? (
                   <a
@@ -147,25 +150,25 @@ export default function ContactPage() {
         </section>
         <section className="lg:col-span-7">
           <div className="flex flex-col h-full rounded-2xl border border-[#d1d5db] dark:border-[#324867] bg-white dark:bg-[#192433] overflow-hidden shadow-lg">
-            <div
-              style={{ borderBottom: "1px solid #09090b" }}
-              className="px-6 py-5 sm:px-8"
-            >
-              <h2 className="text-xl font-semibold text-foreground">
+            <div className="px-6 py-5 sm:px-8 border-0 border-b border-[#d1d5db] dark:border-black">
+              <Heading
+                as="h2"
+                className="text-xl font-semibold text-foreground"
+              >
                 {translate("contact.sendMessage")}
-              </h2>
-              <p className="text-sm text-muted-foreground">
+              </Heading>
+              <Text className="text-sm text-muted-foreground">
                 {translate("contact.replyTime")}
-              </p>
+              </Text>
             </div>
             <form
               className="flex flex-col gap-6 px-6 py-6 sm:px-8 sm:py-8"
               onSubmit={handleSubmitMessage}
             >
               <label className="flex flex-col gap-2">
-                <span className="text-sm font-medium text-foreground">
+                <Text className="text-sm font-medium text-foreground">
                   {translate("contact.form.messageLabel")}
-                </span>
+                </Text>
                 <TextArea
                   aria-label="Message"
                   placeholder={translate("contact.form.messagePlaceholder")}
@@ -176,7 +179,7 @@ export default function ContactPage() {
               <div className="flex items-center justify-end">
                 <Button
                   loading={submitting}
-                  className="h-12 min-w-[150px] text-base font-semibold"
+                  className="h-12 min-w-[150px] text-base font-semibold cursor-pointer"
                 >
                   {translate("common.send")}
                   <Send className="h-4 w-4" aria-hidden="true" />

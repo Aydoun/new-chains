@@ -5,38 +5,34 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { store } from "./store";
 import { Provider } from "react-redux";
-import { Theme } from "@radix-ui/themes";
 import { SessionProvider } from "next-auth/react";
 import { AuthStateSync } from "@/hooks/authStateSync";
-import { MobileMenu } from "@/components/mobile-menu";
-
-type THEME = "dark" | "light";
+import { HeaderActions } from "@/components/header-actions";
+import { ThemeProvider } from "@/components/theme-provider";
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const theme: THEME = "dark";
-
   return (
-    <html lang="en" className={theme}>
+    <html lang="en" suppressHydrationWarning>
       <title>LT</title>
-      <body className={`antialiased bg-background text-foreground`}>
+      <body className="antialiased bg-background text-foreground transition-colors">
         <SessionProvider>
           <Provider store={store}>
-            <Theme appearance={theme} accentColor="blue">
+            <ThemeProvider>
               <SidebarProvider>
                 <AppSidebar />
-                <main className="flex w-full flex-col bg-[#0f1723] text-foreground">
+                <main className="flex w-full flex-col bg-background text-foreground transition-colors">
                   <AuthStateSync />
                   <div className="relative">
-                    <MobileMenu />
+                    <HeaderActions />
                     {children}
                   </div>
                 </main>
               </SidebarProvider>
-            </Theme>
+            </ThemeProvider>
           </Provider>
         </SessionProvider>
       </body>

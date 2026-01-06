@@ -119,10 +119,14 @@ export function StudioView({
                 {stats.map((stat, index) => (
                   <div
                     key={stat.labelKey}
-                    className="flex flex-col gap-3 rounded-xl border border-[#233348] bg-[#1a2533]/70 p-5 transition-colors hover:bg-[#1a2533]"
+                    className="flex flex-col gap-3 rounded-xl border border-border bg-card p-5 transition-colors hover:bg-accent"
                   >
                     <div className="flex items-start justify-between">
-                      <Text size="2" weight="medium" className="text-[#92a9c9]">
+                      <Text
+                        size="2"
+                        weight="medium"
+                        className="text-muted-foreground"
+                      >
                         {translate(stat.labelKey)}
                       </Text>
                       <stat.icon
@@ -134,7 +138,7 @@ export function StudioView({
                       <Text
                         size="7"
                         weight="bold"
-                        className="leading-tight text-white"
+                        className="leading-tight text-foreground"
                       >
                         {isLoading ? (
                           "-"
@@ -159,7 +163,7 @@ export function StudioView({
                     value={searchTerm}
                     onChange={(e) => onSearchChange(e.target.value)}
                     placeholder={translate("common.search")}
-                    className="w-full rounded-lg border border-[#233348] text-sm text-white placeholder:text-[#92a9c9] outline-none transition"
+                    className="w-full rounded-lg border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground outline-none transition focus-visible:ring-2 focus-visible:ring-primary"
                   >
                     <TextField.Slot>
                       <Search className="h-5 w-5" aria-hidden="true" />

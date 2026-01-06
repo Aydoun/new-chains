@@ -62,7 +62,7 @@ export const SequenceCard: FC<Props> = ({
     <>
       <div
         onClick={onClick}
-        className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-xl bg-[#1a2533]"
+        className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-xl border border-border bg-card transition-colors hover:border-primary/60"
       >
         <div className="h-44 w-full overflow-hidden">
           <SequenceFrame
@@ -75,19 +75,19 @@ export const SequenceCard: FC<Props> = ({
             <Text
               size="4"
               weight="bold"
-              className="line-clamp-2leading-snug text-white transition-colors group-hover:text-primary-main"
+              className="line-clamp-2 leading-snug text-foreground transition-colors group-hover:text-primary-main"
               as="div"
             >
               {sequence.title}
             </Text>
-            <Text size="2" className="line-clamp-3 text-[#92a9c9]">
+            <Text size="2" className="line-clamp-3 text-muted-foreground">
               {sequence.description}
             </Text>
           </div>
           {!omitAuthor && (
             <div
               onClick={(event) => event.stopPropagation()}
-              className="flex items-center gap-1 hover:underline text-[#92a9c9]"
+              className="flex items-center gap-1 text-muted-foreground hover:underline"
             >
               <User className="h-4 w-4" aria-hidden="true" />
               <Link href={`/explore/${sequence.userId}`}>
@@ -99,7 +99,7 @@ export const SequenceCard: FC<Props> = ({
             data-testid="card-menu"
             className="mt-auto flex items-center justify-between"
           >
-            <div className="flex items-center gap-1 text-[#92a9c9]">
+            <div className="flex items-center gap-1 text-muted-foreground">
               <Clock3 className="h-4 w-4" aria-hidden="true" />
               <Text size="1" weight="medium">
                 {timeAgo(sequence.createdAt)}

@@ -33,7 +33,7 @@ export function FilterDropdown({ value, onChange }: Props) {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
-        <button className="flex items-center gap-2 outline-none rounded-lg px-3 py-2 text-sm font-medium text-[#92a9c9] transition hover:bg-[#1a2533] hover:text-white">
+        <button className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground outline-none transition hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary">
           <Filter className="h-5 w-5" aria-hidden="true" />
           <Text size="2" weight="medium" className="hidden sm:inline">
             {currentLabel

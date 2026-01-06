@@ -80,7 +80,7 @@ body {
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
     --primary-color: #C83C6A;
-    --frame-bg: rgb(253 246 227 / var(--tw-bg-opacity, 1));
+    --frame-bg: rgb(24 31 44 / var(--tw-bg-opacity, 1));
     --focus-8: transparent;
   }
 }

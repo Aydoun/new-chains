@@ -1,10 +1,13 @@
 import { translate } from "@/lib/i18n";
-import { Button, DropdownMenu } from "@radix-ui/themes";
+import { Button, DropdownMenu, Text } from "@radix-ui/themes";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+import { useTheme, ThemePreference } from "@/components/theme-provider";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function UserMenu() {
   const { data: session } = useSession();
+  const { theme, resolvedTheme, setTheme, toggleTheme } = useTheme();
 
   if (!session?.user) return null;
 
@@ -15,7 +18,7 @@ export function UserMenu() {
           variant="ghost"
           radius="large"
           aria-label="open profile menu"
-          className="w-full justify-start cursor-pointer bg-white/5 p-4 shadow-sm hover:bg-white/10"
+          className="w-full justify-start cursor-pointer border border-border bg-card p-4 shadow-sm transition-colors hover:bg-accent"
         >
           <div className="flex items-center gap-3">
             <Image
@@ -40,6 +43,28 @@ export function UserMenu() {
         <DropdownMenu.Label>
           {session.user.email ?? translate("auth.error.email")}
         </DropdownMenu.Label>
+        <DropdownMenu.Separator />
+        <DropdownMenu.Label>Appearance</DropdownMenu.Label>
+        <DropdownMenu.Item
+          aria-label="Toggle theme"
+          className="justify-between"
+          onClick={toggleTheme}
+        >
+          <Text>Quick toggle</Text>
+          <ThemeToggle
+            theme={theme}
+            resolvedTheme={resolvedTheme}
+            onToggle={toggleTheme}
+          />
+        </DropdownMenu.Item>
+        <DropdownMenu.RadioGroup
+          value={theme}
+          onValueChange={(value) => setTheme(value as ThemePreference)}
+        >
+          <DropdownMenu.RadioItem value="light">Light</DropdownMenu.RadioItem>
+          <DropdownMenu.RadioItem value="dark">Dark</DropdownMenu.RadioItem>
+          <DropdownMenu.RadioItem value="system">System</DropdownMenu.RadioItem>
+        </DropdownMenu.RadioGroup>
         <DropdownMenu.Separator />
         <DropdownMenu.Item onClick={() => signOut({ callbackUrl: "/login" })}>
           {translate("auth.logout")}

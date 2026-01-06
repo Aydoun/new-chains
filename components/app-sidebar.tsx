@@ -62,7 +62,7 @@ export function AppSidebar() {
   if (!isAuthenticated) return null;
 
   return (
-    <Sidebar className="bg-[#0f1723] border-r border-gray-600">
+    <Sidebar className="border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-colors">
       <SidebarContent className="relative">
         <SidebarGroup>
           <SidebarGroupContent>
@@ -81,7 +81,7 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild isActive={pathname === item.url}>
                     <Link
                       href={item.url}
-                      className="py-5 px-3 hover:bg-slate-800"
+                      className="py-5 px-3 text-foreground transition-colors hover:bg-muted"
                     >
                       <item.icon />
                       <span>{translate(`navigation.${item.titleKey}`)}</span>

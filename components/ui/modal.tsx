@@ -70,7 +70,7 @@ const ModalContent = ({ className, children, ...props }: ModalContentProps) => (
   <div
     role="dialog"
     aria-modal="true"
-    className={cn("relative w-full max-w-2xl", className)}
+    className={cn("relative w-full max-w-2xl z-1000", className)}
     onClick={(event) => event.stopPropagation()}
     {...props}
   >

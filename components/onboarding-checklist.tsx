@@ -143,10 +143,7 @@ export function OnboardingChecklist({ onCreate }: { onCreate?: () => void }) {
   if (!state || state.dismissed) return null;
 
   return (
-    <section
-      style={{ zIndex: 100 }}
-      className="hidden md:block rounded-2xl border border-slate-800 bg-[#0b1320] p-6 shadow-xl"
-    >
+    <section className="hidden md:block z-40 rounded-2xl border border-slate-800 bg-[#0b1320] p-6 shadow-xl">
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-primary-main">

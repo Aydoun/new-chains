@@ -1,7 +1,7 @@
 "use client";
 
 import { useTheme } from "./theme-provider";
-import { ThemeToggle } from "./theme-toggle";
+// import { ThemeToggle } from "./theme-toggle";
 import { MobileMenu } from "./mobile-menu";
 
 export function HeaderActions() {
@@ -9,11 +9,11 @@ export function HeaderActions() {
 
   return (
     <div className="absolute right-6 md:right-8 top-8 z-30 flex items-center">
-      <ThemeToggle
+      {/* <ThemeToggle
         theme={theme}
         resolvedTheme={resolvedTheme}
         onToggle={toggleTheme}
-      />
+      /> */}
       <MobileMenu />
     </div>
   );

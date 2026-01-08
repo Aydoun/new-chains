@@ -222,7 +222,7 @@ export function CreateSequenceForm({
 
   return (
     <Modal open onOpenChange={onModalChange}>
-      <Modal.Content className="fixed left-1/2 top-1/2 w-full max-w-4xl -translate-x-1/2 -translate-y-1/2 rounded-3xl bg-[#0b0d14] p-8">
+      <Modal.Content className="fixed left-1/2 top-1/2 w-full max-w-4xl -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-900 rounded-3xl p-8">
         <div className="flex items-start justify-between gap-6">
           <div className="space-y-1">
             <Badge color="orange" radius="full">

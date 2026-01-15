@@ -47,9 +47,9 @@ export function UserMenu() {
           value={theme}
           onValueChange={(value) => setTheme(value as ThemePreference)}
         >
-          {/* <DropdownMenu.RadioItem value="light">
+          <DropdownMenu.RadioItem value="light">
             {translate("menu.light")}
-          </DropdownMenu.RadioItem> */}
+          </DropdownMenu.RadioItem>
           <DropdownMenu.RadioItem value="dark">
             {translate("menu.dark")}
           </DropdownMenu.RadioItem>

@@ -19,6 +19,7 @@ export function SequenceTemplateSelector({
   templates,
   onSelect,
 }: Props) {
+  console.log({ templates });
   return (
     <>
       <Modal open={open} onOpenChange={onOpenChange}>
@@ -56,7 +57,7 @@ export function SequenceTemplateSelector({
                         {template.steps.length} steps
                       </Badge>
                     </div>
-                    <Text size="2" color="gray">
+                    <Text size="2" className="text-white">
                       {template.description}
                     </Text>
                     <div className="rounded-xl border border-white/5 bg-black/30 p-3">
@@ -64,7 +65,7 @@ export function SequenceTemplateSelector({
                         <Layers3 className="h-4 w-4" aria-hidden />
                         {translate("templates.outcome")}
                       </div>
-                      <Text size="2" color="gray" className="mt-1">
+                      <Text size="2" className="mt-1 text-white">
                         {template.outcome}
                       </Text>
                     </div>

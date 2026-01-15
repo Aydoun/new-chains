@@ -94,11 +94,8 @@ const ModalClose = ({
     <button
       type="button"
       {...props}
+      className="rounded-full bg-gray-300 text-black dark:bg-white/5 p-2 dark:text-gray-300 transition hover:bg-gray-400 dark:hover:bg-white/10"
       onClick={onClose}
-      className={cn(
-        "rounded-full bg-red-600 p-2 text-white/80 transition hover:text-white",
-        className
-      )}
     >
       {children}
     </button>

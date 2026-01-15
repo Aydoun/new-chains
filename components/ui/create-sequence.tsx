@@ -26,6 +26,7 @@ import { useBulkCreateFramesMutation } from "@/app/services/frames";
 import { useCreateSequenceMutation } from "@/app/services/sequences";
 import { translate } from "@/lib/i18n";
 import { SequenceCreationFormValues, SequenceTemplate } from "@/app/types";
+import clsx from "clsx";
 
 interface Props {
   onClose: () => void;
@@ -186,8 +187,9 @@ export function CreateSequenceForm({
               required: translate("common.required"),
             })}
             radius="large"
+            className="outline-none"
           />
-          <Text size="1" color="gray">
+          <Text size="1">
             {translate("sequence.draft.frameContent-advice")}
           </Text>
           {errors.pages?.[index]?.content && (
@@ -221,7 +223,7 @@ export function CreateSequenceForm({
       <Modal.Content className="fixed left-1/2 top-1/2 w-full max-w-4xl -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-900 rounded-3xl p-8">
         <div className="flex items-start justify-between gap-6">
           <div className="space-y-1">
-            <Badge color="orange" radius="full">
+            <Badge className="bg-amber-700 text-white px-2 py-1" radius="full">
               {translate("sequence.draft.step", {
                 current: currentStep + 1,
                 total: steps.length,
@@ -253,13 +255,20 @@ export function CreateSequenceForm({
                   }`}
                   aria-label={step.label}
                 >
-                  {isComplete ? <Check className="h-4 w-4" /> : step.id}
+                  {isComplete ? (
+                    <Check className="h-4 w-4 text-green-400" />
+                  ) : (
+                    step.id
+                  )}
                 </div>
                 <div className="flex flex-col">
                   <Text
-                    color={isActive ? "orange" : "gray"}
                     size="2"
                     weight="medium"
+                    className={clsx({
+                      "text-gray-400": isComplete || !isActive,
+                      "text-amber-700": isActive,
+                    })}
                   >
                     {step.label}
                   </Text>
@@ -285,7 +294,11 @@ export function CreateSequenceForm({
                       htmlFor="sequence-title"
                     >
                       <Text>{translate("sequence.draft.title")}</Text>
-                      <Badge color="orange" radius="full" variant="solid">
+                      <Badge
+                        className="bg-amber-700 px-2 py-1"
+                        radius="full"
+                        variant="solid"
+                      >
                         {translate("common.required")}
                       </Badge>
                     </label>
@@ -302,7 +315,7 @@ export function CreateSequenceForm({
                       })}
                       radius="large"
                     />
-                    <Text size="1" color="gray">
+                    <Text size="1">
                       {translate("sequence.draft.title-advice")}
                     </Text>
                     {errors.title && (
@@ -349,8 +362,8 @@ export function CreateSequenceForm({
                     >
                       <ArrowLeft className="h-4 w-4" />
                     </Button>
-                    <div className="flex items-center gap-3 rounded-full border border-white/10 bg-black/40 px-4 py-2 text-sm text-white">
-                      <Text color="orange" className="tracking-wide">
+                    <div className="rounded-full border border-amber-700 px-4 py-2 text-sm">
+                      <Text className="tracking-wide text-amber-700">
                         {translate("carousel.progress", {
                           current: props.currentIndex + 1,
                           total: pageFrames.length,

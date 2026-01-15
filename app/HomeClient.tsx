@@ -125,7 +125,7 @@ export default function Home({
             onChange={(e) => setSearchTerm(e.target.value)}
             value={searchTerm}
             placeholder={translate("common.search")}
-            className="w-full rounded-lg border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground outline-none transition focus-visible:ring-2 focus-visible:ring-primary"
+            className="w-full rounded-lg border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground outline-none transition"
           >
             <TextField.Slot>
               <Search className="h-5 w-5 dark:text-white" aria-hidden="true" />

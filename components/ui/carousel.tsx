@@ -66,7 +66,7 @@ export function Carousel({
     <div className={cn("flex flex-col gap-4", className)}>
       <div>
         <div className="flex items-center justify-center py-6">
-          <div className="flex h-48 w-full bg-frame-primary rounded-lg">
+          <div className="flex h-48 w-full rounded-lg">
             {frames[currentMaxIndex]}
           </div>
         </div>
@@ -110,8 +110,4 @@ export function Carousel({
       )}
     </div>
   );
-}
-
-export function CarouselFrame({ children }: { children: React.ReactNode }) {
-  return <div className="w-full">{children}</div>;
 }

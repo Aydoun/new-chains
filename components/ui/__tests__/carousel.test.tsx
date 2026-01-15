@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Carousel, CarouselFrame } from "../carousel";
+import { Carousel } from "../carousel";
 
 const renderCarousel = (
   currentIndex = 0,
@@ -8,9 +8,9 @@ const renderCarousel = (
   onPrevious = vi.fn()
 ) => {
   const frames = [
-    <CarouselFrame key="frame-1">First frame</CarouselFrame>,
-    <CarouselFrame key="frame-2">Second frame</CarouselFrame>,
-    <CarouselFrame key="frame-3">Third frame</CarouselFrame>,
+    <div key="frame-1">First frame</div>,
+    <div key="frame-2">Second frame</div>,
+    <div key="frame-3">Third frame</div>,
   ];
 
   render(

@@ -81,10 +81,6 @@ export function CreateSequenceForm({
   const SequenceTitle = watch("title");
   const pages = watch("pages");
   const trimmedTitle = SequenceTitle?.trim() ?? "";
-  const hasValidFrames = useMemo(
-    () => pages.some((frame) => frame.content.trim().length > 0),
-    [pages]
-  );
 
   const steps = useMemo(
     () => [
@@ -315,7 +311,6 @@ export function CreateSequenceForm({
                       </p>
                     )}
                   </div>
-
                   <div className="space-y-2 w-full">
                     <label
                       className="text-sm font-medium text-white"
@@ -339,7 +334,6 @@ export function CreateSequenceForm({
             <div className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-6">
               <Carousel
                 frames={pageFrames}
-                className="w-full"
                 currentIndex={activeFrame}
                 onNext={onNextSlide}
                 onPrevious={onPreviousSlide}
@@ -397,7 +391,7 @@ export function CreateSequenceForm({
             ) : (
               <Button
                 type="submit"
-                disabled={!isValid || !hasValidFrames}
+                disabled={!isValid}
                 loading={isSaving || isSequenceSaving}
               >
                 <Cloud />

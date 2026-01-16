@@ -26,6 +26,7 @@ import { useBulkCreateFramesMutation } from "@/app/services/frames";
 import { useCreateSequenceMutation } from "@/app/services/sequences";
 import { translate } from "@/lib/i18n";
 import { SequenceCreationFormValues } from "@/app/types";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
 interface Props {
   onClose: () => void;
@@ -357,14 +358,27 @@ export function CreateSequenceForm({
                 <ArrowRight className="h-4 w-4" />
               </Button>
             ) : (
-              <Button
-                type="submit"
-                disabled={pageFrames.length <= 1}
-                loading={isSaving || isSequenceSaving}
-              >
-                <Cloud />
-                {translate("sequence.cta.publish")}
-              </Button>
+              <div className="flex items-center gap-3">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="text-xs text-[#92a9c9] cursor-help">
+                      ⌘/Ctrl + Enter
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">
+                    {translate("shortcuts.actions.run")}
+                  </TooltipContent>
+                </Tooltip>
+                <Button
+                  type="submit"
+                  data-run-shortcut
+                  disabled={pageFrames.length <= 1}
+                  loading={isSaving || isSequenceSaving}
+                >
+                  <Cloud />
+                  {translate("sequence.cta.publish")}
+                </Button>
+              </div>
             )}
           </div>
         </form>

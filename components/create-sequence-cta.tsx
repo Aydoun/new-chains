@@ -2,6 +2,8 @@ import { FC, useState } from "react";
 import { translate } from "@/lib/i18n";
 import { IconButton, TextField } from "@radix-ui/themes";
 import { CircleArrowRight, Sparkles, X } from "lucide-react";
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 interface Props {
   onCreate: (title: string) => void;
@@ -9,6 +11,21 @@ interface Props {
 
 export const CreateSequenceCta: FC<Props> = ({ onCreate }) => {
   const [sequenceTitle, setSequenceTitle] = useState("");
+
+  useKeyboardShortcuts([
+    {
+      key: "n",
+      modifier: "metaOrCtrl",
+      allowInInput: true,
+      onTrigger: () => {
+        const hasTextSelected = window.getSelection()?.toString();
+        if (hasTextSelected) return;
+
+        const createButton = document.getElementById("create-sequence-shortcut");
+        createButton?.click();
+      },
+    },
+  ]);
 
   return (
     <div className="fixed bottom-6 left-0 z-20 w-full md:left-[256px] md:w-[calc(100%-256px)]">
@@ -35,6 +52,7 @@ export const CreateSequenceCta: FC<Props> = ({ onCreate }) => {
           </TextField.Root>
           <div className="flex items-center gap-2">
             <IconButton
+              id="create-sequence-shortcut"
               disabled={!sequenceTitle}
               type="button"
               size="3"
@@ -46,6 +64,16 @@ export const CreateSequenceCta: FC<Props> = ({ onCreate }) => {
             >
               <CircleArrowRight />
             </IconButton>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="text-xs text-[#1f2937] md:text-[#92a9c9] cursor-help">
+                  ⌘/Ctrl + N
+                </span>
+              </TooltipTrigger>
+              <TooltipContent side="top">
+                {translate("shortcuts.actions.newChain")}
+              </TooltipContent>
+            </Tooltip>
           </div>
         </div>
       </div>

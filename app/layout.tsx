@@ -9,6 +9,8 @@ import { Theme } from "@radix-ui/themes";
 import { SessionProvider } from "next-auth/react";
 import { AuthStateSync } from "@/hooks/authStateSync";
 import { MobileMenu } from "@/components/mobile-menu";
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
+import { KeyboardShortcutsHelp } from "@/components/keyboard-shortcuts-help";
 
 type THEME = "dark" | "light";
 
@@ -18,6 +20,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const theme: THEME = "dark";
+
+  useKeyboardShortcuts([
+    {
+      key: "b",
+      modifier: "metaOrCtrl",
+      allowInInput: true,
+      onTrigger: () => {
+        const event = new Event("toggle-sidebar");
+        window.dispatchEvent(event);
+      },
+    },
+  ]);
 
   return (
     <html lang="en" className={theme}>
@@ -32,6 +46,9 @@ export default function RootLayout({
                   <AuthStateSync />
                   <div className="relative">
                     <MobileMenu />
+                    <div className="absolute right-4 top-3 z-20">
+                      <KeyboardShortcutsHelp />
+                    </div>
                     {children}
                   </div>
                 </main>

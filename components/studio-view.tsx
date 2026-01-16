@@ -28,6 +28,8 @@ import { ViewSequence } from "./view-sequence";
 import { FilterDropdown } from "./filter-dropdown";
 import { CreateSequenceForm } from "./ui/create-sequence";
 import { DataLoader, SessionLoader } from "./ui/spinner";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 
 type StatCard = {
   icon: LucideIcon;
@@ -82,6 +84,27 @@ export function StudioView({
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [showCreationSuccess, setShowCreationSuccess] = useState(false);
   const currentSequenceId = useRef<number | string | null>(null);
+
+  useKeyboardShortcuts([
+    {
+      key: "enter",
+      modifier: "metaOrCtrl",
+      allowInInput: true,
+      onTrigger: () => {
+        const runButtons = document.querySelectorAll(
+          "[data-run-shortcut]"
+        ) as NodeListOf<HTMLButtonElement>;
+        runButtons?.[0]?.click();
+      },
+    },
+    {
+      key: "n",
+      modifier: "metaOrCtrl",
+      allowInInput: true,
+      enabled: isMyStudio,
+      onTrigger: () => setIsCreateDialogOpen(true),
+    },
+  ]);
 
   useEffect(() => {
     if (showCreationSuccess) {
@@ -173,12 +196,32 @@ export function StudioView({
                     </TextField.Slot>
                   </TextField.Root>
                 </div>
-                <div className="flex items-center gap-2 self-end md:self-auto">
+                <div className="flex items-center gap-4 self-end md:self-auto">
                   <FilterDropdown value={filter} onChange={onFilterChange} />
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="text-xs text-[#92a9c9]">
+                        ⌘/Ctrl + Enter
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      {translate("shortcuts.actions.run")}
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
               </div>
               {isMyStudio && (
-                <div className="flex justify-end">
+                <div className="flex justify-end items-center gap-3">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="text-xs text-[#92a9c9] cursor-help">
+                        ⌘/Ctrl + N
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      {translate("shortcuts.actions.newChain")}
+                    </TooltipContent>
+                  </Tooltip>
                   <Button
                     variant="surface"
                     onClick={() => setIsCreateDialogOpen(true)}

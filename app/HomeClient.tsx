@@ -20,6 +20,8 @@ import { useInfinitePagination } from "@/hooks/useInfinitePagination";
 import { FilterDropdown } from "@/components/filter-dropdown";
 import { useDebounce } from "use-debounce";
 import { DEFAULT_PAGE_SIZE, SEARCH_DEBOUNCE_DELAY } from "@/lib/constants";
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function Home({
   sequenceId,
@@ -77,6 +79,26 @@ export default function Home({
     setSearchTerm("");
     setTimeFilter(undefined);
   };
+
+  useKeyboardShortcuts([
+    {
+      key: "n",
+      modifier: "metaOrCtrl",
+      allowInInput: true,
+      onTrigger: () => setIsCreateDialogOpen(true),
+    },
+    {
+      key: "enter",
+      modifier: "metaOrCtrl",
+      allowInInput: true,
+      onTrigger: () => {
+        const runButtons = document.querySelectorAll(
+          "[data-run-shortcut]"
+        ) as NodeListOf<HTMLButtonElement>;
+        runButtons?.[0]?.click();
+      },
+    },
+  ]);
 
   if (status === "loading") return <SessionLoader />;
 
@@ -139,6 +161,16 @@ export default function Home({
         </div>
         <div>
           <FilterDropdown value={timeFilter} onChange={setTimeFilter} />
+          <div className="mt-2 flex items-center gap-2 text-xs text-[#92a9c9]">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="cursor-help">⌘/Ctrl + Enter</span>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                {translate("shortcuts.actions.run")}
+              </TooltipContent>
+            </Tooltip>
+          </div>
         </div>
       </div>
       <section className="mt-4 pb-24">

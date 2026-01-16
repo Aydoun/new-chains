@@ -153,6 +153,18 @@
       "title": "Unable To Load Sequences"
     }
   },
+  "shortcuts": {
+    "title": "Keyboard shortcuts",
+    "description": "Speed up your workflow with quick keyboard access.",
+    "helpTooltip": "View keyboard shortcuts",
+    "actions": {
+      "newChain": "New chain",
+      "save": "Save",
+      "run": "Run",
+      "openHelp": "Open shortcuts help",
+      "toggleSidebar": "Toggle sidebar"
+    }
+  },
   "studio": {
     "total": "Total Sequences",
     "lastEdit": "Last Edited",

@@ -11,6 +11,8 @@ import {
 } from "@/app/services/users";
 import { BIO_MAX_LENGTH } from "@/lib/constants";
 import { SessionLoader } from "@/components/ui/spinner";
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function ProfilePage() {
   const { data: session } = useSession();
@@ -21,6 +23,21 @@ export default function ProfilePage() {
     { skip: !userId }
   );
   const [updateUser, { isLoading: isUpdatingBio }] = useUpdateUserMutation();
+
+  useKeyboardShortcuts(
+    [
+      {
+        key: "s",
+        modifier: "metaOrCtrl",
+        allowInInput: true,
+        onTrigger: () => {
+          const saveButton = document.getElementById("save-bio-button");
+          saveButton?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+        },
+      },
+    ],
+    { enabled: true }
+  );
 
   const handleBioChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = e.target;
@@ -167,7 +184,18 @@ export default function ProfilePage() {
                   </div>
                 </div>
                 <div className="mt-2 flex items-center justify-end gap-3 border-t border-[#233348] pt-4">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="text-xs text-[#92a9c9] cursor-help">
+                        ⌘/Ctrl + S
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">
+                      {translate("shortcuts.actions.save")}
+                    </TooltipContent>
+                  </Tooltip>
                   <Button
+                    id="save-bio-button"
                     className="flex items-center gap-2 rounded-lg bg-[#136dec] px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-900/20 transition hover:bg-[#0f5dc9]"
                     type="submit"
                     loading={isUpdatingBio}

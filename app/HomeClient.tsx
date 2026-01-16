@@ -14,7 +14,6 @@ import { ViewSequence } from "@/components/view-sequence";
 import { Search, SquarePlus, X } from "lucide-react";
 import { SequenceEmptyState } from "@/components/sequence-empty-state";
 import { SequenceErrorState } from "@/components/sequence-error-state";
-import { CreateSequenceCta } from "@/components/create-sequence-cta";
 import { OnboardingChecklist } from "@/components/onboarding-checklist";
 import { PaginationParams, Sequence, TimeFilter } from "@/app/types";
 import { useInfinitePagination } from "@/hooks/useInfinitePagination";

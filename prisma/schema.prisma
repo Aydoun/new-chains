@@ -1,11 +1,11 @@
-datasource db {
-  provider = "postgresql"
-}
-
 generator client {
   provider   = "prisma-client"
-  engineType = "client"
   output     = "../lib/generated/prisma"
+  engineType = "client"
+}
+
+datasource db {
+  provider = "postgresql"
 }
 
 model User {
@@ -17,10 +17,10 @@ model User {
   bio       String?
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+  contacts  Contact[]
   Sequences Sequence[]
   stories   Story[]
-  contacts  Contact[]
-  Snippets  Snippet[]
+  snippets  Snippet[]
 }
 
 model Sequence {
@@ -29,15 +29,13 @@ model Sequence {
   description String
   url         String?
   userId      Int
-  user        User       @relation(fields: [userId], references: [id])
   FrameOrder  Int[]
   visibility  Visibility @default(PUBLIC)
   isDeleted   Boolean    @default(false)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-  Snippets    Snippet[]
+  user        User       @relation(fields: [userId], references: [id])
 
-  @@index([description, userId])
   @@index([title, userId])
 }
 
@@ -49,7 +47,7 @@ model Frame {
   reportedCount Int       @default(0)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  Snippets      Snippet[]
+  snippets      Snippet[]
 
   @@index([createdAt])
 }
@@ -59,81 +57,40 @@ model Story {
   title       String
   description String
   userId      Int
-  user        User     @relation(fields: [userId], references: [id])
   sequences   Int[]
   isDeleted   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id])
 
   @@index([title, userId])
 }
 
 model Contact {
-  id Int @id @default(autoincrement())
-
-  userId  Int
-  user    User   @relation(fields: [userId], references: [id])
-  message String
-
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  message   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Snippet {
-  id                Int        @id @default(autoincrement())
-  type              FrameType  @default(PHRASE)
-  notes             String?
-  frameId           Int
-  frame             Frame      @relation(fields: [frameId], references: [id])
-  originSequenceId  Int
-  originSequence    Sequence   @relation(fields: [originSequenceId], references: [id])
-  createdById       Int
-  createdBy         User       @relation(fields: [createdById], references: [id])
-  createdAt         DateTime   @default(now())
-  updatedAt         DateTime   @updatedAt
+  id               Int       @id @default(autoincrement())
+  type             FrameType @default(PHRASE)
+  notes            String?
+  frameId          Int
+  frame            Frame     @relation(fields: [frameId], references: [id])
+  originSequenceId Int
+  createdById      Int
+  createdBy        User      @relation(fields: [createdById], references: [id])
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  sequenceId       Int?
 
   @@index([createdById])
   @@index([originSequenceId])
 }
-
-// model BrowsingHistory {
-//   id           Int         @id @default(autoincrement())
-//   userId       Int
-//   viewedAt     DateTime    @default(now())
-//   user         User        @relation(fields: [userId], references: [id])
-
-// }
-
-// model UserLibrary {
-//   id      Int      @id @default(autoincrement())
-//   userId  Int
-//   savedAt DateTime @default(now())
-//   user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-//   @@unique([userId])
-// }
-
-// model Like {
-//   id           Int      @id @default(autoincrement())
-//   userId       Int
-//   createdAt    DateTime @default(now())
-//   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-// }
-
-// model Report {
-//   id         Int          @id @default(autoincrement())
-//   reporterId Int
-//   mediaId    Int?
-//   reason     ReportReason
-//   status     ReportStatus @default(PENDING)
-//   resolvedAt DateTime?
-//   createdAt  DateTime     @default(now())
-//   reporter   User         @relation(fields: [reporterId], references: [id], onDelete: Cascade)
-//   media      Media?       @relation(fields: [mediaId], references: [id], onDelete: SetNull)
-
-//   @@index([status, createdAt])
-// }
 
 enum FrameType {
   PHRASE

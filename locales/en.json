@@ -177,9 +177,9 @@
       "title-placeholder": "e.g., The 10 minutes morning routine",
       "title-advice": "Give your sequence a clear, searchable name.",
       "description-placeholder": "Briefly explain what this sequence is about",
-      "frameContent-placeholder": "What's the goal of this frame?",
+      "frameContent-placeholder": "What's message to convey?",
       "frameContent-advice": "Add the prompt, instruction, or message for this frame",
-      "frameDescription-placeholder": "add some context"
+      "frameDescription-placeholder": "add optional context"
 
     },
     "self": "Sequence"

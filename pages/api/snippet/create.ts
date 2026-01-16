@@ -1,11 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
 import { requireApiSession } from "@/lib/api/auth";
-import { FrameType } from "@/lib/generated/prisma/client";
+const FrameTypes = ["PHRASE", "IMAGE", "VIDEO", "AUDIO", "DOCUMENT"];
 
-const isValidFrameType = (value: unknown): value is FrameType =>
-  typeof value === "string" &&
-  Object.values(FrameType).includes(value as FrameType);
+const isValidFrameType = (value: string) => FrameTypes.includes(value);
 
 export default async function handler(
   req: NextApiRequest,
@@ -17,12 +15,14 @@ export default async function handler(
   const sessionResult = await requireApiSession(req, res);
   if (!sessionResult) return;
 
-  const { frameId, originSequenceId, type, notes } = req.body;
+  const { frameId, originSequenceId, type = "PHRASE", notes } = req.body;
   const parsedFrameId = Number(frameId);
   const parsedSequenceId = Number(originSequenceId);
 
   if (Number.isNaN(parsedFrameId) || Number.isNaN(parsedSequenceId)) {
-    return res.status(400).json({ message: "frameId and originSequenceId are required" });
+    return res
+      .status(400)
+      .json({ message: "frameId and originSequenceId are required" });
   }
 
   try {
@@ -44,7 +44,7 @@ export default async function handler(
       });
     }
 
-    const frame = await prisma.frame.findUnique({
+    const frame = await prisma.frame.findFirst({
       where: { id: parsedFrameId },
     });
 

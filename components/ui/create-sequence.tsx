@@ -7,7 +7,6 @@ import {
   ArrowRight,
   Check,
   Cloud,
-  NotebookPen,
   PlusCircle,
   X,
 } from "lucide-react";
@@ -27,13 +26,7 @@ import { useBulkCreateFramesMutation } from "@/app/services/frames";
 import { useCreateSequenceMutation } from "@/app/services/sequences";
 import { translate } from "@/lib/i18n";
 import clsx from "clsx";
-import {
-  SequenceCreationFormValues,
-  SequenceTemplate,
-  Snippet,
-} from "@/app/types";
-import { useGetSnippetsQuery } from "@/app/services/snippets";
-import { SnippetDrawer } from "../snippet-drawer";
+import { SequenceCreationFormValues, SequenceTemplate } from "@/app/types";
 
 interface Props {
   onClose: () => void;
@@ -60,7 +53,6 @@ export function CreateSequenceForm({
     useBulkCreateFramesMutation();
   const [createSequenceMutation, { isLoading: isSequenceSaving }] =
     useCreateSequenceMutation();
-  const [isSnippetDrawerOpen, setIsSnippetDrawerOpen] = useState(false);
   const {
     control,
     register,
@@ -87,11 +79,6 @@ export function CreateSequenceForm({
     control,
     name: "pages",
   });
-
-  const { data: snippets = [], isFetching: isFetchingSnippets } =
-    useGetSnippetsQuery(undefined, {
-      skip: !isSnippetDrawerOpen,
-    });
 
   const SequenceTitle = watch("title");
   const pages = watch("pages");
@@ -135,29 +122,6 @@ export function CreateSequenceForm({
     e.stopPropagation();
 
     setCurrentStep(1);
-  };
-
-  const handleSnippetInsert = (snippet: Snippet) => {
-    const pageEntries = pages ?? [];
-    const emptyIndex = pageEntries.findIndex((page) => !page.content?.trim());
-    const targetIndex = emptyIndex >= 0 ? emptyIndex : pageEntries.length;
-
-    if (emptyIndex >= 0) {
-      setValue(`pages.${emptyIndex}.content`, snippet.frame.content);
-      setValue(
-        `pages.${emptyIndex}.description`,
-        snippet.frame.description ?? ""
-      );
-      setActiveFrame(emptyIndex);
-    } else {
-      append({
-        content: snippet.frame.content,
-        description: snippet.frame.description ?? "",
-      });
-      setActiveFrame(targetIndex);
-    }
-
-    setIsSnippetDrawerOpen(false);
   };
 
   const onPreviousSlide = () => {
@@ -417,13 +381,6 @@ export function CreateSequenceForm({
                     </Button>
                   </Flex>
                 )}
-              />
-              <SnippetDrawer
-                isOpen={isSnippetDrawerOpen}
-                onClose={() => setIsSnippetDrawerOpen((open) => !open)}
-                snippets={snippets}
-                isLoading={isFetchingSnippets}
-                onInsert={handleSnippetInsert}
               />
             </div>
           )}

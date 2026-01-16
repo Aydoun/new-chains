@@ -60,6 +60,7 @@ export function CreateSequenceForm({
     setError,
     formState: { errors, isValid },
     handleSubmit,
+    setFocus,
   } = useForm<SequenceCreationFormValues>({
     mode: "onChange",
     defaultValues: {
@@ -173,8 +174,21 @@ export function CreateSequenceForm({
     }
   }, [initialTemplate]);
 
+  useEffect(() => {
+    if (currentStep !== 1) return;
+
+    const timeout = setTimeout(() => {
+      setFocus(`pages.${activeFrame}.content`);
+    }, 0);
+
+    return () => clearTimeout(timeout);
+  }, [activeFrame, currentStep, setFocus]);
+
   const pageFrames = pages.map((_, index) => (
-    <div className="flex w-full flex-col items-center gap-3" key={`page-${index}`}>
+    <div
+      className="flex w-full flex-col items-center gap-3"
+      key={`page-${index}`}
+    >
       <div className="relative flex h-48 w-full flex-col items-center justify-center gap-3 rounded-lg bg-frame-primary text-amber-50">
         <textarea
           id={`page-${index}-content`}
@@ -193,9 +207,9 @@ export function CreateSequenceForm({
         />
       </div>
       {errors.pages?.[index]?.content && (
-        <p className="text-sm text-destructive">
+        <Text className="text-sm text-destructive">
           {errors.pages[index]?.content?.message}
-        </p>
+        </Text>
       )}
     </div>
   ));
@@ -299,9 +313,9 @@ export function CreateSequenceForm({
                       {translate("sequence.draft.title-advice")}
                     </Text>
                     {errors.title && (
-                      <p className="text-sm text-destructive">
+                      <Text className="text-sm text-destructive">
                         {errors.title.message}
-                      </p>
+                      </Text>
                     )}
                   </div>
                   <div className="space-y-2 w-full">

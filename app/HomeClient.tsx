@@ -6,7 +6,7 @@ import { useLazyGetSequencesByUserQuery } from "./services/sequences";
 import { SequenceCard } from "@/components/sequence-card";
 import { CreateSequenceForm } from "@/components/ui/create-sequence";
 import { translate } from "@/lib/i18n";
-import { Callout, Separator, Spinner, Text, TextField } from "@radix-ui/themes";
+import { Callout, Spinner, Text, TextField } from "@radix-ui/themes";
 import Link from "next/link";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { DataLoader, SessionLoader } from "@/components/ui/spinner";

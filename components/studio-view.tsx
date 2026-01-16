@@ -171,13 +171,16 @@ export function StudioView({
                     className="w-full rounded-lg border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground outline-none transition focus-visible:ring-2 focus-visible:ring-primary"
                   >
                     <TextField.Slot>
-                      <Search className="h-5 w-5" aria-hidden="true" />
+                      <Search
+                        className="h-5 w-5 dark:text-white"
+                        aria-hidden="true"
+                      />
                     </TextField.Slot>
                     <TextField.Slot>
                       <X
                         onClick={() => onSearchChange("")}
                         size="20"
-                        className="cursor-pointer"
+                        className="cursor-pointer dark:text-white"
                       />
                     </TextField.Slot>
                   </TextField.Root>

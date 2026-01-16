@@ -32,6 +32,7 @@
     "error": {
       "email": "No email address found"
     },
+    "google": "Google",
     "welcome": "Welcome back",
     "subtitle": "Sign in to access the beta",
     "continueWithEmail": "Or continue with email",
@@ -138,12 +139,15 @@
     "title": "New here?"
   },
   "profile": {
+    "accounts": "Connected Accounts",
+    "bioLabel": "Bio",
     "cta": {
       "avatar": "Change Avatar"
     },
     "connectedMessage": "Connected as {email}",
     "delete": "Delete Account",
     "deleteWarn": "Permanently delete your account and all of your content.",
+    "emailLabel": "Email address",
     "header": "Profile Settings",
     "description": "Manage your personal information and connected accounts",
     "googleAuth": "Managed via Google Auth",

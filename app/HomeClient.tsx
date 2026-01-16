@@ -83,7 +83,7 @@ export default function Home({
   return (
     <div className="flex flex-col gap-4 px-6 py-0 px-6 mt-20 md:mt-6">
       <OnboardingChecklist onCreate={() => setIsCreateDialogOpen(true)} />
-      <div className="flex gap-4 justify-between">
+      <div className="flex gap-4 justify-between flex-wrap mb-4">
         <Text
           data-testid="homepage-title"
           className="self-center"
@@ -101,7 +101,7 @@ export default function Home({
             {translate("navigation.exploreDescription")}
           </Text>
         </Text>
-        <div className="min-h-[52px]">
+        <div className="min-h-[52px] hidden md:flex">
           {showCreationSuccess && (
             <Callout.Root className="mt-1 p-3 px-4" color="green" role="status">
               <Callout.Text>

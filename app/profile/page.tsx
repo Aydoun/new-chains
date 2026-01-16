@@ -50,9 +50,9 @@ export default function ProfilePage() {
   if (isFetchingUser) return <SessionLoader />;
 
   return (
-    <div className={`flex w-full justify-center px-6 py-8 mt-12 md:mt-6`}>
+    <div className="flex w-full justify-center px-6 py-8 mt-12 md:mt-6">
       <div className="flex w-full max-w-5xl flex-col gap-8 text-foreground">
-        <div className="flex flex-col gap-2">
+        <div>
           <Heading size="7">{translate("profile.header")}</Heading>
           <Text className="text-base text-muted-foreground">
             {translate("profile.description")}
@@ -69,9 +69,9 @@ export default function ProfilePage() {
                   }}
                 />
                 <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
-                  <span className="material-symbols-outlined text-white">
+                  <Text className="material-symbols-outlined text-white">
                     {translate("profile.image-alt")}
-                  </span>
+                  </Text>
                 </div>
               </div>
               <div className="flex flex-1 flex-col items-center gap-2 md:items-start">
@@ -83,7 +83,7 @@ export default function ProfilePage() {
                     {session?.user?.name}
                   </Heading>
                 </div>
-                <div className="mt-1 flex gap-3">
+                <div className="mt-1">
                   <button className="rounded-lg border border-border bg-secondary px-4 py-2 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-secondary/70">
                     {translate("profile.cta.avatar")}
                   </button>
@@ -94,11 +94,11 @@ export default function ProfilePage() {
               <form className="flex flex-col gap-6" onSubmit={handleBioSubmit}>
                 <div className="flex flex-col gap-2">
                   <label className="flex justify-between text-sm font-medium">
-                    <span>Email Address</span>
-                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Text>{translate("profile.emailLabel")}</Text>
+                    <Text className="flex items-center gap-1 text-xs text-muted-foreground">
                       <Lock size={12} />
                       {translate("profile.googleAuth")}
-                    </span>
+                    </Text>
                   </label>
                   <div className="relative opacity-75">
                     <input
@@ -114,7 +114,9 @@ export default function ProfilePage() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm font-medium">Bio</label>
+                  <label className="text-sm font-medium">
+                    {translate("profile.bioLabel")}
+                  </label>
                   <div className="relative">
                     <TextArea
                       rows={4}
@@ -128,7 +130,9 @@ export default function ProfilePage() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-4 border-t border-border pt-4">
-                  <h4 className="text-sm font-medium">Connected Accounts</h4>
+                  <h4 className="text-sm font-medium">
+                    {translate("profile.accounts")}
+                  </h4>
                   <div className="flex items-center justify-between rounded-lg border border-border bg-muted/50 p-3">
                     <div className="flex items-center gap-3">
                       <div className="flex size-10 items-center justify-center rounded-full bg-card shadow-sm">
@@ -156,17 +160,19 @@ export default function ProfilePage() {
                         </svg>
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-sm font-medium">Google</span>
-                        <span className="text-xs text-muted-foreground">
+                        <Text className="text-sm font-medium">
+                          {translate("auth.google")}
+                        </Text>
+                        <Text className="text-xs text-muted-foreground">
                           {translate("profile.connectedMessage", {
                             email: session?.user?.email ?? "",
                           })}
-                        </span>
+                        </Text>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="mt-2 flex items-center justify-end gap-3 border-t border-border pt-4">
+                <div className="mt-2 flex justify-end pt-4">
                   <Button
                     className="flex items-center gap-2 rounded-lg p-5 text-sm font-bold text-primary-foreground"
                     type="submit"

@@ -32,6 +32,7 @@
     "error": {
       "email": "No email address found"
     },
+    "google": "Google",
     "welcome": "Welcome back",
     "subtitle": "Sign in to access the beta",
     "continueWithEmail": "Or continue with email",
@@ -138,12 +139,15 @@
     "title": "New here?"
   },
   "profile": {
+    "accounts": "Connected Accounts",
+    "bioLabel": "Bio",
     "cta": {
       "avatar": "Change Avatar"
     },
     "connectedMessage": "Connected as {email}",
     "delete": "Delete Account",
     "deleteWarn": "Permanently delete your account and all of your content.",
+    "emailLabel": "Email address",
     "header": "Profile Settings",
     "description": "Manage your personal information and connected accounts",
     "googleAuth": "Managed via Google Auth",
@@ -158,7 +162,7 @@
       "publish": "Publish",
       "creation-message": "Sequence created successfully.",
       "url-copied": "Link is copied",
-      "label": "Create a Sequence"
+      "label": "New Sequence"
     },
     "draft": {
       "appendFrame": "Next Frame",
@@ -173,9 +177,9 @@
       "title-placeholder": "e.g., The 10 minutes morning routine",
       "title-advice": "Give your sequence a clear, searchable name.",
       "description-placeholder": "Briefly explain what this sequence is about",
-      "frameContent-placeholder": "e.g., Outline the goal for this step",
-      "frameContent-advice": "Add the prompt, instruction, or message for this step.",
-      "frameDescription-placeholder": "add context or expectations for this step"
+      "frameContent-placeholder": "Outline the goal for this frame",
+      "frameContent-advice": "Add the prompt, instruction, or message for this frame",
+      "frameDescription-placeholder": "add context or expectations for this frame"
 
     },
     "self": "Sequence"

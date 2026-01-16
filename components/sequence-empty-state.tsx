@@ -17,9 +17,9 @@ export function SequenceEmptyState({
   className,
 }: SequenceEmptyStateProps) {
   return (
-    <Flex align="center" justify="center" className={cn("w-full", className)}>
+    <Flex align="center" justify="center">
       <Card
-        className="w-full border-none bg-white/80 p-8 shadow-2xl dark:bg-slate-900/80"
+        className="w-full bg-white/80 p-8 shadow-2xl dark:bg-slate-900/80"
         variant="surface"
       >
         <Flex direction="column" align="center" gap="4" className="text-center">

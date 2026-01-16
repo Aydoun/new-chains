@@ -60,6 +60,7 @@ export function CreateSequenceForm({
     setError,
     formState: { errors, isValid },
     handleSubmit,
+    setFocus,
   } = useForm<SequenceCreationFormValues>({
     mode: "onChange",
     defaultValues: {
@@ -173,50 +174,43 @@ export function CreateSequenceForm({
     }
   }, [initialTemplate]);
 
+  useEffect(() => {
+    if (currentStep !== 1) return;
+
+    const timeout = setTimeout(() => {
+      setFocus(`pages.${activeFrame}.content`);
+    }, 0);
+
+    return () => clearTimeout(timeout);
+  }, [activeFrame, currentStep, setFocus]);
+
   const pageFrames = pages.map((_, index) => (
-    <div className="flex flex-col gap-4 w-full" key={`page-${index}`}>
-      <div>
-        <div className="space-y-2">
-          <label
-            className="text-left text-white"
-            htmlFor={`page-${index}-content`}
-          >
-            {translate("frame.content")}
-          </label>
-          <TextField.Root
-            id={`page-${index}-content`}
-            placeholder={translate("sequence.draft.frameContent-placeholder")}
-            {...register(`pages.${index}.content`, {
-              required: translate("common.required"),
-            })}
-            radius="large"
-            className="outline-none"
-          />
-          <Text size="1" className="text-white">
-            {translate("sequence.draft.frameContent-advice")}
-          </Text>
-          {errors.pages?.[index]?.content && (
-            <p className="text-sm text-destructive">
-              {errors.pages[index]?.content?.message}
-            </p>
-          )}
-        </div>
-      </div>
-      <div className="space-y-2">
-        <label
-          className="text-sm font-medium text-foreground text-white"
-          htmlFor={`page-${index}-description`}
-        >
-          {translate("sequence.draft.descriptionLabel")}
-        </label>
-        <TextArea
+    <div
+      className="flex w-full flex-col items-center gap-3"
+      key={`page-${index}`}
+    >
+      <div className="relative flex h-48 w-full flex-col items-center justify-center gap-3 rounded-lg bg-frame-primary text-amber-50">
+        <textarea
+          id={`page-${index}-content`}
+          placeholder={translate("sequence.draft.frameContent-placeholder")}
+          {...register(`pages.${index}.content`, {
+            required: translate("common.required"),
+          })}
+          rows={2}
+          className="w-full max-w-2xl resize-none bg-transparent text-center font-serif text-lg leading-tight text-gray-800 placeholder:text-gray-500 focus:outline-none focus:ring-0"
+        />
+        <input
           id={`page-${index}-description`}
           placeholder={translate("sequence.draft.frameDescription-placeholder")}
-          radius="large"
           {...register(`pages.${index}.description`)}
-          className="outline-none"
+          className="w-full max-w-xl bg-transparent text-center text-sm font-medium text-amber-700 placeholder:text-amber-600/70 focus:outline-none focus:ring-0"
         />
       </div>
+      {errors.pages?.[index]?.content && (
+        <Text className="text-sm text-destructive">
+          {errors.pages[index]?.content?.message}
+        </Text>
+      )}
     </div>
   ));
 
@@ -319,9 +313,9 @@ export function CreateSequenceForm({
                       {translate("sequence.draft.title-advice")}
                     </Text>
                     {errors.title && (
-                      <p className="text-sm text-destructive">
+                      <Text className="text-sm text-destructive">
                         {errors.title.message}
-                      </p>
+                      </Text>
                     )}
                   </div>
                   <div className="space-y-2 w-full">

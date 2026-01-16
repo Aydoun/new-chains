@@ -6,15 +6,14 @@ import { useLazyGetSequencesByUserQuery } from "./services/sequences";
 import { SequenceCard } from "@/components/sequence-card";
 import { CreateSequenceForm } from "@/components/ui/create-sequence";
 import { translate } from "@/lib/i18n";
-import { Callout, Separator, Spinner, Text, TextField } from "@radix-ui/themes";
+import { Button, Callout, Spinner, Text, TextField } from "@radix-ui/themes";
 import Link from "next/link";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { DataLoader, SessionLoader } from "@/components/ui/spinner";
 import { ViewSequence } from "@/components/view-sequence";
-import { Search, X } from "lucide-react";
+import { Search, SquarePlus, X } from "lucide-react";
 import { SequenceEmptyState } from "@/components/sequence-empty-state";
 import { SequenceErrorState } from "@/components/sequence-error-state";
-import { CreateSequenceCta } from "@/components/create-sequence-cta";
 import { OnboardingChecklist } from "@/components/onboarding-checklist";
 import { PaginationParams, Sequence, TimeFilter } from "@/app/types";
 import { useInfinitePagination } from "@/hooks/useInfinitePagination";
@@ -84,7 +83,7 @@ export default function Home({
   return (
     <div className="flex flex-col gap-4 px-6 py-0 px-6 mt-20 md:mt-6">
       <OnboardingChecklist onCreate={() => setIsCreateDialogOpen(true)} />
-      <div className="flex gap-4">
+      <div className="flex gap-4 justify-between">
         <Text
           data-testid="homepage-title"
           className="self-center"
@@ -116,6 +115,19 @@ export default function Home({
               </Callout.Text>
             </Callout.Root>
           )}
+        </div>
+        <div className="self-center">
+          <Button
+            onClick={() => {
+              setIsCreateDialogOpen(true);
+            }}
+            className="flex cursor-pointer h-10 w-60 items-center gap-2 px-4 text-sm font-bold bg-primary-main"
+          >
+            <SquarePlus />
+            <Text size="2" weight="bold" className="tracking-[0.015em]">
+              {translate("sequence.cta.label")}
+            </Text>
+          </Button>
         </div>
       </div>
       <div className="flex flex-wrap justify-between">
@@ -188,12 +200,12 @@ export default function Home({
           </>
         )}
       </section>
-      <CreateSequenceCta
+      {/* <CreateSequenceCta
         onCreate={(title) => {
           sequenceTitleRef.current = title;
           setIsCreateDialogOpen(true);
         }}
-      />
+      /> */}
       {isViewDialogOpen && (
         <ViewSequence
           sequenceId={sequenceIdRef.current}

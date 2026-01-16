@@ -119,6 +119,42 @@ export function StudioView({
                     </Callout.Root>
                   )}
                 </div>
+                {isMyStudio && (
+                  <div className="flex flex-wrap gap-4 self-center">
+                    <Button
+                      variant="soft"
+                      onClick={() => {
+                        setSelectedTemplate(null);
+                        setIsTemplateDialogOpen(true);
+                      }}
+                      className="flex h-10 items-center gap-2 px-4 text-sm font-bold cursor-pointer hidden md:flex"
+                    >
+                      <Sparkles />
+                      <Text
+                        size="2"
+                        weight="bold"
+                        className="tracking-[0.015em]"
+                      >
+                        {translate("studio.template-create")}
+                      </Text>
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setIsCreateDialogOpen(true);
+                      }}
+                      className="flex cursor-pointer h-10 w-60 items-center gap-2 px-4 text-sm font-bold bg-primary-main"
+                    >
+                      <SquarePlus />
+                      <Text
+                        size="2"
+                        weight="bold"
+                        className="tracking-[0.015em]"
+                      >
+                        {translate("sequence.cta.label")}
+                      </Text>
+                    </Button>
+                  </div>
+                )}
               </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {stats.map((stat, index) => (
@@ -171,13 +207,16 @@ export function StudioView({
                     className="w-full rounded-lg border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground outline-none transition focus-visible:ring-2 focus-visible:ring-primary"
                   >
                     <TextField.Slot>
-                      <Search className="h-5 w-5" aria-hidden="true" />
+                      <Search
+                        className="h-5 w-5 dark:text-white"
+                        aria-hidden="true"
+                      />
                     </TextField.Slot>
                     <TextField.Slot>
                       <X
                         onClick={() => onSearchChange("")}
                         size="20"
-                        className="cursor-pointer"
+                        className="cursor-pointer dark:text-white"
                       />
                     </TextField.Slot>
                   </TextField.Root>
@@ -186,36 +225,6 @@ export function StudioView({
                   <FilterDropdown value={filter} onChange={onFilterChange} />
                 </div>
               </div>
-              {isMyStudio && (
-                <div className="flex flex-wrap justify-end gap-3">
-                  <Button
-                    variant="soft"
-                    onClick={() => {
-                      setSelectedTemplate(null);
-                      setIsTemplateDialogOpen(true);
-                    }}
-                    className="flex h-10 items-center gap-2 px-4 text-sm font-bold cursor-pointer hidden md:flex"
-                  >
-                    <Sparkles />
-                    <Text size="2" weight="bold" className="tracking-[0.015em]">
-                      {translate("studio.template-create")}
-                    </Text>
-                  </Button>
-                  <Button
-                    variant="surface"
-                    onClick={() => {
-                      setSelectedTemplate(null);
-                      setIsCreateDialogOpen(true);
-                    }}
-                    className="flex cursor-pointer h-10 w-60 items-center gap-2 px-4 text-sm font-bold"
-                  >
-                    <SquarePlus />
-                    <Text size="2" weight="bold" className="tracking-[0.015em]">
-                      {translate("sequence.cta.label")}
-                    </Text>
-                  </Button>
-                </div>
-              )}
               <section className="mt-4 pb-24">
                 {isLoading ? (
                   <DataLoader className="mt-64 md:mt-48" />

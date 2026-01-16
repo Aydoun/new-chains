@@ -165,7 +165,7 @@
       "label": "New Sequence"
     },
     "draft": {
-      "appendFrame": "Next Frame",
+      "appendFrame": "Add Frame",
       "title": "Sequence Name",
       "titleCopy": "Current Sequence name",
       "firstStepTitle": "Sequence Name",
@@ -177,9 +177,9 @@
       "title-placeholder": "e.g., The 10 minutes morning routine",
       "title-advice": "Give your sequence a clear, searchable name.",
       "description-placeholder": "Briefly explain what this sequence is about",
-      "frameContent-placeholder": "Outline the goal for this frame",
+      "frameContent-placeholder": "What's the goal of this frame?",
       "frameContent-advice": "Add the prompt, instruction, or message for this frame",
-      "frameDescription-placeholder": "add context or expectations for this frame"
+      "frameDescription-placeholder": "add some context"
 
     },
     "self": "Sequence"

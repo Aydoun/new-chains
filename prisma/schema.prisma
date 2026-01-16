@@ -20,6 +20,8 @@ model User {
   Sequences Sequence[]
   stories   Story[]
   contacts  Contact[]
+  followers SequenceFollower[]
+  notifications SequenceNotification[] @relation("NotificationRecipient")
 }
 
 model Sequence {
@@ -34,6 +36,8 @@ model Sequence {
   isDeleted   Boolean    @default(false)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
+  followers   SequenceFollower[]
+  notifications SequenceNotification[]
 
   @@index([description, userId])
   @@index([title, userId])
@@ -74,6 +78,36 @@ model Contact {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model SequenceFollower {
+  id         Int      @id @default(autoincrement())
+  sequenceId Int
+  userId     Int
+  muted      Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  sequence Sequence @relation(fields: [sequenceId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+
+  @@unique([sequenceId, userId])
+  @@index([userId])
+}
+
+model SequenceNotification {
+  id          Int                @id @default(autoincrement())
+  sequenceId  Int
+  recipientId Int
+  type        NotificationType
+  message     String
+  read        Boolean            @default(false)
+  createdAt   DateTime           @default(now())
+
+  sequence  Sequence @relation(fields: [sequenceId], references: [id])
+  recipient User     @relation("NotificationRecipient", fields: [recipientId], references: [id])
+
+  @@index([recipientId, read])
 }
 
 // model BrowsingHistory {
@@ -151,4 +185,10 @@ enum Role {
 enum Engine {
   CHESS
   GO
+}
+
+enum NotificationType {
+  STEPS_UPDATED
+  NOTE_ADDED
+  MILESTONE_MARKED
 }

@@ -68,8 +68,15 @@ const mocks = vi.hoisted(() => {
     { id: 4, content: "Frame 4" },
     { id: 5, content: "Frame 5" },
   ]);
+  const findFollowersMock = vi.fn(async () => []);
 
-  return { createMock, findManyMock, findFirstMock, findManyFramesMock };
+  return {
+    createMock,
+    findManyMock,
+    findFirstMock,
+    findManyFramesMock,
+    findFollowersMock,
+  };
 });
 
 vi.mock("@/lib/prisma", () => ({
@@ -81,6 +88,9 @@ vi.mock("@/lib/prisma", () => ({
     },
     frame: {
       findMany: mocks.findManyFramesMock,
+    },
+    sequenceFollower: {
+      findMany: mocks.findFollowersMock,
     },
   },
 }));
@@ -229,9 +239,12 @@ describe("api/sequence endpoints", () => {
     expect(store.status).toBe(200);
     const json = store.body as { frames: unknown[] };
     expect(json.frames).toHaveLength(2);
-    expect(mocks.findFirstMock).toHaveBeenCalledWith({
-      where: { id: 5, isDeleted: false },
-    });
+    expect(mocks.findFirstMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: 5, isDeleted: false },
+        include: expect.any(Object),
+      })
+    );
     expect(mocks.findManyFramesMock).toHaveBeenCalledTimes(1);
   });
 

@@ -27,6 +27,8 @@ export interface Sequence {
   isDeleted: boolean;
   createdAt: string;
   updatedAt: string;
+  followers?: SequenceFollower[];
+  followerCount?: number;
 }
 
 export interface Frame {
@@ -41,7 +43,36 @@ export interface Frame {
 
 export interface SingleSequence extends Sequence {
   frames: Frame[];
+  viewerState?: {
+    isFollower: boolean;
+    isMuted: boolean;
+  };
 }
+
+export type SequenceFollower = {
+  id: number;
+  username: string;
+  avatarUrl?: string | null;
+  muted: boolean;
+};
+
+export type SequenceNotification = {
+  id: number;
+  sequenceId: number;
+  type: NotificationKind;
+  message: string;
+  read: boolean;
+  createdAt: string;
+  sequence?: {
+    id: number;
+    title: string;
+  };
+};
+
+export type NotificationKind =
+  | "STEPS_UPDATED"
+  | "NOTE_ADDED"
+  | "MILESTONE_MARKED";
 
 export type Visibility = "PUBLIC" | "PRIVATE" | "FRIENDS_ONLY";
 

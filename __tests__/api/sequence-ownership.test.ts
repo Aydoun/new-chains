@@ -8,6 +8,8 @@ const prismaMocks = vi.hoisted(() => {
     create: vi.fn(),
     findUnique: vi.fn(),
     update: vi.fn(),
+    findFollowers: vi.fn(),
+    createNotifications: vi.fn(),
   };
 });
 
@@ -17,6 +19,12 @@ vi.mock("@/lib/prisma", () => ({
       create: prismaMocks.create,
       findUnique: prismaMocks.findUnique,
       update: prismaMocks.update,
+    },
+    sequenceFollower: {
+      findMany: prismaMocks.findFollowers,
+    },
+    sequenceNotification: {
+      createMany: prismaMocks.createNotifications,
     },
   },
 }));
@@ -79,6 +87,7 @@ describe("sequence ownership protections", () => {
       isDeleted: false,
     });
     prismaMocks.update.mockResolvedValueOnce({ id: 7, title: "Updated" });
+    prismaMocks.findFollowers.mockResolvedValue([]);
 
     const req = {
       method: "PUT",
@@ -92,8 +101,45 @@ describe("sequence ownership protections", () => {
     expect(store.status).toBe(200);
     expect(prismaMocks.update).toHaveBeenCalledWith({
       where: { id: 7 },
-      data: { isDeleted: undefined, title: "Updated" },
+      data: { isDeleted: undefined, title: "Updated", description: undefined },
     });
     expect(store.body).toMatchObject({ id: 7, title: "Updated" });
+  });
+
+  it("creates notifications for followers when changeType is provided", async () => {
+    prismaMocks.findUnique.mockResolvedValueOnce({
+      id: 8,
+      userId: 1,
+      isDeleted: false,
+    });
+    prismaMocks.update.mockResolvedValueOnce({
+      id: 8,
+      title: "Has news",
+      description: "desc",
+    });
+    prismaMocks.findFollowers.mockResolvedValue([
+      { sequenceId: 8, userId: 2, muted: false },
+    ]);
+
+    const req = {
+      method: "PUT",
+      query: { id: "8" },
+      body: { changeType: "note", noteSummary: "New note" },
+    } as unknown as NextApiRequest;
+    const { res, store } = createMockResponse();
+
+    await updateHandler(req, res);
+
+    expect(store.status).toBe(200);
+    expect(prismaMocks.createNotifications).toHaveBeenCalledWith({
+      data: [
+        {
+          sequenceId: 8,
+          recipientId: 2,
+          type: "NOTE_ADDED",
+          message: 'New note added to "Has news": New note',
+        },
+      ],
+    });
   });
 });

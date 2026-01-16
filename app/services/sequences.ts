@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type {
   PaginationParams,
   Sequence,
+  SequenceNotification,
   SingleSequence,
   TimeFilter,
 } from "@/app/types";
@@ -33,9 +34,15 @@ export type PaginatedSequencesResponse = {
   nextPage: number | null;
 };
 
+type FollowResponse = {
+  followerCount: number;
+  isFollower: boolean;
+  isMuted: boolean;
+};
+
 export const sequenceApi = createApi({
   reducerPath: "sequenceApi",
-  tagTypes: ["StudioSequences"],
+  tagTypes: ["StudioSequences", "SequenceFollowers", "SequenceNotifications"],
   baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL, credentials: "include" }),
   endpoints: (builder) => ({
     getSequencesByUser: builder.query<
@@ -74,12 +81,15 @@ export const sequenceApi = createApi({
 
         return `sequence/studio?${params}`;
       },
-      providesTags: (_result, _error, { timeFilter, userId } = {}) => [
+      providesTags: (_result, _error) => [
         { type: "StudioSequences", id: "LIST" },
       ],
     }),
     getSequenceById: builder.query<SingleSequence, number | string>({
       query: (sequenceId) => `sequence/${sequenceId}`,
+      providesTags: (_result, _error, sequenceId) => [
+        { type: "SequenceFollowers", id: sequenceId },
+      ],
     }),
     createSequence: builder.mutation<Sequence, SequenceInput>({
       query: (input) => ({
@@ -105,6 +115,48 @@ export const sequenceApi = createApi({
         method: "PUT",
         body: updates,
       }),
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: "SequenceFollowers", id },
+        { type: "SequenceNotifications", id: "LIST" },
+      ],
+    }),
+    followSequence: builder.mutation<
+      FollowResponse,
+      { sequenceId: number | string; action: "follow" | "unfollow" }
+    >({
+      query: ({ sequenceId, action }) => ({
+        url: "sequence/follow",
+        method: "POST",
+        body: { sequenceId, action },
+      }),
+      invalidatesTags: (_result, _error, { sequenceId }) => [
+        { type: "SequenceFollowers", id: sequenceId },
+      ],
+    }),
+    muteSequence: builder.mutation<
+      FollowResponse,
+      { sequenceId: number | string; muted: boolean }
+    >({
+      query: ({ sequenceId, muted }) => ({
+        url: "sequence/mute",
+        method: "POST",
+        body: { sequenceId, muted },
+      }),
+      invalidatesTags: (_result, _error, { sequenceId }) => [
+        { type: "SequenceFollowers", id: sequenceId },
+      ],
+    }),
+    getSequenceNotifications: builder.query<
+      SequenceNotification[],
+      { sequenceId?: number | string } | void
+    >({
+      query: (params) => {
+        const search = params?.sequenceId
+          ? `?sequenceId=${params.sequenceId}`
+          : "";
+        return `sequence/notifications${search}`;
+      },
+      providesTags: () => [{ type: "SequenceNotifications", id: "LIST" }],
     }),
   }),
 });
@@ -118,4 +170,7 @@ export const {
   useGetStudioSequencesQuery,
   useLazyGetSequencesByUserQuery,
   useLazyGetStudioSequencesQuery,
+  useFollowSequenceMutation,
+  useMuteSequenceMutation,
+  useGetSequenceNotificationsQuery,
 } = sequenceApi;

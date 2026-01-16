@@ -45,6 +45,21 @@ export interface SingleSequence extends Sequence {
 
 export type Visibility = "PUBLIC" | "PRIVATE" | "FRIENDS_ONLY";
 
+export interface Snippet {
+  id: number;
+  type: FrameType;
+  notes?: string | null;
+  frameId: number;
+  originSequenceId: number;
+  originSequence: {
+    id: number;
+    title: string;
+  };
+  frame: Frame;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export type SequenceCreationFormValues = {
   title: string;
   description?: string;

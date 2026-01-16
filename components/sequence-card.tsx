@@ -5,6 +5,7 @@ import { translate } from "@/lib/i18n";
 import { cn, timeAgo } from "@/lib/utils";
 import { IconButton, Spinner, Text } from "@radix-ui/themes";
 import Link from "next/link";
+import { MarkdownRenderer } from "./ui/markdown-renderer";
 
 export interface SequenceCardProps {
   title: string;
@@ -80,9 +81,10 @@ export const SequenceCard: FC<Props> = ({
             >
               {sequence.title}
             </Text>
-            <Text size="2" className="line-clamp-3 text-[#92a9c9]">
-              {sequence.description}
-            </Text>
+            <MarkdownRenderer
+              content={sequence.description}
+              className="line-clamp-3 text-[#92a9c9]"
+            />
           </div>
           {!omitAuthor && (
             <div
@@ -189,14 +191,16 @@ export const SequenceFrame: FC<SequenceFrameProps> = ({
         )}
       >
         <blockquote className="max-w-2xl text-center text-gray-800">
-          <p className="font-serif text-1xl md:text-2xl leading-tight">
-            {text}
-          </p>
+          <MarkdownRenderer
+            content={text}
+            className="font-serif text-center text-lg md:text-2xl leading-tight text-amber-50"
+          />
         </blockquote>
         {description && (
-          <p className="px-8 text-sm text-amber-700 font-medium">
-            {description}
-          </p>
+          <MarkdownRenderer
+            content={description}
+            className="px-8 text-sm text-amber-700 font-medium text-center"
+          />
         )}
         {count && (
           <div className="absolute top-3 right-3 z-20">

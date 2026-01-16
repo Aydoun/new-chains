@@ -26,6 +26,7 @@ import { useBulkCreateFramesMutation } from "@/app/services/frames";
 import { useCreateSequenceMutation } from "@/app/services/sequences";
 import { translate } from "@/lib/i18n";
 import { SequenceCreationFormValues } from "@/app/types";
+import { MarkdownHint } from "./markdown-hint";
 
 interface Props {
   onClose: () => void;
@@ -159,8 +160,12 @@ export function CreateSequenceForm({
     <div className="flex flex-col gap-4 w-full" key={`page-${index}`}>
       <div>
         <div className="space-y-2">
-          <label className="text-left" htmlFor={`page-${index}-content`}>
+          <label
+            className="text-left flex items-center gap-2"
+            htmlFor={`page-${index}-content`}
+          >
             {translate("frame.content")}
+            <MarkdownHint />
           </label>
           <TextField.Root
             id={`page-${index}-content`}
@@ -178,10 +183,11 @@ export function CreateSequenceForm({
       </div>
       <div className="space-y-2">
         <label
-          className="text-sm font-medium text-foreground"
+          className="text-sm font-medium text-foreground flex items-center gap-2"
           htmlFor={`page-${index}-description`}
         >
           {translate("sequence.draft.descriptionLabel")}
+          <MarkdownHint />
         </label>
         <TextArea
           id={`page-${index}-description`}
@@ -282,11 +288,12 @@ export function CreateSequenceForm({
                   </div>
                   <div className="space-y-2 w-full">
                     <label
-                      className="text-sm font-medium text-white"
+                      className="text-sm font-medium text-white flex items-center gap-2"
                       htmlFor="sequence-description"
                     >
                       {translate("sequence.draft.description") ||
                         "Description (optional)"}
+                      <MarkdownHint className="h-4 w-4 cursor-help text-amber-200" />
                     </label>
                     <TextArea
                       id="sequence-description"

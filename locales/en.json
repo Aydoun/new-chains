@@ -162,7 +162,7 @@
       "publish": "Publish",
       "creation-message": "Sequence created successfully.",
       "url-copied": "Link is copied",
-      "label": "Create a Sequence"
+      "label": "New Sequence"
     },
     "draft": {
       "appendFrame": "Next Frame",
@@ -177,9 +177,9 @@
       "title-placeholder": "e.g., The 10 minutes morning routine",
       "title-advice": "Give your sequence a clear, searchable name.",
       "description-placeholder": "Briefly explain what this sequence is about",
-      "frameContent-placeholder": "e.g., Outline the goal for this step",
-      "frameContent-advice": "Add the prompt, instruction, or message for this step.",
-      "frameDescription-placeholder": "add context or expectations for this step"
+      "frameContent-placeholder": "Outline the goal for this frame",
+      "frameContent-advice": "Add the prompt, instruction, or message for this frame",
+      "frameDescription-placeholder": "add context or expectations for this frame"
 
     },
     "self": "Sequence"

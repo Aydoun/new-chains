@@ -7,6 +7,7 @@ import {
   ArrowRight,
   Check,
   Cloud,
+  NotebookPen,
   PlusCircle,
   X,
 } from "lucide-react";
@@ -25,7 +26,9 @@ import {
 import { useBulkCreateFramesMutation } from "@/app/services/frames";
 import { useCreateSequenceMutation } from "@/app/services/sequences";
 import { translate } from "@/lib/i18n";
-import { SequenceCreationFormValues } from "@/app/types";
+import { SequenceCreationFormValues, Snippet } from "@/app/types";
+import { useGetSnippetsQuery } from "@/app/services/snippets";
+import { SnippetDrawer } from "../snippet-drawer";
 
 interface Props {
   onClose: () => void;
@@ -50,11 +53,13 @@ export function CreateSequenceForm({
     useBulkCreateFramesMutation();
   const [createSequenceMutation, { isLoading: isSequenceSaving }] =
     useCreateSequenceMutation();
+  const [isSnippetDrawerOpen, setIsSnippetDrawerOpen] = useState(false);
   const {
     control,
     register,
     watch,
     setError,
+    setValue,
     formState: { errors },
     handleSubmit,
   } = useForm<SequenceCreationFormValues>({
@@ -68,6 +73,11 @@ export function CreateSequenceForm({
     control,
     name: "pages",
   });
+
+  const { data: snippets = [], isFetching: isFetchingSnippets } =
+    useGetSnippetsQuery(undefined, {
+      skip: !isSnippetDrawerOpen,
+    });
 
   const SequenceTitle = watch("title");
   const pages = watch("pages");
@@ -110,6 +120,31 @@ export function CreateSequenceForm({
     e.stopPropagation();
 
     setCurrentStep(1);
+  };
+
+  const handleSnippetInsert = (snippet: Snippet) => {
+    const pageEntries = pages ?? [];
+    const emptyIndex = pageEntries.findIndex(
+      (page) => !page.content?.trim()
+    );
+    const targetIndex = emptyIndex >= 0 ? emptyIndex : pageEntries.length;
+
+    if (emptyIndex >= 0) {
+      setValue(`pages.${emptyIndex}.content`, snippet.frame.content);
+      setValue(
+        `pages.${emptyIndex}.description`,
+        snippet.frame.description ?? ""
+      );
+      setActiveFrame(emptyIndex);
+    } else {
+      append({
+        content: snippet.frame.content,
+        description: snippet.frame.description ?? "",
+      });
+      setActiveFrame(targetIndex);
+    }
+
+    setIsSnippetDrawerOpen(false);
   };
 
   const onPreviousSlide = () => {
@@ -298,51 +333,76 @@ export function CreateSequenceForm({
               </div>
             </div>
           ) : (
-            <div className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-6">
-              <Carousel
-                frames={pageFrames}
-                className="w-full"
-                currentIndex={activeFrame}
-                onNext={onNextSlide}
-                onPrevious={onPreviousSlide}
-                isEditMode
-                renderControls={(props) => (
-                  <Flex align="center" justify="between">
-                    <Button
-                      variant="soft"
-                      radius="full"
-                      type="button"
-                      onClick={onPreviousSlide}
-                      aria-label={translate("carousel.previous")}
-                    >
-                      <ArrowLeft className="h-4 w-4" />
-                    </Button>
-                    <div className="flex items-center gap-3 rounded-full border border-white/10 bg-black/40 px-4 py-2 text-sm text-white">
-                      <Text color="orange" className="tracking-wide">
-                        {translate("carousel.progress", {
-                          current: props.currentIndex + 1,
-                          total: pageFrames.length,
-                        })}
-                      </Text>
-                    </div>
-                    <Button
-                      radius="full"
-                      type="button"
-                      onClick={onNextSlide}
-                      aria-label={translate("sequence.draft.appendFrame")}
-                    >
-                      {props.currentIndex === pageFrames.length - 1 ? (
-                        <>
-                          <PlusCircle className="h-4 w-4" />
-                          <Text>{translate("sequence.draft.appendFrame")}</Text>
-                        </>
-                      ) : (
-                        <ArrowRight className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </Flex>
-                )}
-              />
+            <div className="space-y-4">
+              <div className="flex justify-end">
+                <Button
+                  variant="soft"
+                  radius="full"
+                  type="button"
+                  className="gap-2 cursor-pointer"
+                  onClick={() => setIsSnippetDrawerOpen((open) => !open)}
+                >
+                  <NotebookPen className="h-4 w-4" />
+                  {translate("snippets.drawer.cta")}
+                </Button>
+              </div>
+              <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
+                <div className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-6">
+                  <Carousel
+                    frames={pageFrames}
+                    className="w-full"
+                    currentIndex={activeFrame}
+                    onNext={onNextSlide}
+                    onPrevious={onPreviousSlide}
+                    isEditMode
+                    renderControls={(props) => (
+                      <Flex align="center" justify="between">
+                        <Button
+                          variant="soft"
+                          radius="full"
+                          type="button"
+                          onClick={onPreviousSlide}
+                          aria-label={translate("carousel.previous")}
+                        >
+                          <ArrowLeft className="h-4 w-4" />
+                        </Button>
+                        <div className="flex items-center gap-3 rounded-full border border-white/10 bg-black/40 px-4 py-2 text-sm text-white">
+                          <Text color="orange" className="tracking-wide">
+                            {translate("carousel.progress", {
+                              current: props.currentIndex + 1,
+                              total: pageFrames.length,
+                            })}
+                          </Text>
+                        </div>
+                        <Button
+                          radius="full"
+                          type="button"
+                          onClick={onNextSlide}
+                          aria-label={translate("sequence.draft.appendFrame")}
+                        >
+                          {props.currentIndex === pageFrames.length - 1 ? (
+                            <>
+                              <PlusCircle className="h-4 w-4" />
+                              <Text>
+                                {translate("sequence.draft.appendFrame")}
+                              </Text>
+                            </>
+                          ) : (
+                            <ArrowRight className="h-4 w-4" />
+                          )}
+                        </Button>
+                      </Flex>
+                    )}
+                  />
+                </div>
+                <SnippetDrawer
+                  isOpen={isSnippetDrawerOpen}
+                  onClose={() => setIsSnippetDrawerOpen((open) => !open)}
+                  snippets={snippets}
+                  isLoading={isFetchingSnippets}
+                  onInsert={handleSnippetInsert}
+                />
+              </div>
             </div>
           )}
           <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:space-x-2">

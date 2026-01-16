@@ -139,6 +139,28 @@
     },
     "self": "Sequence"
   },
+  "snippets": {
+    "drawer": {
+      "cta": "Snippets drawer",
+      "title": "Snippets",
+      "subtitle": "Reuse steps across sequences",
+      "hide": "Hide",
+      "show": "Show snippets",
+      "empty": "No snippets saved yet.",
+      "insertAction": "Insert snippet"
+    },
+    "originLabel": "Source",
+    "notesLabel": "Notes",
+    "notesInput": "Snippet notes",
+    "notesPlaceholder": "Add optional context for this snippet",
+    "saveAction": "Save step as snippet",
+    "saveTitle": "Save step as snippet",
+    "status": {
+      "error": "Unable to save",
+      "saved": "Saved"
+    },
+    "typeLabel": "Snippet type"
+  },
   "states": {
     "emptySequences": {
       "clear": "Clear Search",

@@ -20,6 +20,7 @@ model User {
   Sequences Sequence[]
   stories   Story[]
   contacts  Contact[]
+  Snippets  Snippet[]
 }
 
 model Sequence {
@@ -34,6 +35,7 @@ model Sequence {
   isDeleted   Boolean    @default(false)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
+  Snippets    Snippet[]
 
   @@index([description, userId])
   @@index([title, userId])
@@ -47,6 +49,7 @@ model Frame {
   reportedCount Int       @default(0)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  Snippets      Snippet[]
 
   @@index([createdAt])
 }
@@ -74,6 +77,23 @@ model Contact {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Snippet {
+  id                Int        @id @default(autoincrement())
+  type              FrameType  @default(PHRASE)
+  notes             String?
+  frameId           Int
+  frame             Frame      @relation(fields: [frameId], references: [id])
+  originSequenceId  Int
+  originSequence    Sequence   @relation(fields: [originSequenceId], references: [id])
+  createdById       Int
+  createdBy         User       @relation(fields: [createdById], references: [id])
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  @@index([createdById])
+  @@index([originSequenceId])
 }
 
 // model BrowsingHistory {

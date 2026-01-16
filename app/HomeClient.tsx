@@ -15,11 +15,17 @@ import { Search, X } from "lucide-react";
 import { SequenceEmptyState } from "@/components/sequence-empty-state";
 import { SequenceErrorState } from "@/components/sequence-error-state";
 import { CreateSequenceCta } from "@/components/create-sequence-cta";
-import { PaginationParams, Sequence, TimeFilter } from "@/app/types";
+import {
+  PaginationParams,
+  Sequence,
+  SequenceStatus,
+  TimeFilter,
+} from "@/app/types";
 import { useInfinitePagination } from "@/hooks/useInfinitePagination";
 import { FilterDropdown } from "@/components/filter-dropdown";
 import { useDebounce } from "use-debounce";
 import { DEFAULT_PAGE_SIZE, SEARCH_DEBOUNCE_DELAY } from "@/lib/constants";
+import { StatusFilterChips } from "@/components/status-filter-chips";
 
 export default function Home({
   sequenceId,
@@ -33,6 +39,7 @@ export default function Home({
   const [timeFilter, setTimeFilter] = useState<TimeFilter>();
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch] = useDebounce(searchTerm, SEARCH_DEBOUNCE_DELAY);
+  const [statuses, setStatuses] = useState<SequenceStatus[]>([]);
   const sequenceIdRef = useRef<string | number | null>(null);
   const sequenceTitleRef = useRef<string>("");
   const userId = session?.user?.id;
@@ -42,8 +49,9 @@ export default function Home({
       limit: DEFAULT_PAGE_SIZE,
       timeFilter,
       search: debouncedSearch || undefined,
+      statuses,
     }),
-    [timeFilter, debouncedSearch]
+    [timeFilter, debouncedSearch, statuses]
   );
 
   const {
@@ -76,6 +84,7 @@ export default function Home({
   const clearSearchAndFilter = () => {
     setSearchTerm("");
     setTimeFilter(undefined);
+    setStatuses([]);
   };
 
   if (status === "loading") return <SessionLoader />;
@@ -141,6 +150,7 @@ export default function Home({
           <FilterDropdown value={timeFilter} onChange={setTimeFilter} />
         </div>
       </div>
+      <StatusFilterChips value={statuses} onChange={setStatuses} />
       <section className="mt-4 pb-24">
         {isBusy ? (
           <DataLoader />

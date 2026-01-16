@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useEffect, useRef, useState } from "react";
-import { Sequence, TimeFilter } from "@/app/types";
+import { Sequence, SequenceStatus, TimeFilter } from "@/app/types";
 import { SequenceCard } from "./sequence-card";
 import { SequenceEmptyState } from "./sequence-empty-state";
 import { SequenceErrorState } from "./sequence-error-state";
@@ -28,6 +28,7 @@ import { ViewSequence } from "./view-sequence";
 import { FilterDropdown } from "./filter-dropdown";
 import { CreateSequenceForm } from "./ui/create-sequence";
 import { DataLoader, SessionLoader } from "./ui/spinner";
+import { StatusFilterChips } from "./status-filter-chips";
 
 type StatCard = {
   icon: LucideIcon;
@@ -57,6 +58,8 @@ type Props = {
   filter: TimeFilter;
   searchTerm: string;
   onSearchChange: (value: string) => void;
+  statuses: SequenceStatus[];
+  onStatusesChange: (value: SequenceStatus[]) => void;
   deletingSequenceRef?: string | number;
   viewerId?: string;
   isMyStudio?: boolean;
@@ -75,6 +78,8 @@ export function StudioView({
   filter,
   searchTerm,
   onSearchChange,
+  statuses,
+  onStatusesChange,
   deletingSequenceRef,
   isMyStudio = false,
 }: Props) {
@@ -177,6 +182,10 @@ export function StudioView({
                   <FilterDropdown value={filter} onChange={onFilterChange} />
                 </div>
               </div>
+              <StatusFilterChips
+                value={statuses}
+                onChange={onStatusesChange}
+              />
               {isMyStudio && (
                 <div className="flex justify-end">
                   <Button

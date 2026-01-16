@@ -53,7 +53,7 @@ export function timeAgo(
 }
 
 export function getQueryParams(query: PaginationParams) {
-  const { page, limit, userId, timeFilter, search } = query;
+  const { page, limit, userId, timeFilter, search, statuses } = query;
   const params = new URLSearchParams({
     page: `${page}`,
     limit: `${limit}`,
@@ -62,6 +62,7 @@ export function getQueryParams(query: PaginationParams) {
   if (userId) params.set("userId", userId);
   if (timeFilter) params.set("timeFilter", timeFilter);
   if (search) params.set("search", search);
+  if (statuses?.length) params.set("statuses", statuses.join(","));
 
   return params.toString();
 }

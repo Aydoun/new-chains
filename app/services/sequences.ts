@@ -17,12 +17,14 @@ export type SequenceInput = {
   title: string;
   userId: string;
   description?: string;
+  status?: Sequence["status"];
 };
 
 export type SequenceUpdateInput = {
   title?: string;
   description?: string;
   visibility?: Sequence["visibility"];
+  status?: Sequence["status"];
 };
 
 export type PaginatedSequencesResponse = {
@@ -47,8 +49,15 @@ export const sequenceApi = createApi({
         limit = DEFAULT_PAGE_SIZE,
         timeFilter,
         search,
+        statuses,
       } = {}) => {
-        const params = getQueryParams({ page, limit, timeFilter, search });
+        const params = getQueryParams({
+          page,
+          limit,
+          timeFilter,
+          search,
+          statuses,
+        });
 
         return `sequence/fetch?${params}`;
       },
@@ -63,6 +72,7 @@ export const sequenceApi = createApi({
         userId,
         timeFilter,
         search,
+        statuses,
       } = {}) => {
         const params = getQueryParams({
           page,
@@ -70,6 +80,7 @@ export const sequenceApi = createApi({
           limit,
           timeFilter,
           search,
+          statuses,
         });
 
         return `sequence/studio?${params}`;
@@ -105,6 +116,7 @@ export const sequenceApi = createApi({
         method: "PUT",
         body: updates,
       }),
+      invalidatesTags: [{ type: "StudioSequences", id: "LIST" }],
     }),
   }),
 });
@@ -118,4 +130,5 @@ export const {
   useGetStudioSequencesQuery,
   useLazyGetSequencesByUserQuery,
   useLazyGetStudioSequencesQuery,
+  useUpdateSequenceMutation,
 } = sequenceApi;

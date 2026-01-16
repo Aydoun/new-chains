@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { requireApiSession } from "@/lib/api/auth";
 import { resolveTimeFilterDate } from "@/lib/time-filter";
 import { DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE } from "@/lib/constants";
+import { parseStatusFilters } from "@/lib/sequence-status";
 
 export default async function handler(
   req: NextApiRequest,
@@ -30,6 +31,7 @@ export default async function handler(
   const createdAfter = resolveTimeFilterDate(req.query.timeFilter);
   const searchTerm =
     typeof req.query.search === "string" ? req.query.search.trim() : "";
+  const statusFilters = parseStatusFilters(req.query.statuses);
 
   try {
     const sequences = await prisma.sequence.findMany({
@@ -37,6 +39,7 @@ export default async function handler(
         ...(clientId ? { userId: { not: clientId } } : {}),
         isDeleted: false,
         visibility: "PUBLIC",
+        ...(statusFilters.length ? { status: { in: statusFilters } } : {}),
         ...(createdAfter ? { createdAt: { gte: createdAfter } } : {}),
         ...(searchTerm
           ? {

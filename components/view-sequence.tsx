@@ -3,11 +3,22 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import { Carousel } from "@/components/ui/carousel";
-import { useGetSequenceByIdQuery } from "@/app/services/sequences";
+import {
+  useGetSequenceByIdQuery,
+  useUpdateSequenceMutation,
+} from "@/app/services/sequences";
 import { translate } from "@/lib/i18n";
 import { Modal } from "./ui/modal";
 import { SequenceFrame } from "./sequence-card";
 import { skipToken } from "@reduxjs/toolkit/query";
+import {
+  DEFAULT_SEQUENCE_STATUS,
+  SEQUENCE_STATUSES,
+  SEQUENCE_STATUS_LABELS,
+  SequenceStatus,
+} from "@/lib/sequence-status";
+import { SequenceStatusBadge } from "./sequence-status-badge";
+import { Select, Text } from "@radix-ui/themes";
 
 interface Props {
   sequenceId: string | number | null;
@@ -16,13 +27,27 @@ interface Props {
 
 export function ViewSequence({ sequenceId, onClose }: Props) {
   const [activeFrame, setActiveFrame] = useState(0);
-  const { data, isFetching, isError } = useGetSequenceByIdQuery(
+  const { data, isFetching, isError, refetch } = useGetSequenceByIdQuery(
     sequenceId ?? skipToken
   );
+  const [updateSequence, { isLoading: isUpdatingStatus }] =
+    useUpdateSequenceMutation();
   const guardedFrames = data?.frames ?? [];
 
   const handleDialogChange = (open: boolean) => {
     if (!open) onClose();
+  };
+
+  const handleStatusChange = async (status: SequenceStatus) => {
+    if (!data?.id || status === (data.status ?? DEFAULT_SEQUENCE_STATUS))
+      return;
+
+    try {
+      await updateSequence({ id: data.id, updates: { status } }).unwrap();
+      await refetch();
+    } catch (error) {
+      console.error("Unable to update sequence status", error);
+    }
   };
 
   if (!sequenceId) return null;
@@ -35,6 +60,37 @@ export function ViewSequence({ sequenceId, onClose }: Props) {
             <h2 className="text-xl font-semibold text-white">
               {data?.title ?? ""}
             </h2>
+            <div className="flex flex-wrap items-center gap-2">
+              <SequenceStatusBadge status={data?.status} />
+              <Select.Root
+                value={data?.status ?? DEFAULT_SEQUENCE_STATUS}
+                onValueChange={(value) =>
+                  handleStatusChange(value as SequenceStatus)
+                }
+                disabled={isUpdatingStatus}
+              >
+                <Select.Trigger
+                  variant="soft"
+                  color="orange"
+                  aria-label="Status"
+                  className="min-w-[140px]"
+                >
+                  <Select.Value />
+                </Select.Trigger>
+                <Select.Content>
+                  {SEQUENCE_STATUSES.map((status) => (
+                    <Select.Item key={status} value={status}>
+                      {SEQUENCE_STATUS_LABELS[status]}
+                    </Select.Item>
+                  ))}
+                </Select.Content>
+              </Select.Root>
+              {isUpdatingStatus && (
+                <Text size="1" color="gray" aria-live="polite">
+                  Saving status...
+                </Text>
+              )}
+            </div>
           </div>
           <Modal.Close aria-label="Close" onClick={onClose}>
             <X className="h-4 w-4" />

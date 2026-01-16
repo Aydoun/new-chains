@@ -6,7 +6,12 @@ import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import { useLazyGetStudioSequencesQuery } from "@/app/services/sequences";
 import { useInfinitePagination } from "@/hooks/useInfinitePagination";
-import { PaginationParams, Sequence, TimeFilter } from "@/app/types";
+import {
+  PaginationParams,
+  Sequence,
+  SequenceStatus,
+  TimeFilter,
+} from "@/app/types";
 import { SessionLoader } from "@/components/ui/spinner";
 import { useGetUserByIdQuery } from "@/app/services/users";
 import { StudioView } from "@/components/studio-view";
@@ -19,6 +24,7 @@ export default function ExplorePage() {
   const [timeFilter, setTimeFilter] = useState<TimeFilter>();
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch] = useDebounce(searchTerm, SEARCH_DEBOUNCE_DELAY);
+  const [statuses, setStatuses] = useState<SequenceStatus[]>([]);
 
   const profileId = params?.id ?? "";
 
@@ -34,8 +40,9 @@ export default function ExplorePage() {
       timeFilter,
       search: debouncedSearch || undefined,
       userId: profileId,
+      statuses,
     }),
-    [timeFilter, debouncedSearch]
+    [timeFilter, debouncedSearch, statuses]
   );
 
   const [fetchStudioSequences] = useLazyGetStudioSequencesQuery();
@@ -68,6 +75,8 @@ export default function ExplorePage() {
       viewerId={session?.user?.id}
       filter={timeFilter}
       onFilterChange={setTimeFilter}
+      statuses={statuses}
+      onStatusesChange={setStatuses}
       searchTerm={searchTerm}
       onSearchChange={setSearchTerm}
       isLoading={isBusy}

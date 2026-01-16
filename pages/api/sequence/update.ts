@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
 import { requireApiSession } from "@/lib/api/auth";
+import { normalizeSequenceStatus } from "@/lib/sequence-status";
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,12 +15,47 @@ export default async function handler(
 
   const { id } = req.query;
   // description, visibility
-  const { isDeleted, title } = req.body;
+  const { isDeleted, title, status } = req.body;
+  const sequenceId = parseInt(id as string, 10);
 
   try {
+    if (Number.isNaN(sequenceId)) {
+      return res.status(400).json({ message: "Sequence id is required" });
+    }
+
+    const sequence = await prisma.sequence.findUnique({
+      where: { id: sequenceId },
+    });
+
+    if (!sequence || sequence.isDeleted) {
+      return res.status(404).json({ message: "Sequence not found" });
+    }
+
+    if (sequence.userId !== sessionResult.userId) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+
+    const updatePayload: Record<string, unknown> = {};
+
+    if (typeof isDeleted === "boolean") {
+      updatePayload.isDeleted = isDeleted;
+    }
+
+    if (title) {
+      updatePayload.title = title;
+    }
+
+    if (status) {
+      updatePayload.status = normalizeSequenceStatus(status);
+    }
+
+    if (Object.keys(updatePayload).length === 0) {
+      return res.status(400).json({ message: "No updates provided" });
+    }
+
     const updatedSequence = await prisma.sequence.update({
-      where: { id: parseInt(id as string, 10) },
-      data: { isDeleted, ...(title ? { title } : {}) },
+      where: { id: sequenceId },
+      data: updatePayload,
     });
     res.status(200).json(updatedSequence);
   } catch (error) {

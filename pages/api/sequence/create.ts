@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
 import { requireApiSession } from "@/lib/api/auth";
+import { normalizeSequenceStatus } from "@/lib/sequence-status";
 
 export default async function handler(
   req: NextApiRequest,
@@ -13,6 +14,7 @@ export default async function handler(
   if (!sessionResult) return;
 
   const { title, description = "", url = "", userId, frameOrder } = req.body;
+  const status = normalizeSequenceStatus(req.body?.status);
 
   if (!title || !userId || !Array.isArray(frameOrder)) {
     return res.status(400).json({
@@ -32,6 +34,7 @@ export default async function handler(
         url,
         userId: parseInt(userId as string, 10),
         FrameOrder: frameOrder,
+        status,
       },
     });
 

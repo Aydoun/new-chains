@@ -31,6 +31,7 @@ model Sequence {
   user        User       @relation(fields: [userId], references: [id])
   FrameOrder  Int[]
   visibility  Visibility @default(PUBLIC)
+  status      SequenceStatus @default(DRAFT)
   isDeleted   Boolean    @default(false)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
@@ -127,6 +128,12 @@ enum Visibility {
   PUBLIC
   PRIVATE
   FRIENDS_ONLY
+}
+
+enum SequenceStatus {
+  DRAFT
+  STABLE
+  EXPERIMENTAL
 }
 
 enum ReportReason {

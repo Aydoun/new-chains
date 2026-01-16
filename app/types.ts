@@ -1,3 +1,6 @@
+import type { SequenceStatus } from "@/lib/sequence-status";
+export type { SequenceStatus };
+
 export interface User {
   id: string;
   username: string;
@@ -16,6 +19,7 @@ export interface Sequence {
   description: string;
   url?: string | null;
   userId: number;
+  status: SequenceStatus;
   user: {
     id: number;
     username: string;
@@ -48,6 +52,7 @@ export type Visibility = "PUBLIC" | "PRIVATE" | "FRIENDS_ONLY";
 export type SequenceCreationFormValues = {
   title: string;
   description?: string;
+  status: SequenceStatus;
   pages: {
     content: string;
     description?: string;
@@ -60,6 +65,7 @@ export type PaginationParams = {
   userId?: string;
   timeFilter?: TimeFilter;
   search?: string;
+  statuses?: SequenceStatus[];
 };
 
 export type TimeFilter =

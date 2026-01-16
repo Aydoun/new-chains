@@ -5,6 +5,7 @@ import { translate } from "@/lib/i18n";
 import { cn, timeAgo } from "@/lib/utils";
 import { IconButton, Spinner, Text } from "@radix-ui/themes";
 import Link from "next/link";
+import { SequenceStatusBadge } from "./sequence-status-badge";
 
 export interface SequenceCardProps {
   title: string;
@@ -72,14 +73,17 @@ export const SequenceCard: FC<Props> = ({
         </div>
         <div className="flex flex-1 flex-col gap-3 p-5">
           <div className="space-y-1">
-            <Text
-              size="4"
-              weight="bold"
-              className="line-clamp-2leading-snug text-white transition-colors group-hover:text-primary-main"
-              as="div"
-            >
-              {sequence.title}
-            </Text>
+            <div className="flex items-start justify-between gap-3">
+              <Text
+                size="4"
+                weight="bold"
+                className="line-clamp-2leading-snug text-white transition-colors group-hover:text-primary-main"
+                as="div"
+              >
+                {sequence.title}
+              </Text>
+              <SequenceStatusBadge status={sequence.status} />
+            </div>
             <Text size="2" className="line-clamp-3 text-[#92a9c9]">
               {sequence.description}
             </Text>

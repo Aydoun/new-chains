@@ -64,7 +64,7 @@ export function useInfinitePagination<
   const loadMore = useCallback(async () => {
     if (!hasMore || isLoading) return;
     await fetchAndSet(page);
-  }, [hasMore, isLoading]);
+  }, [fetchAndSet, hasMore, isLoading, page]);
 
   const exludeItem = useCallback(
     (targetId: string | number) => {

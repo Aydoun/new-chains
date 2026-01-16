@@ -26,6 +26,13 @@ import { useBulkCreateFramesMutation } from "@/app/services/frames";
 import { useCreateSequenceMutation } from "@/app/services/sequences";
 import { translate } from "@/lib/i18n";
 import { SequenceCreationFormValues } from "@/app/types";
+import {
+  DEFAULT_SEQUENCE_STATUS,
+  SEQUENCE_STATUSES,
+  SEQUENCE_STATUS_STYLES,
+} from "@/lib/sequence-status";
+import { SequenceStatusBadge } from "../sequence-status-badge";
+import { cn } from "@/lib/utils";
 
 interface Props {
   onClose: () => void;
@@ -55,12 +62,14 @@ export function CreateSequenceForm({
     register,
     watch,
     setError,
+    setValue,
     formState: { errors },
     handleSubmit,
   } = useForm<SequenceCreationFormValues>({
     defaultValues: {
       title: initialSequenceTitle,
       description: "",
+      status: DEFAULT_SEQUENCE_STATUS,
       pages: [createEmptyFrame()],
     },
   });
@@ -70,6 +79,7 @@ export function CreateSequenceForm({
   });
 
   const SequenceTitle = watch("title");
+  const status = watch("status");
   const pages = watch("pages");
 
   const steps = useMemo(
@@ -137,6 +147,7 @@ export function CreateSequenceForm({
           frameOrder: frameResult?.ids ?? [],
           userId: session?.user?.id ?? "",
           title: values.title,
+          status: values.status,
           description: values.description?.trim() || undefined,
         }).unwrap();
 
@@ -293,6 +304,42 @@ export function CreateSequenceForm({
                       {...register("description")}
                       radius="large"
                     />
+                  </div>
+                  <div className="space-y-2">
+                    <Text weight="medium">
+                      {translate("common.status") || "Status"}
+                    </Text>
+                    <input
+                      type="hidden"
+                      value={status}
+                      {...register("status")}
+                      readOnly
+                    />
+                    <div className="flex flex-wrap gap-2">
+                      {SEQUENCE_STATUSES.map((item) => {
+                        const isActive = status === item;
+                        return (
+                          <button
+                            key={item}
+                            type="button"
+                            onClick={() => setValue("status", item)}
+                          className={cn(
+                            "flex items-center gap-2 rounded-full border px-3 py-2 transition",
+                            SEQUENCE_STATUS_STYLES[item].badge,
+                            isActive
+                              ? "ring-2 ring-offset-0 ring-primary-main"
+                                : "opacity-80 hover:opacity-100"
+                            )}
+                            aria-pressed={isActive}
+                          >
+                            <SequenceStatusBadge
+                              status={item}
+                              className="pointer-events-none"
+                            />
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
               </div>

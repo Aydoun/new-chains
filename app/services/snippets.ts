@@ -26,11 +26,11 @@ export const snippetsApi = createApi({
       }),
       invalidatesTags: [{ type: "Snippets", id: "LIST" }],
     }),
-    getSnippetsBySequence: builder.query<Snippet[], void>({
-      query: () => "snippet/sequence",
-      providesTags: [{ type: "Snippets", id: "LIST" }],
-    }),
   }),
 });
 
-export const { useGetSnippetsQuery, useSaveSnippetMutation } = snippetsApi;
+export const {
+  useGetSnippetsQuery,
+  useSaveSnippetMutation,
+  useLazyGetSnippetsQuery,
+} = snippetsApi;

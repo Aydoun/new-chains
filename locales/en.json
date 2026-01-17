@@ -6,6 +6,7 @@
       "home": "Unable to load sequences at this time"
     },
     "endOfFeed": "#",
+    "favorites": "Favorites",
     "filter": "Filter",
     "items": "items",
     "loading": "Loading",
@@ -177,12 +178,34 @@
       "title-placeholder": "e.g., The 10 minutes morning routine",
       "title-advice": "Give your sequence a clear, searchable name.",
       "description-placeholder": "Briefly explain what this sequence is about",
-      "frameContent-placeholder": "What's the goal of this frame?",
+      "frameContent-placeholder": "What's the message to convey?",
       "frameContent-advice": "Add the prompt, instruction, or message for this frame",
-      "frameDescription-placeholder": "add some context"
+      "frameDescription-placeholder": "add optional context"
 
     },
     "self": "Sequence"
+  },
+  "snippets": {
+    "drawer": {
+      "cta": "Snippets drawer",
+      "title": "Snippets",
+      "subtitle": "Reuse steps across sequences",
+      "hide": "Hide",
+      "show": "Show snippets",
+      "empty": "No snippets saved yet.",
+      "insertAction": "Insert snippet"
+    },
+    "originLabel": "Source",
+    "notesLabel": "Notes",
+    "notesInput": "Snippet notes",
+    "notesPlaceholder": "Add optional context for this snippet",
+    "saveAction": "Save step as snippet",
+    "saveTitle": "Save step as snippet",
+    "status": {
+      "error": "Unable to save",
+      "saved": "Saved"
+    },
+    "typeLabel": "Snippet type"
   },
   "states": {
     "emptySequences": {

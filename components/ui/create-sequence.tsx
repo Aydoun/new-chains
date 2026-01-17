@@ -25,8 +25,8 @@ import {
 import { useBulkCreateFramesMutation } from "@/app/services/frames";
 import { useCreateSequenceMutation } from "@/app/services/sequences";
 import { translate } from "@/lib/i18n";
-import { SequenceCreationFormValues, SequenceTemplate } from "@/app/types";
 import clsx from "clsx";
+import { SequenceCreationFormValues, SequenceTemplate } from "@/app/types";
 
 interface Props {
   onClose: () => void;

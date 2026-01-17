@@ -34,10 +34,6 @@ export default [
     rules: {
       ...tsPlugin.configs.recommended.rules,
       ...nextPlugin.configs["core-web-vitals"].rules,
-      "no-undef": "off",
-      "no-unused-vars": "off",
-      "no-extra-boolean-cast": "off",
-      "@typescript-eslint/no-unused-vars": "off",
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-require-imports": "off",
     },
@@ -55,9 +51,6 @@ export default [
         vi: "readonly",
         beforeEach: "readonly",
       },
-    },
-    rules: {
-      "no-undef": "off",
     },
   },
 ];

@@ -80,12 +80,7 @@ const ModalContent = ({ className, children, ...props }: ModalContentProps) => (
 
 type ModalCloseProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
-const ModalClose = ({
-  className,
-  children,
-  onClick,
-  ...props
-}: ModalCloseProps) => {
+const ModalClose = ({ children, onClick, ...props }: ModalCloseProps) => {
   const onClose = (event: MouseEvent<HTMLButtonElement>) => {
     onClick?.(event);
   };

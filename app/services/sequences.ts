@@ -1,10 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type {
-  PaginationParams,
-  Sequence,
-  SingleSequence,
-  TimeFilter,
-} from "@/app/types";
+import type { PaginationParams, Sequence, SingleSequence } from "@/app/types";
 import { API_BASE_URL, DEFAULT_PAGE_SIZE } from "@/lib/constants";
 import { getQueryParams } from "@/lib/utils";
 
@@ -55,7 +50,7 @@ export const sequenceApi = createApi({
     }),
     getStudioSequences: builder.query<
       PaginatedSequencesResponse,
-      PaginationParams & { timeFilter?: TimeFilter }
+      PaginationParams
     >({
       query: ({
         page = 1,
@@ -74,9 +69,7 @@ export const sequenceApi = createApi({
 
         return `sequence/studio?${params}`;
       },
-      providesTags: (_result, _error, { timeFilter, userId } = {}) => [
-        { type: "StudioSequences", id: "LIST" },
-      ],
+      providesTags: () => [{ type: "StudioSequences", id: "LIST" }],
     }),
     getSequenceById: builder.query<SingleSequence, number | string>({
       query: (sequenceId) => `sequence/${sequenceId}`,

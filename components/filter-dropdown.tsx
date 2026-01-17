@@ -37,7 +37,7 @@ export function FilterDropdown({ value, onChange }: Props) {
           <Filter className="h-5 w-5" aria-hidden="true" />
           <Text size="2" weight="medium" className="hidden sm:inline">
             {currentLabel
-              ? `Filter: ${currentLabel}`
+              ? `${translate("common.filter")}: ${currentLabel}`
               : translate("common.filter")}
           </Text>
         </button>

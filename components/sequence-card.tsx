@@ -1,10 +1,11 @@
 import { FC, useState, MouseEvent as ReactMouseEvent } from "react";
 import { Sequence } from "@/app/types";
-import { Clock3, Pencil, Share2, Trash2, User } from "lucide-react";
+import { Clock3, Heart, Pencil, Share2, Trash2, User } from "lucide-react";
 import { translate } from "@/lib/i18n";
 import { cn, timeAgo } from "@/lib/utils";
 import { IconButton, Spinner, Text } from "@radix-ui/themes";
 import Link from "next/link";
+import clsx from "clsx";
 
 export interface SequenceCardProps {
   title: string;
@@ -68,6 +69,7 @@ export const SequenceCard: FC<Props> = ({
           <SequenceFrame
             text={sequence.firstFrame?.content}
             count={sequence.FrameOrder.length}
+            showIsLiked={false}
           />
         </div>
         <div className="flex flex-1 flex-col gap-3 p-5">
@@ -169,12 +171,18 @@ interface SequenceFrameProps {
   text: string | undefined;
   description?: string | undefined | null;
   count?: number;
+  liked?: boolean;
+  showIsLiked?: boolean;
+  onLike?: () => void;
 }
 
 export const SequenceFrame: FC<SequenceFrameProps> = ({
   text,
   description,
   count,
+  liked,
+  showIsLiked = true,
+  onLike,
 }) => {
   return (
     <div
@@ -196,6 +204,15 @@ export const SequenceFrame: FC<SequenceFrameProps> = ({
             })}
           </span>
         </div>
+      )}
+      {showIsLiked && (
+        <Heart
+          fill={liked ? "red" : "none"}
+          className={clsx("w-5 h-5 absolute top-4 right-4 cursor-pointer", {
+            "text-primary-main": !liked,
+          })}
+          onClick={onLike}
+        />
       )}
     </div>
   );

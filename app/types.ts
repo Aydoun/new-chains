@@ -41,6 +41,7 @@ export interface Frame {
 
 export interface SingleSequence extends Sequence {
   frames: Frame[];
+  likedFrames: number[];
 }
 
 export type Visibility = "PUBLIC" | "PRIVATE" | "FRIENDS_ONLY";

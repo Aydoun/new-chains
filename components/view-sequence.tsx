@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { X } from "lucide-react";
 import { Carousel } from "@/components/ui/carousel";
 import { useGetSequenceByIdQuery } from "@/app/services/sequences";
@@ -9,17 +9,7 @@ import { translate } from "@/lib/i18n";
 import { Modal } from "./ui/modal";
 import { SequenceFrame } from "./sequence-card";
 import { skipToken } from "@reduxjs/toolkit/query";
-import { FrameType } from "@/app/types";
-import { useSession } from "next-auth/react";
-import { Badge, Button, Text, TextArea, Heading } from "@radix-ui/themes";
-
-const FRAME_TYPES: FrameType[] = [
-  "PHRASE",
-  "IMAGE",
-  "VIDEO",
-  "AUDIO",
-  "DOCUMENT",
-];
+import { Text, Heading, Spinner } from "@radix-ui/themes";
 
 interface Props {
   sequenceId: string | number | null;
@@ -27,55 +17,33 @@ interface Props {
 }
 
 export function ViewSequence({ sequenceId, onClose }: Props) {
-  const { data: session } = useSession();
-  const [saveSnippet, { isLoading: isSavingSnippet }] =
-    useSaveSnippetMutation();
+  const [saveSnippet] = useSaveSnippetMutation();
   const [activeFrame, setActiveFrame] = useState(0);
-  const [snippetNotes, setSnippetNotes] = useState("");
-  const [snippetType, setSnippetType] = useState<FrameType>("PHRASE");
-  const [saveStatus, setSaveStatus] = useState<"idle" | "saved" | "error">(
-    "idle"
-  );
+  const [newLikes, setNewLikes] = useState<number[]>([]);
+
   const { data, isFetching, isError } = useGetSequenceByIdQuery(
     sequenceId ?? skipToken
   );
   const guardedFrames = data?.frames ?? [];
 
-  useEffect(() => {
-    const currentType = guardedFrames[activeFrame]?.type as
-      | FrameType
-      | undefined;
-    if (currentType) {
-      setSnippetType(currentType);
-    }
-    setSaveStatus("idle");
-  }, [activeFrame, guardedFrames]);
-
   const handleDialogChange = (open: boolean) => {
     if (!open) onClose();
   };
 
-  const handleSaveSnippet = async () => {
-    const currentFrame = guardedFrames[activeFrame];
+  const handleSaveSnippet = (frameId: number) => async () => {
+    const currentFrame = guardedFrames.find((fr) => fr.id === frameId);
     const parsedSequenceId = Number(sequenceId);
 
     if (!currentFrame || Number.isNaN(parsedSequenceId)) return;
-    if (!session?.user?.id) {
-      setSaveStatus("error");
-      return;
-    }
 
     try {
+      setNewLikes((prev) => [...prev, frameId]);
       await saveSnippet({
         frameId: currentFrame.id,
         originSequenceId: parsedSequenceId,
-        type: snippetType,
-        notes: snippetNotes.trim() || undefined,
       }).unwrap();
-      setSaveStatus("saved");
-      setSnippetNotes("");
     } catch {
-      setSaveStatus("error");
+      console.error("error saving snipet!");
     }
   };
 
@@ -86,9 +54,13 @@ export function ViewSequence({ sequenceId, onClose }: Props) {
       <Modal.Content className="rounded-2xl bg-white dark:bg-gray-900 p-8 shadow-2xl">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-2 mb-4">
-            <Heading as="h2" className="font-semibold">
-              {data?.title ?? ""}
-            </Heading>
+            {isFetching ? (
+              <Spinner />
+            ) : (
+              <Heading as="h2" className="font-semibold">
+                {data?.title ?? ""}
+              </Heading>
+            )}
           </div>
           <Modal.Close aria-label="Close" onClick={onClose}>
             <X className="h-4 w-4" />
@@ -108,17 +80,23 @@ export function ViewSequence({ sequenceId, onClose }: Props) {
             <Carousel
               frames={
                 guardedFrames.length > 0
-                  ? guardedFrames.map((frame, index) => (
+                  ? guardedFrames.map((frame) => (
                       <SequenceFrame
-                        key={frame?.id ?? index}
-                        text={frame?.content}
-                        description={frame?.description}
+                        key={frame.id}
+                        text={frame.content}
+                        description={frame.description}
+                        onLike={handleSaveSnippet(frame.id)}
+                        liked={
+                          data?.likedFrames.includes(frame.id) ||
+                          newLikes.includes(frame.id)
+                        }
                       />
                     ))
                   : [
                       <SequenceFrame
                         key="empty"
                         text={translate("frame.empty")}
+                        showIsLiked={false}
                       />,
                     ]
               }
@@ -138,62 +116,6 @@ export function ViewSequence({ sequenceId, onClose }: Props) {
                 setActiveFrame((current) => Math.max(current - 1, 0))
               }
             />
-            {session?.user?.id && guardedFrames.length > 0 && (
-              <div className="rounded-xl border border-white/10 bg-white/5 p-4 space-y-3">
-                <div className="flex items-center gap-2 justify-between">
-                  <Text weight="bold" className="text-white">
-                    {translate("snippets.saveTitle")}
-                  </Text>
-                  {saveStatus === "saved" && (
-                    <Badge color="green" radius="full">
-                      {translate("snippets.status.saved")}
-                    </Badge>
-                  )}
-                  {saveStatus === "error" && (
-                    <Badge color="red" radius="full">
-                      {translate("snippets.status.error")}
-                    </Badge>
-                  )}
-                </div>
-                <div className="grid gap-2">
-                  <label className="text-xs uppercase tracking-wide text-gray-300">
-                    {translate("snippets.typeLabel")}
-                  </label>
-                  <select
-                    value={snippetType}
-                    onChange={(event) =>
-                      setSnippetType(event.target.value as FrameType)
-                    }
-                    className="rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white outline-none"
-                  >
-                    {FRAME_TYPES.map((type) => (
-                      <option key={type} value={type}>
-                        {type}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="grid gap-2">
-                  <label className="text-xs uppercase tracking-wide text-gray-300">
-                    {translate("snippets.notesInput")}
-                  </label>
-                  <TextArea
-                    value={snippetNotes}
-                    onChange={(event) => setSnippetNotes(event.target.value)}
-                    radius="large"
-                    placeholder={translate("snippets.notesPlaceholder")}
-                  />
-                </div>
-                <Button
-                  className="cursor-pointer"
-                  onClick={handleSaveSnippet}
-                  loading={isSavingSnippet}
-                  disabled={!session?.user?.id}
-                >
-                  {translate("snippets.saveAction")}
-                </Button>
-              </div>
-            )}
           </div>
         )}
       </Modal.Content>

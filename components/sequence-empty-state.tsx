@@ -1,7 +1,6 @@
 "use client";
 
 import { translate } from "@/lib/i18n";
-import { cn } from "@/lib/utils";
 import { FilterX, HelpCircle, Plus, SearchX } from "lucide-react";
 import { Box, Button, Card, Flex, Heading, Text } from "@radix-ui/themes";
 
@@ -14,7 +13,6 @@ interface SequenceEmptyStateProps {
 export function SequenceEmptyState({
   onClear,
   onCreate,
-  className,
 }: SequenceEmptyStateProps) {
   return (
     <Flex align="center" justify="center">

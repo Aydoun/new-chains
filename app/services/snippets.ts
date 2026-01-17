@@ -5,8 +5,8 @@ import { Snippet } from "@/app/types";
 export type CreateSnippetInput = {
   frameId: number;
   originSequenceId: number;
-  type: Snippet["type"];
-  notes?: string;
+  // type: Snippet["type"];
+  // notes?: string;
 };
 
 export const snippetsApi = createApi({
@@ -25,6 +25,10 @@ export const snippetsApi = createApi({
         body,
       }),
       invalidatesTags: [{ type: "Snippets", id: "LIST" }],
+    }),
+    getSnippetsBySequence: builder.query<Snippet[], void>({
+      query: () => "snippet/sequence",
+      providesTags: [{ type: "Snippets", id: "LIST" }],
     }),
   }),
 });

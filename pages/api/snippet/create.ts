@@ -1,9 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
 import { requireApiSession } from "@/lib/api/auth";
-const FrameTypes = ["PHRASE", "IMAGE", "VIDEO", "AUDIO", "DOCUMENT"];
-
-const isValidFrameType = (value: string) => FrameTypes.includes(value);
 
 export default async function handler(
   req: NextApiRequest,
@@ -15,7 +12,7 @@ export default async function handler(
   const sessionResult = await requireApiSession(req, res);
   if (!sessionResult) return;
 
-  const { frameId, originSequenceId, type = "PHRASE", notes } = req.body;
+  const { frameId, originSequenceId } = req.body;
   const parsedFrameId = Number(frameId);
   const parsedSequenceId = Number(originSequenceId);
 
@@ -48,32 +45,26 @@ export default async function handler(
       where: { id: parsedFrameId },
     });
 
+    console.log({ frame });
+
     if (!frame) {
       return res.status(404).json({ message: "Frame not found" });
-    }
-
-    const snippetType = isValidFrameType(type) ? type : frame.type;
-
-    if (!isValidFrameType(snippetType)) {
-      return res.status(400).json({ message: "Invalid snippet type" });
     }
 
     const createdSnippet = await prisma.snippet.create({
       data: {
         frameId: parsedFrameId,
         originSequenceId: parsedSequenceId,
-        type: snippetType,
-        notes: typeof notes === "string" ? notes.trim() : undefined,
         createdById: sessionResult.userId,
       },
       include: {
         frame: true,
-        originSequence: {
-          select: {
-            id: true,
-            title: true,
-          },
-        },
+        // sequence: {
+        //   select: {
+        //     id: true,
+        //     title: true,
+        //   },
+        // },
       },
     });
 

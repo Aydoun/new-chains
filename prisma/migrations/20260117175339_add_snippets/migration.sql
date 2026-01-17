@@ -7,7 +7,8 @@ CREATE TABLE "Snippet" (
     "originSequenceId" INTEGER NOT NULL,
     "createdById" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "sequenceId" INTEGER,
 
     CONSTRAINT "Snippet_pkey" PRIMARY KEY ("id")
 );
@@ -20,9 +21,6 @@ CREATE INDEX "Snippet_originSequenceId_idx" ON "Snippet"("originSequenceId");
 
 -- AddForeignKey
 ALTER TABLE "Snippet" ADD CONSTRAINT "Snippet_frameId_fkey" FOREIGN KEY ("frameId") REFERENCES "Frame"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Snippet" ADD CONSTRAINT "Snippet_originSequenceId_fkey" FOREIGN KEY ("originSequenceId") REFERENCES "Sequence"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Snippet" ADD CONSTRAINT "Snippet_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

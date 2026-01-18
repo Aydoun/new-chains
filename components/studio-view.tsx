@@ -76,7 +76,10 @@ export function StudioView({
     setFavoritesToggle((prev) => !prev);
   };
 
-  console.log({ data });
+  const clearSearchAndFilter = () => {
+    onSearchChange("");
+    onFilterChange(undefined);
+  };
 
   useEffect(() => {
     if (showCreationSuccess) {
@@ -182,7 +185,7 @@ export function StudioView({
                             "bg-primary-main": favoritesToggle,
                             "text-white": favoritesToggle,
                             "hover:bg-primary-main": favoritesToggle,
-                          }
+                          },
                         )}
                         onClick={handleFetchFavorites}
                       >
@@ -237,7 +240,7 @@ export function StudioView({
                           </InfiniteScroll>
                         ) : (
                           <SequenceEmptyState
-                            onClear={() => onSearchChange("")}
+                            onClear={clearSearchAndFilter}
                             {...(isMyStudio && {
                               onCreate: () => () => setIsCreateDialogOpen(true),
                             })}

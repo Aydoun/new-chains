@@ -9,11 +9,10 @@ import {
 import { translate } from "@/lib/i18n";
 import { useInfinitePagination } from "@/hooks/useInfinitePagination";
 import { PaginationParams, Sequence, TimeFilter } from "@/app/types";
-import { StudioView } from "@/components/studio-view";
+import { StudioPageView } from "@/components/studio-page-view";
 import { DEFAULT_PAGE_SIZE, SEARCH_DEBOUNCE_DELAY } from "@/lib/constants";
 import { useDebounce } from "use-debounce";
 import { SessionLoader } from "@/components/ui/spinner";
-import { useLazyGetSnippetsQuery } from "../services/snippets";
 
 export default function StudioPage() {
   const { data: session, status } = useSession();
@@ -60,7 +59,7 @@ export default function StudioPage() {
   if (status === "loading") return <SessionLoader />;
 
   return (
-    <StudioView
+    <StudioPageView
       greeting={translate("studio.greetings", {
         name: session?.user?.name ?? "",
       })}
@@ -76,7 +75,6 @@ export default function StudioPage() {
       isLoading={isBusy}
       searchTerm={searchTerm}
       onSearchChange={setSearchTerm}
-      isMyStudio
     />
   );
 }

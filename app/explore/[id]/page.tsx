@@ -9,7 +9,7 @@ import { useInfinitePagination } from "@/hooks/useInfinitePagination";
 import { PaginationParams, Sequence, TimeFilter } from "@/app/types";
 import { SessionLoader } from "@/components/ui/spinner";
 import { useGetUserByIdQuery } from "@/app/services/users";
-import { StudioView } from "@/components/studio-view";
+import { ExplorerPageView } from "@/components/explorer-page-view";
 import { DEFAULT_PAGE_SIZE, SEARCH_DEBOUNCE_DELAY } from "@/lib/constants";
 import { useDebounce } from "use-debounce";
 
@@ -57,7 +57,7 @@ export default function ExplorePage() {
   if (status === "loading") return <SessionLoader />;
 
   return (
-    <StudioView
+    <ExplorerPageView
       greeting={translate("studio.explorerWelcome", {
         name: user?.username ?? "",
       })}

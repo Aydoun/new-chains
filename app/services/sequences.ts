@@ -87,7 +87,6 @@ export const sequenceApi = createApi({
         url: `sequence/delete?id=${sequenceId}`,
         method: "DELETE",
       }),
-      invalidatesTags: [{ type: "StudioSequences", id: "LIST" }],
     }),
     updateSequence: builder.mutation<
       Sequence,

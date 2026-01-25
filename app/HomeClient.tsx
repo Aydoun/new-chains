@@ -116,7 +116,7 @@ export default function Home({
             </Callout.Root>
           )}
         </div>
-        <div className="self-center w-full">
+        <div className="self-center">
           <Button
             onClick={() => {
               setIsCreateDialogOpen(true);

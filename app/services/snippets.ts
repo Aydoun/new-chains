@@ -26,6 +26,12 @@ export const snippetsApi = createApi({
       }),
       invalidatesTags: [{ type: "Snippets", id: "LIST" }],
     }),
+    deleteSnippet: builder.mutation<{ message: string }, number | string>({
+      query: (id) => ({
+        url: `snippet/delete?id=${id}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
@@ -33,4 +39,5 @@ export const {
   useGetSnippetsQuery,
   useSaveSnippetMutation,
   useLazyGetSnippetsQuery,
+  useDeleteSnippetMutation,
 } = snippetsApi;

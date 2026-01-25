@@ -1,7 +1,7 @@
 "use client";
 
 import { translate } from "@/lib/i18n";
-import { Button, Callout, Spinner, Text, TextField } from "@radix-ui/themes";
+import { Button, Callout, Text, TextField } from "@radix-ui/themes";
 import { Heart, Search, Sparkles, SquarePlus, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Sequence, SequenceTemplate, TimeFilter } from "@/app/types";
@@ -11,7 +11,10 @@ import { FilterDropdown } from "./filter-dropdown";
 import { CreateSequenceForm } from "./ui/create-sequence";
 import { SequenceTemplateSelector } from "./sequence-template-selector";
 import clsx from "clsx";
-import { useLazyGetSnippetsQuery } from "@/app/services/snippets";
+import {
+  useDeleteSnippetMutation,
+  useLazyGetSnippetsQuery,
+} from "@/app/services/snippets";
 import { SequenceList } from "./sequence-list";
 import { DataLoader } from "./ui/spinner";
 import { SnippetCard } from "./ui/snippetCard";
@@ -58,6 +61,7 @@ export function StudioView({
   const currentSequenceId = useRef<number | string | null>(null);
 
   const [fetchSnippets, { data, isFetching }] = useLazyGetSnippetsQuery();
+  const [deleteSnippet] = useDeleteSnippetMutation();
 
   const handleTemplateSelect = (template: SequenceTemplate) => {
     setSelectedTemplate(template);
@@ -190,8 +194,11 @@ export function StudioView({
                       <SnippetCard
                         key={sn.id}
                         frame={sn.frame}
-                        onView={() => console.log(sn.originSequenceId)}
-                        onDelete={() => console.log(sn.id)}
+                        onView={() => {
+                          currentSequenceId.current = sn.originSequenceId;
+                          setIsViewDialogOpen(true);
+                        }}
+                        onDelete={() => deleteSnippet(sn.id)}
                         notes={sn.notes}
                       />
                     ))}

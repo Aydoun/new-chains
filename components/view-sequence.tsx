@@ -9,7 +9,8 @@ import { translate } from "@/lib/i18n";
 import { Modal } from "./ui/modal";
 import { SequenceFrame } from "./sequence-card";
 import { skipToken } from "@reduxjs/toolkit/query";
-import { Text, Heading, Spinner } from "@radix-ui/themes";
+import { Heading } from "@radix-ui/themes";
+import { FrameSkeleton } from "./sequence-skeleton";
 
 interface Props {
   sequenceId: string | number | null;
@@ -53,9 +54,9 @@ export function ViewSequence({ sequenceId, onClose }: Props) {
     <Modal open onOpenChange={handleDialogChange}>
       <Modal.Content className="rounded-2xl bg-white dark:bg-gray-900 p-8 shadow-2xl">
         <div className="flex items-start justify-between gap-4">
-          <div className="space-y-2 mb-4">
+          <div className="space-y-2 mb-4 w-full">
             {isFetching ? (
-              <Spinner />
+              <FrameSkeleton />
             ) : (
               <Heading as="h2" className="font-semibold">
                 {data?.title ?? ""}

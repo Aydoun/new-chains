@@ -14,7 +14,7 @@ interface Props {
 
 export function SnippetCard({ frame, notes, onView, onDelete }: Props) {
   return (
-    <div className="flex items-center bg-frame-primary border border-slate-200 dark:border-border-dark p-6 px-3 rounded shadow-sm group mb-4">
+    <div className="flex items-center bg-frame-primary border border-slate-200 dark:border-border-dark p-6 px-4 md:px-6 rounded shadow-sm mb-4">
       <div className="mr-4">
         <Tooltip
           content={
@@ -28,10 +28,8 @@ export function SnippetCard({ frame, notes, onView, onDelete }: Props) {
         </Tooltip>
       </div>
       <div className="flex-grow text-center">
-        <blockquote className="max-w-2xl text-center text-gray-800">
-          <p className="font-serif text-1xl md:text-2xl leading-tight">
-            {frame.content}
-          </p>
+        <blockquote className="text-center text-gray-800 font-serif text-1xl md:text-2xl leading-tight">
+          {frame.content}
         </blockquote>
         <Text className="px-8 text-sm text-amber-700 font-medium">
           {frame.description}

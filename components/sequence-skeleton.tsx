@@ -27,3 +27,7 @@ export const SequenceSkeleton = () => {
     </div>
   );
 };
+
+export const FrameSkeleton = () => {
+  return <Skeleton className="h-60 w-full mt-12" />;
+};

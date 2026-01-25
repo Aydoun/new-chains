@@ -1,7 +1,7 @@
 import { Frame } from "@/app/types";
 import { translate } from "@/lib/i18n";
 import { timeAgo } from "@/lib/utils";
-import { Tooltip } from "@radix-ui/themes";
+import { Tooltip, Text } from "@radix-ui/themes";
 import { Info } from "lucide-react";
 import { SnippetMenu } from "./snippetMenu";
 
@@ -14,7 +14,7 @@ interface Props {
 
 export function SnippetCard({ frame, notes, onView, onDelete }: Props) {
   return (
-    <div className="flex items-center bg-frame-primary border border-slate-200 dark:border-border-dark p-6 rounded shadow-sm group mb-4">
+    <div className="flex items-center bg-frame-primary border border-slate-200 dark:border-border-dark p-6 px-3 rounded shadow-sm group mb-4">
       <div className="mr-4">
         <Tooltip
           content={
@@ -28,12 +28,14 @@ export function SnippetCard({ frame, notes, onView, onDelete }: Props) {
         </Tooltip>
       </div>
       <div className="flex-grow text-center">
-        <h2 className="font-display text-2xl text-gray-800 lg:text-3xl">
-          {frame.content}
-        </h2>
-        <p className=" mt-2 text-sm text-amber-700 tracking-wider font-medium">
+        <blockquote className="max-w-2xl text-center text-gray-800">
+          <p className="font-serif text-1xl md:text-2xl leading-tight">
+            {frame.content}
+          </p>
+        </blockquote>
+        <Text className="px-8 text-sm text-amber-700 font-medium">
           {frame.description}
-        </p>
+        </Text>
       </div>
       <div className="ml-4 flex flex-col items-center space-y-4">
         <SnippetMenu onDelete={onDelete} onView={onView} />

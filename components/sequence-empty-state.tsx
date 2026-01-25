@@ -17,7 +17,7 @@ export function SequenceEmptyState({
   return (
     <Flex align="center" justify="center">
       <Card
-        className="w-full bg-white/80 p-8 shadow-2xl dark:bg-slate-900/80"
+        className="w-full bg-white/80 p-8 shadow-2xl dark:bg-black"
         variant="surface"
       >
         <Flex direction="column" align="center" gap="4" className="text-center">
@@ -41,7 +41,6 @@ export function SequenceEmptyState({
               <HelpCircle className="h-4 w-4" aria-hidden />
             </Flex>
           </Box>
-
           <Heading size="6" className="tracking-tight">
             {translate("states.emptySequences.title")}
           </Heading>

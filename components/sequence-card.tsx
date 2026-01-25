@@ -187,7 +187,7 @@ export const SequenceFrame: FC<SequenceFrameProps> = ({
   return (
     <div
       className={cn(
-        "relative flex h-48 w-full flex-col items-center justify-center gap-2 bg-frame-primary rounded-lg",
+        "relative flex px-2 h-48 w-full flex-col items-center justify-center gap-2 bg-frame-primary rounded-lg",
       )}
     >
       <blockquote className="max-w-2xl text-center text-gray-800">

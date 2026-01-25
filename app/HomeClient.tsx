@@ -43,7 +43,7 @@ export default function Home({
       timeFilter,
       search: debouncedSearch || undefined,
     }),
-    [timeFilter, debouncedSearch]
+    [timeFilter, debouncedSearch],
   );
 
   const {
@@ -116,15 +116,15 @@ export default function Home({
             </Callout.Root>
           )}
         </div>
-        <div className="self-center">
+        <div className="self-center w-full">
           <Button
             onClick={() => {
               setIsCreateDialogOpen(true);
             }}
-            className="flex cursor-pointer h-10 w-60 items-center gap-2 px-4 text-sm font-bold bg-primary-main"
+            className="cursor-pointer h-10 items-center px-4 text-sm font-bold bg-primary-main"
           >
             <SquarePlus />
-            <Text size="2" weight="bold" className="tracking-[0.015em]">
+            <Text size="2" weight="bold">
               {translate("sequence.cta.label")}
             </Text>
           </Button>

@@ -13,7 +13,6 @@ import { StudioView } from "@/components/studio-view";
 import { DEFAULT_PAGE_SIZE, SEARCH_DEBOUNCE_DELAY } from "@/lib/constants";
 import { useDebounce } from "use-debounce";
 import { SessionLoader } from "@/components/ui/spinner";
-import { useLazyGetSnippetsQuery } from "../services/snippets";
 
 export default function StudioPage() {
   const { data: session, status } = useSession();

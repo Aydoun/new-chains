@@ -4,8 +4,8 @@ export function DataLoader({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "fixed inset-0 grid left-1/2 top-1/2 -translate-x-6 -translate-y-16 md:translate-x-28 md:-translate-y-20",
-        className
+        "fixed left-1/2 top-1/2 -translate-x-6 mt-12 md:mt-0 -translate-y-16 md:translate-x-28 md:-translate-y-20",
+        className,
       )}
     >
       <div

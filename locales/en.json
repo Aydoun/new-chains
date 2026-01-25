@@ -108,7 +108,8 @@
     "search": "Search",
     "studio": "Studio",
     "explore": "Explore",
-    "exploreDescription": "Every Sequence tells a story through frames"
+    "exploreDescription": "Every Sequence tells a story through frames",
+    "self": "Navigation"
   },
   "onboarding": {
     "actions": {

@@ -1,41 +1,43 @@
-import { Button, DropdownMenu, Flex, Text } from "@radix-ui/themes";
-import { Menu } from "lucide-react";
+import { Button, DropdownMenu, Text } from "@radix-ui/themes";
+import { LogOut, Menu } from "lucide-react";
 import { navigationItems } from "./app-sidebar";
 import Link from "next/link";
 import { translate } from "@/lib/i18n";
+import { signOut } from "next-auth/react";
+import clsx from "clsx";
 
 export function MobileMenu() {
   return (
-    <Flex gap="3">
-      <DropdownMenu.Root>
-        <DropdownMenu.Trigger>
-          <Button
-            type="button"
-            variant="soft"
-            className="block md:hidden ml-3"
-            aria-label="Open navigation menu"
+    <DropdownMenu.Root>
+      <DropdownMenu.Trigger>
+        <Button variant="ghost" className="cursor-pointer">
+          <Menu className="h-5 w-5" aria-hidden="true" />
+        </Button>
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Content className="px-1 py-1 w-40">
+        <DropdownMenu.Label>{translate("navigation.self")}</DropdownMenu.Label>
+        <DropdownMenu.Separator />
+        {navigationItems.map((item, index) => (
+          <DropdownMenu.Item
+            className={clsx("mb-4", {
+              "mb-0": index === navigationItems.length - 1,
+            })}
+            key={item.titleKey}
           >
-            <Menu className="h-5 w-5" aria-hidden="true" />
-          </Button>
-        </DropdownMenu.Trigger>
-        <DropdownMenu.Content
-          className="p-4 px-3"
-          variant="soft"
-          color="indigo"
-        >
-          {navigationItems.map((item) => (
-            <DropdownMenu.Item
-              className="flex flex-col items-center gap-2 p-3 text-center mb-8"
-              key={item.titleKey}
-            >
-              <Link href={item.url}>
-                <item.icon className="mx-auto h-5 w-5" />
-                <Text>{translate(`navigation.${item.titleKey}`)}</Text>
-              </Link>
-            </DropdownMenu.Item>
-          ))}
-        </DropdownMenu.Content>
-      </DropdownMenu.Root>
-    </Flex>
+            <Link href={item.url} className="flex gap-2">
+              <item.icon className="w-5 h-5" />
+              <Text>{translate(`navigation.${item.titleKey}`)}</Text>
+            </Link>
+          </DropdownMenu.Item>
+        ))}
+
+        <DropdownMenu.Label>{translate("auth.me")}</DropdownMenu.Label>
+        <DropdownMenu.Separator />
+        <DropdownMenu.Item onClick={() => signOut({ callbackUrl: "/login" })}>
+          <LogOut className="w-5 h-5 text-primary-main" />
+          {translate("auth.logout")}
+        </DropdownMenu.Item>
+      </DropdownMenu.Content>
+    </DropdownMenu.Root>
   );
 }

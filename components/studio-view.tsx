@@ -18,7 +18,6 @@ import {
 import { SequenceList } from "./sequence-list";
 import { DataLoader } from "./ui/spinner";
 import { SnippetCard } from "./ui/snippetCard";
-// import { SnippetCard } from "./ui/snippetCard";
 
 type Props = {
   greeting: string;
@@ -137,14 +136,14 @@ export function StudioView({
           </div>
         </div>
         <div className="flex flex-col gap-4">
-          <div className="flex flex-wrap py-2 justify-between">
+          <div className="flex flex-wrap gap-4 py-2 justify-between">
             <div className="md:min-w-72">
               <TextField.Root
                 type="text"
                 value={searchTerm}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder={translate("common.search")}
-                className="w-full rounded-lg border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground outline-none transition focus-visible:ring-2 focus-visible:ring-primary"
+                className="w-full rounded-lg border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground outline-none transition"
               >
                 <TextField.Slot>
                   <Search

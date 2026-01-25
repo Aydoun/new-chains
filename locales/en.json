@@ -82,7 +82,7 @@
     "selfs": "Frames"
   },
   "filter": {
-    "label": "created",
+    "label": "time",
     "last-hour": "Last hour",
     "today": "Today",
     "this-week": "This week",

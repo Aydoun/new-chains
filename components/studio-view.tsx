@@ -1,7 +1,7 @@
 "use client";
 
 import { translate } from "@/lib/i18n";
-import { Button, Callout, Text, TextField } from "@radix-ui/themes";
+import { Button, Callout, Spinner, Text, TextField } from "@radix-ui/themes";
 import { Heart, Search, Sparkles, SquarePlus, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Sequence, SequenceTemplate, TimeFilter } from "@/app/types";
@@ -13,6 +13,8 @@ import { SequenceTemplateSelector } from "./sequence-template-selector";
 import clsx from "clsx";
 import { useLazyGetSnippetsQuery } from "@/app/services/snippets";
 import { SequenceList } from "./sequence-list";
+import { DataLoader } from "./ui/spinner";
+import { SnippetCard } from "./ui/snippetCard";
 // import { SnippetCard } from "./ui/snippetCard";
 
 type Props = {
@@ -178,21 +180,35 @@ export function StudioView({
             </div>
           </div>
           <section className="mt-4 pb-24">
-            <SequenceList
-              sequences={sequences}
-              hasMore={hasMore}
-              isError={isError}
-              loadMore={loadMore}
-              handleDelete={handleDelete}
-              viewerId={viewerId}
-              isLoading={isLoading}
-              onClearSearch={clearSearchAndFilter}
-              onSequenceSelect={(seqId) => {
-                currentSequenceId.current = seqId;
-                setIsViewDialogOpen(true);
-              }}
-              deletingSequenceRef={deletingSequenceRef}
-            />
+            {favoritesToggle ? (
+              <>
+                {isFetching ? (
+                  <DataLoader />
+                ) : (
+                  <>
+                    {data?.map((sn) => (
+                      <SnippetCard frame={sn.frame} />
+                    ))}
+                  </>
+                )}
+              </>
+            ) : (
+              <SequenceList
+                sequences={sequences}
+                hasMore={hasMore}
+                isError={isError}
+                loadMore={loadMore}
+                handleDelete={handleDelete}
+                viewerId={viewerId}
+                isLoading={isLoading}
+                onClearSearch={clearSearchAndFilter}
+                onSequenceSelect={(seqId) => {
+                  currentSequenceId.current = seqId;
+                  setIsViewDialogOpen(true);
+                }}
+                deletingSequenceRef={deletingSequenceRef}
+              />
+            )}
           </section>
         </div>
       </div>

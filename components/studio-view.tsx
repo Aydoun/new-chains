@@ -187,7 +187,13 @@ export function StudioView({
                 ) : (
                   <>
                     {data?.map((sn) => (
-                      <SnippetCard frame={sn.frame} />
+                      <SnippetCard
+                        key={sn.id}
+                        frame={sn.frame}
+                        onView={() => console.log(sn.originSequenceId)}
+                        onDelete={() => console.log(sn.id)}
+                        notes={sn.notes}
+                      />
                     ))}
                   </>
                 )}

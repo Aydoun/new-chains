@@ -195,7 +195,12 @@
       "empty": "No snippets saved yet.",
       "insertAction": "Insert snippet"
     },
+    "info": "created {time}",
     "originLabel": "Source",
+    "menu": {
+      "delete": "Delete",
+      "view": "View Orginal Sequence"
+    },
     "notesLabel": "Notes",
     "notesInput": "Snippet notes",
     "notesPlaceholder": "Add optional context for this snippet",

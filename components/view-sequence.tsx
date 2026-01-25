@@ -22,7 +22,7 @@ export function ViewSequence({ sequenceId, onClose }: Props) {
   const [newLikes, setNewLikes] = useState<number[]>([]);
 
   const { data, isFetching, isError } = useGetSequenceByIdQuery(
-    sequenceId ?? skipToken
+    sequenceId ?? skipToken,
   );
   const guardedFrames = data?.frames ?? [];
 
@@ -67,56 +67,45 @@ export function ViewSequence({ sequenceId, onClose }: Props) {
           </Modal.Close>
         </div>
         {!isFetching && !isError && (
-          <div className="flex flex-col gap-3">
-            <div>
-              <Text size="2">{translate("frame.selfs")}</Text>
-              <Text
-                size="2"
-                className="ml-2 rounded-full bg-primary-main px-3 py-1 shadow-sm"
-              >
-                {data?.FrameOrder.length ?? 0} {translate("common.items")}
-              </Text>
-            </div>
-            <Carousel
-              frames={
-                guardedFrames.length > 0
-                  ? guardedFrames.map((frame) => (
-                      <SequenceFrame
-                        key={frame.id}
-                        text={frame.content}
-                        description={frame.description}
-                        onLike={handleSaveSnippet(frame.id)}
-                        liked={
-                          data?.likedFrames.includes(frame.id) ||
-                          newLikes.includes(frame.id)
-                        }
-                      />
-                    ))
-                  : [
-                      <SequenceFrame
-                        key="empty"
-                        text={translate("frame.empty")}
-                        showIsLiked={false}
-                      />,
-                    ]
-              }
-              className="w-full"
-              currentIndex={activeFrame}
-              onNext={() =>
-                setActiveFrame((current) => {
-                  if (current === guardedFrames.length - 1) return 0;
+          <Carousel
+            frames={
+              guardedFrames.length > 0
+                ? guardedFrames.map((frame) => (
+                    <SequenceFrame
+                      key={frame.id}
+                      text={frame.content}
+                      description={frame.description}
+                      onLike={handleSaveSnippet(frame.id)}
+                      liked={
+                        data?.likedFrames.includes(frame.id) ||
+                        newLikes.includes(frame.id)
+                      }
+                    />
+                  ))
+                : [
+                    <SequenceFrame
+                      key="empty"
+                      text={translate("frame.empty")}
+                      showIsLiked={false}
+                    />,
+                  ]
+            }
+            className="w-full"
+            currentIndex={activeFrame}
+            onNext={() =>
+              setActiveFrame((current) => {
+                if (current === guardedFrames.length - 1) return 0;
 
-                  return Math.min(
-                    current + 1,
-                    Math.max(guardedFrames.length - 1, 0)
-                  );
-                })
-              }
-              onPrevious={() =>
-                setActiveFrame((current) => Math.max(current - 1, 0))
-              }
-            />
-          </div>
+                return Math.min(
+                  current + 1,
+                  Math.max(guardedFrames.length - 1, 0),
+                );
+              })
+            }
+            onPrevious={() =>
+              setActiveFrame((current) => Math.max(current - 1, 0))
+            }
+          />
         )}
       </Modal.Content>
     </Modal>

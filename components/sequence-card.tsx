@@ -135,7 +135,7 @@ export const SequenceCard: FC<Props> = ({
                         variant="ghost"
                         onClick={onDelete}
                         className={cn(
-                          "text-red-600 hover:bg-red-600/15 cursor-pointer"
+                          "text-red-600 hover:bg-red-600/15 cursor-pointer",
                         )}
                       >
                         <Trash2 className="h-4 w-4" />
@@ -187,7 +187,7 @@ export const SequenceFrame: FC<SequenceFrameProps> = ({
   return (
     <div
       className={cn(
-        "relative flex h-48 w-full flex-col items-center justify-center gap-2 text-amber-50 bg-frame-primary rounded-lg"
+        "relative flex h-48 w-full flex-col items-center justify-center gap-2 bg-frame-primary rounded-lg",
       )}
     >
       <blockquote className="max-w-2xl text-center text-gray-800">

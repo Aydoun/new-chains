@@ -28,7 +28,7 @@ export default function StudioPage() {
       timeFilter,
       search: debouncedSearch || undefined,
     }),
-    [timeFilter, debouncedSearch]
+    [timeFilter, debouncedSearch],
   );
   const {
     items: sequences,
@@ -76,7 +76,6 @@ export default function StudioPage() {
       isLoading={isBusy}
       searchTerm={searchTerm}
       onSearchChange={setSearchTerm}
-      isMyStudio
     />
   );
 }

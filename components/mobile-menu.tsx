@@ -5,8 +5,11 @@ import Link from "next/link";
 import { translate } from "@/lib/i18n";
 import { signOut } from "next-auth/react";
 import clsx from "clsx";
+import { ThemePreference, useTheme } from "./theme-provider";
 
 export function MobileMenu() {
+  const { theme, setTheme } = useTheme();
+
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
@@ -16,7 +19,6 @@ export function MobileMenu() {
       </DropdownMenu.Trigger>
       <DropdownMenu.Content className="px-1 py-1 w-40">
         <DropdownMenu.Label>{translate("navigation.self")}</DropdownMenu.Label>
-        <DropdownMenu.Separator />
         {navigationItems.map((item, index) => (
           <DropdownMenu.Item
             className={clsx("mb-4", {
@@ -30,7 +32,18 @@ export function MobileMenu() {
             </Link>
           </DropdownMenu.Item>
         ))}
-
+        <DropdownMenu.Label>{translate("menu.appearance")}</DropdownMenu.Label>
+        <DropdownMenu.RadioGroup
+          value={theme}
+          onValueChange={(value) => setTheme(value as ThemePreference)}
+        >
+          <DropdownMenu.RadioItem value="light">
+            {translate("menu.light")}
+          </DropdownMenu.RadioItem>
+          <DropdownMenu.RadioItem value="dark">
+            {translate("menu.dark")}
+          </DropdownMenu.RadioItem>
+        </DropdownMenu.RadioGroup>
         <DropdownMenu.Label>{translate("auth.me")}</DropdownMenu.Label>
         <DropdownMenu.Separator />
         <DropdownMenu.Item onClick={() => signOut({ callbackUrl: "/login" })}>

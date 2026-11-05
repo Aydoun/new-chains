@@ -97,10 +97,7 @@ export default async function handler(
       nextPage: hasMore ? page + 1 : null,
     });
   } catch (error) {
-    if (error instanceof Error) {
-      return res
-        .status(500)
-        .json({ error: "Error fetching sequence", details: error.message });
-    }
+    console.error("Error fetching sequence", error);
+    return res.status(500).json({ error: "Error fetching sequence" });
   }
 }

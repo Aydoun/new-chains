@@ -70,9 +70,7 @@ export default async function handler(
 
     res.status(201).json(createdSnippet);
   } catch (error) {
-    if (error instanceof Error)
-      res
-        .status(500)
-        .json({ error: "Error creating snippet", details: error.message });
+    console.error("Error creating snippet", error);
+    res.status(500).json({ error: "Error creating snippet" });
   }
 }

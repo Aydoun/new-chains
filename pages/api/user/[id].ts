@@ -15,6 +15,13 @@ export default async function handler(
   const { id } = req.query;
   const userId = parseInt(id as string, 10);
 
+  if (Number.isNaN(userId))
+    return res.status(400).json({ message: "User id is required" });
+
+  // Users may only read their own record.
+  if (userId !== sessionResult.userId)
+    return res.status(403).json({ message: "Forbidden" });
+
   try {
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -24,9 +31,7 @@ export default async function handler(
 
     res.status(200).json(user);
   } catch (error) {
-    if (error instanceof Error)
-      res
-        .status(500)
-        .json({ error: "Error fetching user", details: error.message });
+    console.error("Error fetching user", error);
+    res.status(500).json({ error: "Error fetching user" });
   }
 }

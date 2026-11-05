@@ -40,9 +40,7 @@ export default async function handler(
     const ids = createdFrames.map((frame) => frame.id);
     res.status(201).json({ ids });
   } catch (error) {
-    if (error instanceof Error)
-      res
-        .status(500)
-        .json({ error: "Error creating frames", details: error.message });
+    console.error("Error creating frames", error);
+    res.status(500).json({ error: "Error creating frames" });
   }
 }

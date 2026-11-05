@@ -7,13 +7,47 @@ import { translate } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
-export default function LoginClient({ callbackUrl }: { callbackUrl: string }) {
+// next-auth error codes: https://next-auth.js.org/configuration/pages#sign-in-page
+function errorMessageKey(error: string) {
+  switch (error) {
+    case "OAuthSignin":
+      return "auth.error.signIn";
+    case "OAuthCallback":
+    case "Callback":
+    case "OAuthCreateAccount":
+      return "auth.error.callback";
+    case "AccessDenied":
+      return "auth.error.accessDenied";
+    default:
+      return "auth.error.generic";
+  }
+}
+
+// Only follow same-site paths, and never back to /login (that would loop).
+function safeRedirectPath(callbackUrl: string) {
+  try {
+    const url = new URL(callbackUrl, window.location.origin);
+    if (url.origin !== window.location.origin) return "/";
+    if (url.pathname.startsWith("/login")) return "/";
+    return `${url.pathname}${url.search}${url.hash}`;
+  } catch {
+    return "/";
+  }
+}
+
+export default function LoginClient({
+  callbackUrl,
+  error,
+}: {
+  callbackUrl: string;
+  error: string | null;
+}) {
   const router = useRouter();
   const { status } = useSession();
 
   useEffect(() => {
     if (status === "authenticated") {
-      router.replace(callbackUrl);
+      router.replace(safeRedirectPath(callbackUrl));
     }
   }, [status, router, callbackUrl]);
 
@@ -45,6 +79,14 @@ export default function LoginClient({ callbackUrl }: { callbackUrl: string }) {
             </p>
           </div>
           <div className="flex flex-col gap-4">
+            {error && (
+              <p
+                role="alert"
+                className="rounded-lg border border-red-400/30 bg-red-500/10 px-4 py-3 text-center text-sm text-red-200"
+              >
+                {translate(errorMessageKey(error))}
+              </p>
+            )}
             <button
               type="button"
               onClick={handleSignIn}

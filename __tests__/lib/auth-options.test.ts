@@ -1,4 +1,4 @@
-import { authOptions } from "@/lib/auth-options";
+import { authOptions, isDatabaseUserId } from "@/lib/auth-options";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 
 const prismaMocks = vi.hoisted(() => ({
@@ -55,16 +55,63 @@ describe("authOptions callbacks", () => {
     });
   });
 
-  it("returns the existing token when the email is missing or persistence fails", async () => {
-    const fallbackToken = { sub: "1", email: "fallback@example.com" };
-    prismaMocks.upsert.mockRejectedValueOnce(new Error("db offline"));
-
+  it("returns the token untouched when the profile has no email", async () => {
     const token = await authOptions.callbacks?.jwt?.({
-      token: fallbackToken,
+      token: {},
       profile: { name: "No Email" },
     });
 
-    expect(token).toMatchObject(fallbackToken);
+    expect(token).toEqual({});
+    expect(prismaMocks.upsert).not.toHaveBeenCalled();
+  });
+
+  it("fails sign-in instead of issuing an unlinked token when the database is down", async () => {
+    prismaMocks.upsert.mockRejectedValueOnce(new Error("db offline"));
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    await expect(
+      authOptions.callbacks?.jwt?.({
+        token: { sub: "google-123" },
+        profile: { email: "demo@example.com", name: "Demo" },
+      })
+    ).rejects.toThrow("db offline");
+
+    consoleError.mockRestore();
+  });
+
+  it("does not query the database on regular session reads", async () => {
+    const existing = { sub: "7", email: "demo@example.com" };
+
+    const token = await authOptions.callbacks?.jwt?.({ token: existing });
+
+    expect(token).toBe(existing);
+    expect(prismaMocks.findUnique).not.toHaveBeenCalled();
+  });
+
+  it("repairs a legacy token whose sub is still the Google id", async () => {
+    prismaMocks.findUnique.mockResolvedValueOnce({
+      id: 7,
+      username: "demo",
+      avatarUrl: null,
+      email: "demo@example.com",
+    });
+
+    const token = await authOptions.callbacks?.jwt?.({
+      token: { sub: "109876543210987654321", email: "demo@example.com" },
+    });
+
+    expect(prismaMocks.findUnique).toHaveBeenCalledWith({
+      where: { email: "demo@example.com" },
+    });
+    expect(token).toMatchObject({ sub: "7" });
+  });
+
+  it("only accepts database-sized numeric ids", () => {
+    expect(isDatabaseUserId("42")).toBe(true);
+    expect(isDatabaseUserId("109876543210987654321")).toBe(false);
+    expect(isDatabaseUserId("0")).toBe(false);
+    expect(isDatabaseUserId("12abc")).toBe(false);
+    expect(isDatabaseUserId(undefined)).toBe(false);
   });
 
   it("hydrates the session user fields from the token", async () => {

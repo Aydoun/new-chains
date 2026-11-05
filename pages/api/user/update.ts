@@ -36,10 +36,7 @@ export default async function handler(
     });
     res.status(200).json(updatedUser);
   } catch (error) {
-    if (error instanceof Error) {
-      res
-        .status(500)
-        .json({ error: "Error updating user", details: error.message });
-    }
+    console.error("Error updating user", error);
+    res.status(500).json({ error: "Error updating user" });
   }
 }

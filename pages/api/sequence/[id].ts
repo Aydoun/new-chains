@@ -45,9 +45,7 @@ export default async function handler(
         likedFrames: correspondingSnippets.map((sn) => sn.frameId),
       });
   } catch (error) {
-    if (error instanceof Error)
-      res
-        .status(500)
-        .json({ error: "Error fetching sequence", details: error.message });
+    console.error("Error fetching sequence", error);
+    res.status(500).json({ error: "Error fetching sequence" });
   }
 }

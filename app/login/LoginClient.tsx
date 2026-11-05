@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import { translate } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export default function LoginClient({ callbackUrl }: { callbackUrl: string }) {
   const router = useRouter();
@@ -82,21 +83,13 @@ export default function LoginClient({ callbackUrl }: { callbackUrl: string }) {
         </div>
         <footer className="mt-8 flex flex-col gap-4 text-center text-sm text-slate-200">
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-            <a
-              className="transition-colors hover:text-white"
-              href="#"
-              aria-label="Privacy Policy"
-            >
+            <Link className="transition-colors hover:text-white" href="/privacy">
               {translate("footer.privacyPolicy")}
-            </a>
+            </Link>
             <span className="text-slate-300">•</span>
-            <a
-              className="transition-colors hover:text-white"
-              href="#"
-              aria-label="Terms of Service"
-            >
+            <Link className="transition-colors hover:text-white" href="/terms">
               {translate("footer.terms")}
-            </a>
+            </Link>
           </div>
           <p className="text-xs text-slate-300">
             © {`${new Date().getFullYear()} ${translate("footer.rights")}`}

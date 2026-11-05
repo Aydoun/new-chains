@@ -44,9 +44,9 @@ function updateDocumentTheme(resolvedTheme: ResolvedTheme) {
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<ThemePreference>("system");
-  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(
-    () => resolveTheme("system")
-  );
+  // Must match the server render ("light"); the real theme is resolved in the
+  // effects below, after hydration, to avoid a hydration mismatch.
+  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>("light");
 
   useEffect(() => {
     const storedPreference = (typeof window !== "undefined"

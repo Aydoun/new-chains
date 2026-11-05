@@ -23,9 +23,7 @@ export default async function handler(
     });
     res.status(200).json(updatedSequence);
   } catch (error) {
-    if (error instanceof Error)
-      res
-        .status(500)
-        .json({ error: "Error updating sequence", details: error.message });
+    console.error("Error updating sequence", error);
+    res.status(500).json({ error: "Error updating sequence" });
   }
 }

@@ -37,9 +37,7 @@ export default async function handler(
 
     res.status(201).json(newSequence);
   } catch (error) {
-    if (error instanceof Error)
-      res
-        .status(500)
-        .json({ error: "Error creating a sequence", details: error.message });
+    console.error("Error creating a sequence", error);
+    res.status(500).json({ error: "Error creating a sequence" });
   }
 }

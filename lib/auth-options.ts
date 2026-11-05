@@ -11,7 +11,17 @@ if (!googleClientId || !googleClientSecret) {
   );
 }
 
+const MAX_INT32 = 2_147_483_647;
+
+/** True when `sub` is one of our database user ids (not Google's long id). */
+export function isDatabaseUserId(sub: unknown): sub is string {
+  if (typeof sub !== "string" || !/^\d+$/.test(sub)) return false;
+  const id = Number(sub);
+  return id > 0 && id <= MAX_INT32;
+}
+
 export const authOptions: NextAuthOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     GoogleProvider({
       clientId: googleClientId ?? "",
@@ -34,17 +44,23 @@ export const authOptions: NextAuthOptions = {
     signIn: "/login",
   },
   callbacks: {
+    // Runs on sign-in (with `profile`) and on every session read (without).
+    // The database is only touched at sign-in, or once to repair a legacy
+    // token whose `sub` is still Google's id instead of our user id.
     async jwt({ token, profile }) {
       const email = profile?.email ?? token.email;
+      if (!email) return token;
+
+      const isSignIn = Boolean(profile);
+      if (!isSignIn && isDatabaseUserId(token.sub)) return token;
+
       const avatarUrl =
         (profile && "picture" in profile ? profile.picture : token.picture) ??
         undefined;
-      const username = profile?.name ?? token.name ?? email?.split("@")[0];
-
-      if (!email) return token;
+      const username = profile?.name ?? token.name ?? email.split("@")[0];
 
       try {
-        const user = profile
+        const user = isSignIn
           ? await prisma.user.upsert({
               where: { email },
               update: {
@@ -66,6 +82,9 @@ export const authOptions: NextAuthOptions = {
         }
       } catch (error) {
         console.error("Unable to sync user with database", error);
+        // Never issue a session at sign-in that isn't linked to a user row:
+        // the API would reject every request made with it.
+        if (isSignIn) throw error;
       }
 
       return token;

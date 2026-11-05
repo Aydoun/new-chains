@@ -31,7 +31,11 @@
       "signIn": "Sign In"
     },
     "error": {
-      "email": "No email address found"
+      "email": "No email address found",
+      "signIn": "We couldn't reach Google to start sign-in. Please try again in a moment.",
+      "callback": "Sign-in with Google didn't complete. Please try again.",
+      "accessDenied": "Access was denied for this Google account.",
+      "generic": "Something went wrong while signing in. Please try again."
     },
     "google": "Google",
     "welcome": "Welcome back",

@@ -50,7 +50,6 @@ async function paginate(where: Prisma.SequenceWhereInput, query: ListQuery) {
     .map((sequence) => sequence.FrameOrder?.[0])
     .filter((id): id is number => typeof id === "number");
 
-  console.log({ firstFrameIds });
   const frames = firstFrameIds.length
     ? await prisma.frame.findMany({ where: { id: { in: firstFrameIds } } })
     : [];

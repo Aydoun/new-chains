@@ -1,17 +1,24 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { PaginationParams, Sequence, SingleSequence } from "@/app/types";
-import { API_BASE_URL, DEFAULT_PAGE_SIZE } from "@/lib/constants";
+import type {
+  PaginationParams,
+  Sequence,
+  SingleSequence,
+  Visibility,
+} from "@/app/types";
+import { DEFAULT_PAGE_SIZE } from "@/lib/constants";
 import { getQueryParams } from "@/lib/utils";
+import { api } from "./api";
 
-export type BulkCreateFramesResponse = {
-  ids: number[];
+export type FrameInput = {
+  content: string;
+  description?: string;
 };
 
+/** Frames are created together with their sequence, in one request. */
 export type SequenceInput = {
-  frameOrder: number[];
   title: string;
-  userId: string;
   description?: string;
+  visibility?: Visibility;
+  frames: FrameInput[];
 };
 
 export type SequenceUpdateInput = {
@@ -28,10 +35,7 @@ export type PaginatedSequencesResponse = {
   nextPage: number | null;
 };
 
-export const sequenceApi = createApi({
-  reducerPath: "sequenceApi",
-  tagTypes: ["StudioSequences"],
-  baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL, credentials: "include" }),
+export const sequenceApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getSequencesByUser: builder.query<
       PaginatedSequencesResponse,
@@ -87,6 +91,7 @@ export const sequenceApi = createApi({
         url: `sequence/delete?id=${sequenceId}`,
         method: "DELETE",
       }),
+      invalidatesTags: [{ type: "StudioSequences", id: "LIST" }],
     }),
     updateSequence: builder.mutation<
       Sequence,
@@ -97,6 +102,7 @@ export const sequenceApi = createApi({
         method: "PUT",
         body: updates,
       }),
+      invalidatesTags: [{ type: "StudioSequences", id: "LIST" }],
     }),
   }),
 });

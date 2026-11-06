@@ -19,7 +19,6 @@ export function SequenceTemplateSelector({
   templates,
   onSelect,
 }: Props) {
-  console.log({ templates });
   return (
     <>
       <Modal open={open} onOpenChange={onOpenChange}>

@@ -13,14 +13,13 @@ model User {
   username  String
   email     String     @unique
   avatarUrl String?
-  role      Role       @default(USER)
   bio       String?
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   contacts  Contact[]
   Sequences Sequence[]
-  stories   Story[]
   snippets  Snippet[]
+  frames    Frame[]
 }
 
 model Sequence {
@@ -41,30 +40,18 @@ model Sequence {
 }
 
 model Frame {
-  id            Int       @id @default(autoincrement())
-  type          FrameType @default(PHRASE)
-  description   String?
-  content       String
-  reportedCount Int       @default(0)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  snippets      Snippet[]
+  id          Int       @id @default(autoincrement())
+  type        FrameType @default(PHRASE)
+  description String?
+  content     String
+  createdById Int?
+  createdBy   User?     @relation(fields: [createdById], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  snippets    Snippet[]
 
   @@index([createdAt])
-}
-
-model Story {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String
-  userId      Int
-  sequences   Int[]
-  isDeleted   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  user        User     @relation(fields: [userId], references: [id])
-
-  @@index([title, userId])
+  @@index([createdById])
 }
 
 model Contact {
@@ -84,7 +71,7 @@ model Snippet {
   frame            Frame     @relation(fields: [frameId], references: [id])
   originSequenceId Int
   createdById      Int
-  sequence         Sequence  @relation(fields: [originSequenceId], references: [id])
+  originSequence   Sequence  @relation(fields: [originSequenceId], references: [id])
   createdBy        User      @relation(fields: [createdById], references: [id])
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
@@ -105,28 +92,4 @@ enum Visibility {
   PUBLIC
   PRIVATE
   FRIENDS_ONLY
-}
-
-enum ReportReason {
-  SPAM
-  INAPPROPRIATE
-  COPYRIGHT
-  OTHER
-}
-
-enum ReportStatus {
-  PENDING
-  REVIEWED
-  ACTION_TAKEN
-}
-
-enum Role {
-  USER
-  MODERATOR
-  ADMIN
-}
-
-enum Engine {
-  CHESS
-  GO
 }

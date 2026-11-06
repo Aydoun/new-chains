@@ -1,29 +1,11 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import prisma from "@/lib/prisma";
-import { requireApiSession } from "@/lib/api/auth";
+import { withSession } from "@/lib/api/handler";
+import { idQuery, updateSequenceBody } from "@/lib/validation";
+import { updateSequence } from "@/lib/server/sequences";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== "PUT")
-    return res.status(405).json({ message: "Method not allowed" });
-
-  const sessionResult = await requireApiSession(req, res);
-  if (!sessionResult) return;
-
-  const { id } = req.query;
-  // description, visibility
-  const { isDeleted, title } = req.body;
-
-  try {
-    const updatedSequence = await prisma.sequence.update({
-      where: { id: parseInt(id as string, 10) },
-      data: { isDeleted, ...(title ? { title } : {}) },
-    });
-    res.status(200).json(updatedSequence);
-  } catch (error) {
-    console.error("Error updating sequence", error);
-    res.status(500).json({ error: "Error updating sequence" });
-  }
-}
+export default withSession(
+  { method: "PUT", query: idQuery, body: updateSequenceBody },
+  async ({ res, userId, query, body }) => {
+    const sequence = await updateSequence(query.id, userId, body);
+    res.status(200).json(sequence);
+  },
+);

@@ -15,6 +15,15 @@ vi.mock("@/lib/prisma", () => ({
   },
 }));
 
+// The callbacks are called with only the fields each scenario needs.
+type Loose = (params: Record<string, unknown>) => Promise<unknown>;
+const jwt = (params: Record<string, unknown>) =>
+  (authOptions.callbacks!.jwt as unknown as Loose)(params);
+const session = (params: Record<string, unknown>) =>
+  (authOptions.callbacks!.session as unknown as Loose)(params) as Promise<{
+    user?: Record<string, unknown>;
+  }>;
+
 describe("authOptions callbacks", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -28,7 +37,7 @@ describe("authOptions callbacks", () => {
       email: "demo@example.com",
     });
 
-    const token = await authOptions.callbacks?.jwt?.({
+    const token = await jwt({
       token: {},
       profile: {
         email: "demo@example.com",
@@ -56,7 +65,7 @@ describe("authOptions callbacks", () => {
   });
 
   it("returns the token untouched when the profile has no email", async () => {
-    const token = await authOptions.callbacks?.jwt?.({
+    const token = await jwt({
       token: {},
       profile: { name: "No Email" },
     });
@@ -70,7 +79,7 @@ describe("authOptions callbacks", () => {
     const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
 
     await expect(
-      authOptions.callbacks?.jwt?.({
+      jwt({
         token: { sub: "google-123" },
         profile: { email: "demo@example.com", name: "Demo" },
       })
@@ -82,7 +91,7 @@ describe("authOptions callbacks", () => {
   it("does not query the database on regular session reads", async () => {
     const existing = { sub: "7", email: "demo@example.com" };
 
-    const token = await authOptions.callbacks?.jwt?.({ token: existing });
+    const token = await jwt({ token: existing });
 
     expect(token).toBe(existing);
     expect(prismaMocks.findUnique).not.toHaveBeenCalled();
@@ -96,7 +105,7 @@ describe("authOptions callbacks", () => {
       email: "demo@example.com",
     });
 
-    const token = await authOptions.callbacks?.jwt?.({
+    const token = await jwt({
       token: { sub: "109876543210987654321", email: "demo@example.com" },
     });
 
@@ -115,7 +124,7 @@ describe("authOptions callbacks", () => {
   });
 
   it("hydrates the session user fields from the token", async () => {
-    const session = {
+    const existingSession = {
       user: {
         id: "",
         name: "",
@@ -124,8 +133,8 @@ describe("authOptions callbacks", () => {
       },
     };
 
-    const result = await authOptions.callbacks?.session?.({
-      session,
+    const result = await session({
+      session: existingSession,
       token: {
         sub: "42",
         name: "Test User",

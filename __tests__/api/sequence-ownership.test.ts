@@ -1,99 +1,110 @@
-import createHandler from "@/pages/api/sequence/create";
 import updateHandler from "@/pages/api/sequence/update";
-import type { NextApiRequest, NextApiResponse } from "next";
-import { vi } from "vitest";
+import deleteHandler from "@/pages/api/sequence/delete";
+import { requireApiSession } from "@/lib/api/auth";
+import { mockRequest, mockResponse } from "../helpers/api";
 
-const prismaMocks = vi.hoisted(() => {
-  return {
-    create: vi.fn(),
-    findUnique: vi.fn(),
-    update: vi.fn(),
-  };
+const db = vi.hoisted(() => ({
+  sequence: { findFirst: vi.fn(), update: vi.fn() },
+}));
+
+vi.mock("@/lib/prisma", () => ({ default: db }));
+vi.mock("@/lib/api/auth", () => ({
+  requireApiSession: vi.fn(async () => ({ session: {}, userId: 1 })),
+}));
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  vi.mocked(requireApiSession).mockResolvedValue({
+    session: {} as never,
+    userId: 1,
+  });
 });
 
-vi.mock("@/lib/prisma", () => ({
-  default: {
-    sequence: {
-      create: prismaMocks.create,
-      findUnique: prismaMocks.findUnique,
-      update: prismaMocks.update,
-    },
-  },
-}));
+describe("PUT /api/sequence/update", () => {
+  it("returns 404 for someone else's sequence and changes nothing", async () => {
+    db.sequence.findFirst.mockResolvedValue(null);
 
-const sessionMock = vi.hoisted(() =>
-  vi.fn(async () => ({
-    session: {},
-    userId: 1,
-  }))
-);
+    const { res, store } = mockResponse();
+    await updateHandler(
+      mockRequest({ method: "PUT", query: { id: "8" }, body: { title: "Mine now" } }),
+      res,
+    );
 
-vi.mock("@/lib/api/auth", () => ({
-  requireApiSession: (...args: unknown[]) => sessionMock(...args),
-}));
-
-const createMockResponse = () => {
-  const store: { status?: number; body?: unknown } = {};
-  const res = {
-    status(code: number) {
-      store.status = code;
-      return res as NextApiResponse;
-    },
-    json(data: unknown) {
-      store.body = data;
-      return res as NextApiResponse;
-    },
-  } as unknown as NextApiResponse;
-
-  return { res, store };
-};
-
-describe("sequence ownership protections", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    sessionMock.mockResolvedValue({ session: {}, userId: 1 });
+    expect(db.sequence.findFirst).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: 8, userId: 1, isDeleted: false },
+      }),
+    );
+    expect(store.status).toBe(404);
+    expect(db.sequence.update).not.toHaveBeenCalled();
   });
 
-  it("rejects creating a sequence for another user", async () => {
-    const req = {
-      method: "POST",
-      body: {
-        title: "Example",
-        userId: "2",
-        frameOrder: [1, 2],
-      },
-    } as unknown as NextApiRequest;
+  it("does not accept isDeleted (deletes go through the delete route)", async () => {
+    const { res, store } = mockResponse();
+    await updateHandler(
+      mockRequest({ method: "PUT", query: { id: "8" }, body: { isDeleted: false } }),
+      res,
+    );
 
-    const { res, store } = createMockResponse();
-
-    await createHandler(req, res);
-
-    expect(store.status).toBe(403);
-    expect(prismaMocks.create).not.toHaveBeenCalled();
+    expect(store.status).toBe(400);
+    expect(db.sequence.update).not.toHaveBeenCalled();
   });
 
-  it("updates when the owner matches the session", async () => {
-    prismaMocks.findUnique.mockResolvedValueOnce({
-      id: 7,
-      userId: 1,
-      isDeleted: false,
-    });
-    prismaMocks.update.mockResolvedValueOnce({ id: 7, title: "Updated" });
+  it("updates the owner's sequence", async () => {
+    db.sequence.findFirst.mockResolvedValue({ id: 8 });
+    db.sequence.update.mockResolvedValue({ id: 8, title: "New" });
 
-    const req = {
-      method: "PUT",
-      query: { id: "7" },
-      body: { title: "Updated" },
-    } as unknown as NextApiRequest;
-    const { res, store } = createMockResponse();
-
-    await updateHandler(req, res);
+    const { res, store } = mockResponse();
+    await updateHandler(
+      mockRequest({
+        method: "PUT",
+        query: { id: "8" },
+        body: { title: "New", visibility: "PRIVATE" },
+      }),
+      res,
+    );
 
     expect(store.status).toBe(200);
-    expect(prismaMocks.update).toHaveBeenCalledWith({
-      where: { id: 7 },
-      data: { isDeleted: undefined, title: "Updated" },
+    expect(db.sequence.update).toHaveBeenCalledWith({
+      where: { id: 8 },
+      data: { title: "New", visibility: "PRIVATE" },
     });
-    expect(store.body).toMatchObject({ id: 7, title: "Updated" });
+  });
+});
+
+describe("DELETE /api/sequence/delete", () => {
+  it("rejects requests without a valid id", async () => {
+    const { res, store } = mockResponse();
+    await deleteHandler(mockRequest({ method: "DELETE", query: {} }), res);
+    expect(store.status).toBe(400);
+  });
+
+  it("returns 404 when the sequence is missing, deleted or not yours", async () => {
+    db.sequence.findFirst.mockResolvedValue(null);
+
+    const { res, store } = mockResponse();
+    await deleteHandler(mockRequest({ method: "DELETE", query: { id: "2" } }), res);
+
+    expect(store.status).toBe(404);
+    expect(db.sequence.update).not.toHaveBeenCalled();
+  });
+
+  it("soft-deletes the owner's sequence", async () => {
+    db.sequence.findFirst.mockResolvedValue({ id: 2 });
+
+    const { res, store } = mockResponse();
+    await deleteHandler(mockRequest({ method: "DELETE", query: { id: "2" } }), res);
+
+    expect(store.status).toBe(200);
+    expect(db.sequence.update).toHaveBeenCalledWith({
+      where: { id: 2 },
+      data: { isDeleted: true },
+    });
+  });
+
+  it("rejects unsupported methods", async () => {
+    const { res, store } = mockResponse();
+    await deleteHandler(mockRequest({ method: "GET", query: { id: "2" } }), res);
+    expect(store.status).toBe(405);
   });
 });

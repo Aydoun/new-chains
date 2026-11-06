@@ -1,43 +1,11 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import prisma from "@/lib/prisma";
-import { requireApiSession } from "@/lib/api/auth";
+import { withSession } from "@/lib/api/handler";
+import { createSequenceBody } from "@/lib/validation";
+import { createSequenceWithFrames } from "@/lib/server/sequences";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== "POST")
-    return res.status(405).json({ message: "Method not allowed" });
-
-  const sessionResult = await requireApiSession(req, res);
-  if (!sessionResult) return;
-
-  const { title, description = "", url = "", userId, frameOrder } = req.body;
-
-  if (!title || !userId || !Array.isArray(frameOrder)) {
-    return res.status(400).json({
-      message: "Missing required fields title, userId, frameOrder",
-    });
-  }
-
-  if (sessionResult.userId !== parseInt(userId as string, 10)) {
-    return res.status(403).json({ message: "Forbidden" });
-  }
-
-  try {
-    const newSequence = await prisma.sequence.create({
-      data: {
-        title,
-        description,
-        url,
-        userId: parseInt(userId as string, 10),
-        FrameOrder: frameOrder,
-      },
-    });
-
-    res.status(201).json(newSequence);
-  } catch (error) {
-    console.error("Error creating a sequence", error);
-    res.status(500).json({ error: "Error creating a sequence" });
-  }
-}
+export default withSession(
+  { method: "POST", body: createSequenceBody },
+  async ({ res, userId, body }) => {
+    const sequence = await createSequenceWithFrames(userId, body);
+    res.status(201).json(sequence);
+  },
+);

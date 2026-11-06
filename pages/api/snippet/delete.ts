@@ -1,31 +1,11 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import prisma from "@/lib/prisma";
-import { requireApiSession } from "@/lib/api/auth";
+import { withSession } from "@/lib/api/handler";
+import { idQuery } from "@/lib/validation";
+import { deleteSnippet } from "@/lib/server/snippets";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
-  if (req.method !== "DELETE")
-    return res.status(405).json({ message: "Method not allowed" });
-
-  const sessionResult = await requireApiSession(req, res);
-  if (!sessionResult) return;
-
-  const { id } = req.query;
-  const snippetId = parseInt(id as string, 10);
-
-  if (Number.isNaN(snippetId))
-    return res.status(400).json({ message: "Snippet id is required" });
-
-  try {
-    await prisma.snippet.delete({
-      where: { id: snippetId },
-    });
-
+export default withSession(
+  { method: "DELETE", query: idQuery },
+  async ({ res, userId, query }) => {
+    await deleteSnippet(userId, query.id);
     res.status(200).json({ message: "Snippet deleted successfully" });
-  } catch (error) {
-    console.error("Error deleting snippet", error);
-    res.status(500).json({ error: "Error deleting snippet" });
-  }
-}
+  },
+);

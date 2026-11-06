@@ -12,7 +12,6 @@ export default async function LoginPage({ searchParams }: PageProps) {
 
   const raw = params?.callbackUrl;
   const callbackUrl = Array.isArray(raw) ? raw[0] : (raw ?? "/");
-  console.log({ params });
   const error = Array.isArray(params?.error) ? params.error[0] : params?.error;
 
   return <LoginClient callbackUrl={callbackUrl} error={error ?? null} />;

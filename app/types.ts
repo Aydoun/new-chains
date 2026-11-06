@@ -1,11 +1,11 @@
+/** Public profile; `email` is only returned for your own account. */
 export interface User {
-  id: string;
+  id: number;
   username: string;
-  email: string;
-  passwordHash: string;
-  bio: string;
+  avatarUrl?: string | null;
+  bio?: string | null;
+  email?: string;
   createdAt?: string;
-  updatedAt?: string;
 }
 
 export type FrameType = "PHRASE" | "IMAGE" | "VIDEO" | "AUDIO" | "DOCUMENT";
@@ -34,7 +34,7 @@ export interface Frame {
   type: FrameType;
   description?: string | null;
   content: string;
-  reportedCount: number;
+  createdById?: number | null;
   createdAt: string;
   updatedAt: string;
 }

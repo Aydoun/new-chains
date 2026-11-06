@@ -1,59 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LinkNTell
 
-## Authentication
+LinkNTell lets people write **sequences**: short, ordered series of **frames**
+(a message plus optional context) that guide someone through a routine, a
+decision or an idea. Signed-in users can browse other people's public
+sequences, save individual frames as **snippets**, and manage their own
+sequences in the studio.
 
-Google OAuth via NextAuth powers sign-in, and protected routes redirect unauthenticated users to `/login`. Configure the following environment variables before running the app locally:
+Live at [linkntell.com](https://linkntell.com).
 
-```
-GOOGLE_CLIENT_ID=<your-google-client-id>
-GOOGLE_CLIENT_SECRET=<your-google-client-secret>
-NEXTAUTH_SECRET=<a-random-string>
-DATABASE_URL=<postgres-connection-string>
-```
+## Tech stack
 
-Sessions are backed by JWT cookies and API routes validate the active session for every request.
+- [Next.js 16](https://nextjs.org) (App Router pages, `pages/api` routes) and React 19
+- [NextAuth v4](https://next-auth.js.org) with Google sign-in and JWT sessions
+- [Prisma 7](https://www.prisma.io) on PostgreSQL ([Neon](https://neon.tech))
+- Redux Toolkit Query for data fetching, Radix Themes and Tailwind for UI
+- [Zod](https://zod.dev) for API input validation
+- Vitest and Testing Library for tests; deployed on Vercel
 
-## Getting Started
+## Getting started
 
-First, run the development server:
+Requirements: Node 22.15+ (or 23.8+) and Yarn.
 
 ```bash
-npm run dev
-# or
+yarn install
+cp .env.example .env   # then fill in the values
+yarn prisma migrate deploy
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). Unauthenticated pages
+redirect to `/login`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+See [`.env.example`](.env.example). Use a separate database for local
+development; production values are configured in Vercel only.
 
-## Running tests
+In Google Cloud Console, the OAuth client needs the redirect URI
+`http://localhost:3000/api/auth/callback/google` (and the production
+equivalent).
 
-This project uses [Vitest](https://vitest.dev/) with [Testing Library](https://testing-library.com/docs/react-testing-library/intro/) for unit tests.
+### Behind a TLS-inspecting proxy (Netskope, Zscaler…)
 
-```bash
-pnpm test
-# or
-npm test
+`yarn dev` runs Node with `--use-system-ca`, so it trusts the certificates in
+the macOS keychain. Without it, Google sign-in fails locally with
+`self-signed certificate in certificate chain` / `error=OAuthSignin`.
+
+## Project structure
+
+```
+app/                 Pages (App Router), providers, RTK Query services
+  services/api.ts    The single RTK Query API; features inject endpoints
+pages/api/           API routes, each wrapped in withSession()
+lib/api/handler.ts   withSession: method check, auth, Zod validation, errors
+lib/validation.ts    Zod schemas for every API input
+lib/server/          Data access (sequences, snippets, users)
+lib/auth-options.ts  NextAuth configuration
+proxy.ts             Auth redirects and the per-request CSP nonce
+prisma/              Schema and migrations
 ```
 
-## Learn More
+### API conventions
 
-To learn more about Next.js, take a look at the following resources:
+- Every route requires a signed-in user and validates its input with Zod.
+- Errors are always `{ "message": string, "issues"?: [...] }` with a matching
+  status code (400 invalid input, 401 signed out, 404 not found or not yours,
+  405 wrong method, 500 unexpected).
+- Users can only change their own data. Private sequences are visible to their
+  owner only.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Command | What it does |
+|---|---|
+| `yarn dev` | Start the dev server |
+| `yarn build` / `yarn start` | Production build and server |
+| `yarn lint` | ESLint |
+| `yarn test` | Vitest unit tests |
+| `yarn prisma migrate deploy` | Apply pending database migrations |
+| `yarn db:studio` | Browse the database with Prisma Studio |

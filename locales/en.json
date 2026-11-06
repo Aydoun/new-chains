@@ -185,7 +185,8 @@
       "description-placeholder": "Briefly explain what this sequence is about",
       "frameContent-placeholder": "What's the message to convey?",
       "frameContent-advice": "Add the prompt, instruction, or message for this frame",
-      "frameDescription-placeholder": "add optional context"
+      "frameDescription-placeholder": "add optional context",
+      "saveError": "We couldn't save your sequence. Please try again."
 
     },
     "self": "Sequence"

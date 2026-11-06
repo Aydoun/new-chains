@@ -20,7 +20,7 @@ export function UserMenu() {
         >
           <div className="flex items-center gap-3">
             <Image
-              src={session.user.image ?? "/avatar-placeholder.png"}
+              src={session.user.image ?? "/image-placeholder.svg"}
               alt={translate("auth.avatarAlt", {
                 name: session.user.name ?? "User",
               })}

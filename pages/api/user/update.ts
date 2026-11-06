@@ -1,42 +1,11 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import prisma from "@/lib/prisma";
-import { requireApiSession } from "@/lib/api/auth";
-import { BIO_MAX_LENGTH } from "@/lib/constants";
+import { ApiError, withSession } from "@/lib/api/handler";
+import { idQuery, updateUserBody } from "@/lib/validation";
+import { updateBio } from "@/lib/server/users";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== "PUT")
-    return res.status(405).json({ message: "Method not allowed" });
-
-  const sessionResult = await requireApiSession(req, res);
-  if (!sessionResult) return;
-
-  const { id } = req.query;
-  const { bio } = req.body;
-  const userId = parseInt(id as string, 10);
-
-  if (userId !== sessionResult.userId) {
-    return res.status(403).json({ message: "Forbidden" });
-  }
-
-  if (bio) {
-    if (bio.length > BIO_MAX_LENGTH) {
-      return res.status(400).json({
-        message: `Bio must be ${BIO_MAX_LENGTH} characters or fewer`,
-      });
-    }
-  }
-
-  try {
-    const updatedUser = await prisma.user.update({
-      where: { id: userId },
-      data: { bio },
-    });
-    res.status(200).json(updatedUser);
-  } catch (error) {
-    console.error("Error updating user", error);
-    res.status(500).json({ error: "Error updating user" });
-  }
-}
+export default withSession(
+  { method: "PUT", query: idQuery, body: updateUserBody },
+  async ({ res, userId, query, body }) => {
+    if (query.id !== userId) throw new ApiError(403, "Forbidden");
+    res.status(200).json(await updateBio(userId, body.bio));
+  },
+);

@@ -1,100 +1,93 @@
-import handler from "@/pages/api/user/update";
-import type { NextApiRequest, NextApiResponse } from "next";
+import updateHandler from "@/pages/api/user/update";
+import profileHandler from "@/pages/api/user/[id]";
+import { requireApiSession } from "@/lib/api/auth";
+import { mockRequest, mockResponse } from "../helpers/api";
 import { BIO_MAX_LENGTH } from "@/lib/constants";
-import { vi } from "vitest";
 
-const prismaMocks = vi.hoisted(() => ({
-  update: vi.fn(),
+const db = vi.hoisted(() => ({
+  user: { update: vi.fn(), findUnique: vi.fn() },
 }));
 
-vi.mock("@/lib/prisma", () => ({
-  default: {
-    user: {
-      update: prismaMocks.update,
-    },
-  },
-}));
-
-const sessionMock = vi.hoisted(() =>
-  vi.fn(async () => ({
-    session: {},
-    userId: 5,
-  }))
-);
-
+vi.mock("@/lib/prisma", () => ({ default: db }));
 vi.mock("@/lib/api/auth", () => ({
-  requireApiSession: (...args: unknown[]) => sessionMock(...args),
+  requireApiSession: vi.fn(async () => ({ session: {}, userId: 3 })),
 }));
 
-const createMockResponse = () => {
-  const store: { status?: number; body?: unknown } = {};
-  const res = {
-    status(code: number) {
-      store.status = code;
-      return res as NextApiResponse;
-    },
-    json(data: unknown) {
-      store.body = data;
-      return res as NextApiResponse;
-    },
-  } as unknown as NextApiResponse;
-
-  return { res, store };
-};
-
-describe("api/user/update", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    sessionMock.mockResolvedValue({ session: {}, userId: 5 });
+beforeEach(() => {
+  vi.clearAllMocks();
+  vi.mocked(requireApiSession).mockResolvedValue({
+    session: {} as never,
+    userId: 3,
   });
+});
 
+describe("PUT /api/user/update", () => {
   it("prevents updating another user", async () => {
-    const req = {
-      method: "PUT",
-      query: { id: "9" },
-      body: { bio: "hello" },
-    } as unknown as NextApiRequest;
-    const { res, store } = createMockResponse();
-
-    await handler(req, res);
-
+    const { res, store } = mockResponse();
+    await updateHandler(
+      mockRequest({ method: "PUT", query: { id: "4" }, body: { bio: "hi" } }),
+      res,
+    );
     expect(store.status).toBe(403);
-    expect(prismaMocks.update).not.toHaveBeenCalled();
+    expect(db.user.update).not.toHaveBeenCalled();
   });
 
-  it("rejects bios that exceed the maximum length", async () => {
-    const req = {
-      method: "PUT",
-      query: { id: "5" },
-      body: { bio: "a".repeat(BIO_MAX_LENGTH + 1) },
-    } as unknown as NextApiRequest;
-    const { res, store } = createMockResponse();
-
-    await handler(req, res);
-
-    expect(store.status).toBe(400);
-    expect(store.body).toEqual({
-      message: `Bio must be ${BIO_MAX_LENGTH} characters or fewer`,
-    });
+  it("rejects bios that are too long or not strings", async () => {
+    for (const bio of ["a".repeat(BIO_MAX_LENGTH + 1), { nested: true }]) {
+      const { res, store } = mockResponse();
+      await updateHandler(
+        mockRequest({ method: "PUT", query: { id: "3" }, body: { bio } }),
+        res,
+      );
+      expect(store.status).toBe(400);
+    }
   });
 
-  it("updates the bio for the authenticated user", async () => {
-    prismaMocks.update.mockResolvedValueOnce({ id: 5, bio: "Updated bio" });
+  it("updates the bio and returns only profile fields", async () => {
+    db.user.update.mockResolvedValue({ id: 3, bio: "hello" });
 
-    const req = {
-      method: "PUT",
-      query: { id: "5" },
-      body: { bio: "Updated bio" },
-    } as unknown as NextApiRequest;
-    const { res, store } = createMockResponse();
-
-    await handler(req, res);
+    const { res, store } = mockResponse();
+    await updateHandler(
+      mockRequest({ method: "PUT", query: { id: "3" }, body: { bio: " hello " } }),
+      res,
+    );
 
     expect(store.status).toBe(200);
-    expect(prismaMocks.update).toHaveBeenCalledWith({
-      where: { id: 5 },
-      data: { bio: "Updated bio" },
-    });
-    expect(store.body).toEqual({ id: 5, bio: "Updated bio" });
+    const call = db.user.update.mock.calls[0][0];
+    expect(call.data).toEqual({ bio: "hello" });
+    expect(call.select).not.toHaveProperty("role");
+    expect(call.select).toHaveProperty("email", true);
+  });
+
+  it("returns 404 when the user no longer exists", async () => {
+    db.user.update.mockRejectedValue(Object.assign(new Error("missing"), { code: "P2025" }));
+
+    const { res, store } = mockResponse();
+    await updateHandler(
+      mockRequest({ method: "PUT", query: { id: "3" }, body: { bio: "x" } }),
+      res,
+    );
+    expect(store.status).toBe(404);
+  });
+});
+
+describe("GET /api/user/[id]", () => {
+  it("hides the email of other users", async () => {
+    db.user.findUnique.mockResolvedValue({ id: 9, username: "other" });
+
+    const { res, store } = mockResponse();
+    await profileHandler(mockRequest({ method: "GET", query: { id: "9" } }), res);
+
+    expect(store.status).toBe(200);
+    expect(db.user.findUnique.mock.calls[0][0].select).not.toHaveProperty("email");
+  });
+
+  it("includes the email for yourself", async () => {
+    db.user.findUnique.mockResolvedValue({ id: 3, username: "me" });
+
+    const { res } = mockResponse();
+    await profileHandler(mockRequest({ method: "GET", query: { id: "3" } }), res);
+
+    expect(db.user.findUnique.mock.calls[0][0].select).toHaveProperty("email", true);
   });
 });

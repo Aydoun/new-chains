@@ -22,7 +22,6 @@ import {
   TextArea,
   TextField,
 } from "@radix-ui/themes";
-import { useBulkCreateFramesMutation } from "@/app/services/frames";
 import { useCreateSequenceMutation } from "@/app/services/sequences";
 import { translate } from "@/lib/i18n";
 import clsx from "clsx";
@@ -49,10 +48,9 @@ export function CreateSequenceForm({
   const { data: session } = useSession();
   const [activeFrame, setActiveFrame] = useState(0);
   const [currentStep, setCurrentStep] = useState(initialTemplate ? 1 : 0);
-  const [bulkCreateFrames, { isLoading: isSaving }] =
-    useBulkCreateFramesMutation();
-  const [createSequenceMutation, { isLoading: isSequenceSaving }] =
+  const [createSequenceMutation, { isLoading: isSaving }] =
     useCreateSequenceMutation();
+  const [saveError, setSaveError] = useState<string | null>(null);
   const {
     control,
     register,
@@ -133,32 +131,34 @@ export function CreateSequenceForm({
   };
 
   const onSubmit = async (values: SequenceCreationFormValues) => {
-    const framesPayload = values.pages
+    const frames = values.pages
       .filter((frame) => frame.content.trim().length > 0)
       .map((frame) => ({
-        ...frame,
         content: frame.content.trim(),
         description: frame.description?.trim() || "",
       }));
 
-    if (framesPayload.length > 0) {
-      try {
-        const frameResult = await bulkCreateFrames(framesPayload).unwrap();
+    if (frames.length === 0) return;
 
-        const createdSequence = await createSequenceMutation({
-          frameOrder: frameResult?.ids ?? [],
-          userId: session?.user?.id ?? "",
-          title: values.title.trim(),
-          description: values.description?.trim() || undefined,
-        }).unwrap();
+    setSaveError(null);
+    try {
+      // Frames and sequence are created in one request (one transaction),
+      // so a failure never leaves orphan frames behind.
+      const createdSequence = await createSequenceMutation({
+        title: values.title.trim(),
+        description: values.description?.trim() || undefined,
+        frames,
+      }).unwrap();
 
-        if (onSequenceCreated) onSequenceCreated(createdSequence.title);
-      } catch {
-        console.error("Unable to save sequence right now. Please try again.");
-      }
+      onSequenceCreated?.(createdSequence.title);
+      onModalChange(false);
+    } catch (error) {
+      // Keep the modal open with the user's input so they can retry.
+      const message =
+        (error as { data?: { message?: string } })?.data?.message ??
+        translate("sequence.draft.saveError");
+      setSaveError(message);
     }
-
-    onModalChange(false);
   };
 
   useEffect(() => {
@@ -384,6 +384,11 @@ export function CreateSequenceForm({
               />
             </div>
           )}
+          {saveError && (
+            <p role="alert" className="text-sm text-red-500">
+              {saveError}
+            </p>
+          )}
           <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:space-x-2">
             {currentStep === 0 ? (
               <Button
@@ -399,7 +404,7 @@ export function CreateSequenceForm({
               <Button
                 type="submit"
                 disabled={!isValid}
-                loading={isSaving || isSequenceSaving}
+                loading={isSaving}
               >
                 <Cloud />
                 {translate("sequence.cta.publish")}

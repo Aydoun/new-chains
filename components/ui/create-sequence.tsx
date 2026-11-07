@@ -192,6 +192,9 @@ export function CreateSequenceForm({
       <div className="relative flex h-48 w-full flex-col items-center justify-center gap-3 rounded-lg bg-frame-primary text-amber-50">
         <textarea
           id={`page-${index}-content`}
+          aria-label={translate("sequence.draft.frameContent-label", {
+            index: index + 1,
+          })}
           placeholder={translate("sequence.draft.frameContent-placeholder")}
           {...register(`pages.${index}.content`, {
             required: translate("common.required"),

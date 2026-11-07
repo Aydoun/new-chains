@@ -170,6 +170,11 @@
       "url-copied": "Link is copied",
       "label": "New Sequence"
     },
+    "actions": {
+      "edit": "Edit sequence",
+      "delete": "Delete sequence",
+      "share": "Share sequence"
+    },
     "draft": {
       "appendFrame": "Add Frame",
       "title": "Sequence Name",
@@ -184,10 +189,10 @@
       "title-advice": "Give your sequence a clear, searchable name.",
       "description-placeholder": "Briefly explain what this sequence is about",
       "frameContent-placeholder": "What's the message to convey?",
+      "frameContent-label": "Frame {index} content",
       "frameContent-advice": "Add the prompt, instruction, or message for this frame",
       "frameDescription-placeholder": "add optional context",
       "saveError": "We couldn't save your sequence. Please try again."
-
     },
     "self": "Sequence"
   },
@@ -272,7 +277,7 @@
           "content": "Review last week quickly.",
           "description": "What worked? What didnt? One sentence each."
         },
-        "2": {    
+        "2": {
           "content": "Choose one main goal for this week.",
           "description": "If this is done, the week is a win."
         },
@@ -288,18 +293,16 @@
       "outcome": "Better decisions based on how you actually feel.",
       "steps": {
         "1": {
-         "content": "Rate sleep, energy, and mood.",
-        "description": "Quick 1–5 ratings. No overthinking."
+          "content": "Rate sleep, energy, and mood.",
+          "description": "Quick 1–5 ratings. No overthinking."
         },
         "2": {
-                
-        "content": "Pick one health action today.",
-        "description": "Walk, stretch, hydrate, or rest."
-
+          "content": "Pick one health action today.",
+          "description": "Walk, stretch, hydrate, or rest."
         },
         "3": {
           "content": "Remove one unhealthy friction.",
-        "description": "Hide junk food, silence late notifications, etc."
+          "description": "Hide junk food, silence late notifications, etc."
         }
       }
     }

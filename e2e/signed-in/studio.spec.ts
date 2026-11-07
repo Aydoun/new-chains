@@ -1,11 +1,14 @@
 import { expect, test } from "@playwright/test";
+import { translate } from "@/lib/i18n";
 import { TEST_USER } from "../support/constants";
+
+const greeting = translate("studio.greetings", { name: TEST_USER.username });
 
 test.describe("studio", () => {
   test("greets the signed-in user", async ({ page }) => {
     await page.goto("/studio");
 
-    await expect(page.getByText(`Hello ${TEST_USER.username}`)).toBeVisible();
+    await expect(page.getByText(greeting)).toBeVisible();
   });
 
   test("signed-in user is redirected away from login", async ({ page }) => {
@@ -19,38 +22,52 @@ test.describe("studio", () => {
     const title = `E2E sequence ${Date.now()}`;
 
     await page.goto("/studio");
-    await page.getByRole("button", { name: "New Sequence" }).click();
+    await page
+      .getByRole("button", { name: translate("sequence.cta.label") })
+      .click();
 
     // Step 1: name and description.
-    await page.getByPlaceholder("e.g., The 10 minutes morning routine").fill(title);
-    await page
-      .getByPlaceholder("Briefly explain what this sequence is about")
+    const dialog = page.getByRole("dialog");
+    await dialog
+      .getByRole("textbox", { name: translate("sequence.draft.title") })
+      .fill(title);
+    await dialog
+      .getByRole("textbox", { name: translate("sequence.draft.description") })
       .fill("Created by Playwright");
-    await page.getByRole("button", { name: "Next", exact: true }).click();
+    await dialog
+      .getByRole("button", { name: translate("common.next"), exact: true })
+      .click();
 
     // Step 2: frames.
-    await page
-      .getByPlaceholder("What's the message to convey?")
-      .first()
+    await dialog
+      .getByRole("textbox", {
+        name: translate("sequence.draft.frameContent-label", { index: 1 }),
+      })
       .fill("First frame");
-    await page.getByRole("button", { name: "Publish", exact: true }).click();
+    await dialog
+      .getByRole("button", { name: translate("sequence.cta.publish") })
+      .click();
 
     await expect(page.getByRole("status")).toHaveText(
-      "Sequence created successfully.",
+      translate("sequence.cta.creation-message"),
     );
 
     // It's stored, not just shown: it survives a reload.
     await page.reload();
     const card = page
-      .locator("div.group")
-      .filter({ has: page.getByText(title, { exact: true }) });
+      .getByTestId("sequence-card")
+      .filter({ hasText: title });
     await expect(card).toBeVisible();
 
-    await card.getByRole("button", { name: "Delete sequence" }).click();
+    await card
+      .getByRole("button", { name: translate("sequence.actions.delete") })
+      .click();
     await expect(card).toBeHidden();
 
     await page.reload();
-    await expect(page.getByText(`Hello ${TEST_USER.username}`)).toBeVisible();
-    await expect(page.getByText(title, { exact: true })).toHaveCount(0);
+    await expect(page.getByText(greeting)).toBeVisible();
+    await expect(
+      page.getByTestId("sequence-card").filter({ hasText: title }),
+    ).toHaveCount(0);
   });
 });

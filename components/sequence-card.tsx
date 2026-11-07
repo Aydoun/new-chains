@@ -62,6 +62,7 @@ export const SequenceCard: FC<Props> = ({
   return (
     <>
       <div
+        data-testid="sequence-card"
         onClick={onClick}
         className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-xl border border-border border-t-0"
       >
@@ -118,7 +119,7 @@ export const SequenceCard: FC<Props> = ({
                   {isOwner && (
                     <>
                       <IconButton
-                        aria-label="Edit sequence"
+                        aria-label={translate("sequence.actions.edit")}
                         size="1"
                         variant="ghost"
                         onClick={(event) => {
@@ -130,7 +131,7 @@ export const SequenceCard: FC<Props> = ({
                         <Pencil className="h-4 w-4" />
                       </IconButton>
                       <IconButton
-                        aria-label="Delete sequence"
+                        aria-label={translate("sequence.actions.delete")}
                         size="1"
                         variant="ghost"
                         onClick={onDelete}
@@ -143,7 +144,7 @@ export const SequenceCard: FC<Props> = ({
                     </>
                   )}
                   <IconButton
-                    aria-label="Share sequence"
+                    aria-label={translate("sequence.actions.share")}
                     size="1"
                     variant="ghost"
                     onClick={handleShareLink}

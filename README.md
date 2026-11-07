@@ -79,3 +79,14 @@ prisma/              Schema and migrations
 | `yarn test` | Vitest unit tests |
 | `yarn prisma migrate deploy` | Apply pending database migrations |
 | `yarn db:studio` | Browse the database with Prisma Studio |
+
+### Deploying
+
+Vercel runs `scripts/vercel-build.sh` (the `vercel-build` script). On
+production deploys it runs `prisma migrate deploy` before `next build`, so
+new code never goes live against an older schema; if a migration fails, the
+deploy stops and the current version stays live. Preview builds skip
+migrations because `DATABASE_URL` is shared with Production in Vercel.
+
+To run Prisma against production by hand, load its env file with
+`DOTENV_CONFIG_PATH=.env.production npx prisma migrate status`.

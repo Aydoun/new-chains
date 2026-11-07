@@ -114,11 +114,12 @@ export default function ProfilePage() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm font-medium">
+                  <label htmlFor="profile-bio" className="text-sm font-medium">
                     {translate("profile.bioLabel")}
                   </label>
                   <div className="relative">
                     <TextArea
+                      id="profile-bio"
                       rows={4}
                       value={bioText}
                       onChange={handleBioChange}

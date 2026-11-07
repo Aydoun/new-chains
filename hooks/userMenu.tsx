@@ -15,7 +15,7 @@ export function UserMenu() {
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
         <button
-          aria-label="open profile menu"
+          aria-label={translate("auth.menu")}
           className="w-full justify-start cursor-pointer bg-card p-4 hover:bg-accent outline-none"
         >
           <div className="flex items-center gap-3">

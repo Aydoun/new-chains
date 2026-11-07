@@ -2,65 +2,43 @@ import { execSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { test as setup } from "@playwright/test";
-import { encode } from "next-auth/jwt";
 import { AUTH_FILE, TEST_USER } from "./support/constants";
-import { assertDedicatedTestDatabase, resetTestUser } from "./support/test-db";
+import { sessionCookie } from "./support/session";
+import { assertDedicatedTestDatabase, resetSeededUsers } from "./support/test-db";
+
+/** DIRECT_DATABASE_URL, or the Neon pooled URL with `-pooler` removed. */
+function directDatabaseUrl() {
+  if (process.env.DIRECT_DATABASE_URL) return process.env.DIRECT_DATABASE_URL;
+  const url = new URL(process.env.DATABASE_URL!);
+  url.hostname = url.hostname.replace("-pooler.", ".");
+  return url.toString();
+}
 
 /**
- * Prepares the Neon test database and signs the test user in.
- *
- * Google sign-in can't be automated, so instead of going through it we mint
- * the same session cookie next-auth would set after a successful login: a JWT
- * signed with NEXTAUTH_SECRET whose `sub` is the user's database id.
+ * Prepares the Neon test database and signs the test user in:
+ * applies migrations, resets the seeded users and their data, and saves a
+ * minted next-auth session cookie for the signed-in projects.
  */
 setup("prepare test database and sign in", async ({ baseURL }) => {
   assertDedicatedTestDatabase();
+  console.log(`Faker seed: ${process.env.E2E_SEED} (rerun with E2E_SEED=${process.env.E2E_SEED})`);
 
-  const secret = process.env.NEXTAUTH_SECRET;
-  if (!secret) {
-    throw new Error("E2E: NEXTAUTH_SECRET is not set in .env.test.");
-  }
-
-  execSync("npx prisma migrate deploy", { stdio: "inherit" });
-
-  const userId = await resetTestUser();
-
-  const sessionToken = await encode({
-    secret,
-    token: {
-      sub: `${userId}`,
-      name: TEST_USER.username,
-      email: TEST_USER.email,
-      picture: null,
-    },
+  // Migrations take a Postgres advisory lock, which Neon's pooled
+  // connection (PgBouncer) can't hold reliably: use the direct host.
+  execSync("npx prisma migrate deploy", {
+    stdio: "inherit",
+    env: { ...process.env, DATABASE_URL: directDatabaseUrl() },
   });
 
-  const url = new URL(baseURL!);
-  const secure = url.protocol === "https:";
+  const ids = await resetSeededUsers();
+  const cookie = await sessionCookie(
+    { id: ids[TEST_USER.email], ...TEST_USER },
+    baseURL!,
+  );
 
   fs.mkdirSync(path.dirname(AUTH_FILE), { recursive: true });
   fs.writeFileSync(
     AUTH_FILE,
-    JSON.stringify(
-      {
-        cookies: [
-          {
-            name: secure
-              ? "__Secure-next-auth.session-token"
-              : "next-auth.session-token",
-            value: sessionToken,
-            domain: url.hostname,
-            path: "/",
-            expires: Math.floor(Date.now() / 1000) + 60 * 60,
-            httpOnly: true,
-            secure,
-            sameSite: "Lax",
-          },
-        ],
-        origins: [],
-      },
-      null,
-      2,
-    ),
+    JSON.stringify({ cookies: [cookie], origins: [] }, null, 2),
   );
 });

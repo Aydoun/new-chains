@@ -10,6 +10,9 @@ export default [
       ".next/**",
       "node_modules/**",
       "lib/seed-script.ts",
+      "playwright-report/**",
+      "test-results/**",
+      "blob-report/**",
     ],
   },
   {

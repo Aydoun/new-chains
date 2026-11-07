@@ -49,11 +49,14 @@
     "status": {
       "label": "System Status",
       "operational": "Operational"
-    }
+    },
+    "menu": "Open profile menu"
   },
   "carousel": {
     "frame": "Frame",
-    "progress": "Frame {current} of {total}"
+    "progress": "Frame {current} of {total}",
+    "previous": "Previous frame",
+    "next": "Next frame"
   },
   "contact": {
     "channel": {
@@ -76,7 +79,8 @@
     "sendMessage": "Send a Message",
     "replyTime": "We will get back to you ASAP",
     "welcomeMessage": "Get in Touch",
-    "welcomeDescription": "Have questions about the sequence explorer, encountering issues, or just want to say hello? Reach out directly or send a message below."
+    "welcomeDescription": "Have questions about the sequence explorer, encountering issues, or just want to say hello? Reach out directly or send a message below.",
+    "copy": "Copy {value}"
   },
   "frame": {
     "content": "Frame Content",
@@ -90,7 +94,8 @@
     "last-hour": "Last hour",
     "today": "Today",
     "this-week": "This week",
-    "this-month": "This month"
+    "this-month": "This month",
+    "clear": "Clear filter"
   },
   "footer": {
     "privacyPolicy": "Privacy Policy",
@@ -192,6 +197,7 @@
       "frameContent-label": "Frame {index} content",
       "frameContent-advice": "Add the prompt, instruction, or message for this frame",
       "frameDescription-placeholder": "add optional context",
+      "frameDescription-label": "Frame {index} note",
       "saveError": "We couldn't save your sequence. Please try again."
     },
     "self": "Sequence"
@@ -210,7 +216,8 @@
     "originLabel": "Source",
     "menu": {
       "delete": "Delete",
-      "view": "View Orginal Sequence"
+      "view": "View Orginal Sequence",
+      "label": "Snippet actions"
     },
     "notesLabel": "Notes",
     "notesInput": "Snippet notes",

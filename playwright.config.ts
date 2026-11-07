@@ -28,6 +28,11 @@ for (const [key, value] of Object.entries(testEnv)) {
 // pointing at a dedicated test database.
 assertDedicatedTestDatabase();
 
+// One Faker seed per run. Workers inherit it from this process, and each
+// test derives its own seed from it (see e2e/support/fixtures.ts). Replay a
+// failing run with `E2E_SEED=<seed> yarn test:e2e`.
+process.env.E2E_SEED ??= String(Math.floor(Math.random() * 2 ** 31));
+
 const PORT = Number(process.env.E2E_PORT ?? 3100);
 const LOCAL_URL = `http://localhost:${PORT}`;
 // Set PLAYWRIGHT_BASE_URL to test an already-running deployment instead.
@@ -58,6 +63,8 @@ export default defineConfig({
     {
       name: "public",
       testMatch: /public\/.*\.spec\.ts/,
+      // Still needs migrations applied and the seeded users in place.
+      dependencies: ["setup"],
       use: { ...devices["Desktop Chrome"] },
     },
     {
@@ -65,6 +72,13 @@ export default defineConfig({
       testMatch: /signed-in\/.*\.spec\.ts/,
       dependencies: ["setup"],
       use: { ...devices["Desktop Chrome"], storageState: AUTH_FILE },
+    },
+    {
+      // Live API endpoints, called directly with the test user's session.
+      name: "api",
+      testMatch: /api\/.*\.spec\.ts/,
+      dependencies: ["setup"],
+      use: { storageState: AUTH_FILE },
     },
   ],
   webServer: process.env.PLAYWRIGHT_BASE_URL

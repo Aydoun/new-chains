@@ -60,7 +60,7 @@ export function FilterDropdown({ value, onChange }: Props) {
           ))}
           <Separator className="w-full my-3" />
           <DropdownMenu.RadioItem key="clear" value="">
-            Clear Filter
+            {translate("filter.clear")}
           </DropdownMenu.RadioItem>
         </DropdownMenu.RadioGroup>
       </DropdownMenu.Content>

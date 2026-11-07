@@ -207,13 +207,21 @@ export const SequenceFrame: FC<SequenceFrameProps> = ({
         </div>
       )}
       {showIsLiked && (
-        <Heart
-          fill={liked ? "red" : "none"}
-          className={clsx("w-5 h-5 absolute top-4 right-4 cursor-pointer", {
-            "text-primary-main": !liked,
-          })}
+        <button
+          type="button"
+          aria-label={translate("snippets.saveAction")}
+          aria-pressed={Boolean(liked)}
           onClick={onLike}
-        />
+          className="absolute top-4 right-4 cursor-pointer"
+        >
+          <Heart
+            fill={liked ? "red" : "none"}
+            className={clsx("w-5 h-5", {
+              "text-primary-main": !liked,
+            })}
+            aria-hidden="true"
+          />
+        </button>
       )}
     </div>
   );

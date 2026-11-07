@@ -3,6 +3,7 @@ import {
   chooseTimeFilter,
   emptyState,
   search,
+  searchBox,
   sequenceCard,
   sequenceViewer,
   t,
@@ -17,20 +18,19 @@ test.describe("studio", () => {
     ).toBeVisible();
   });
 
-  test("shows the empty state to a user with no sequences", async ({
+  test("shows the empty state when nothing matches, and clears it", async ({
     page,
     data,
-    signInAs,
   }) => {
-    const user = await data.createUser();
-    await signInAs(user);
-
     await page.goto("/studio");
+    await search(page, `no-match-${data.token()}`);
 
-    await expect(
-      page.getByText(t("studio.greetings", { name: user.username })),
-    ).toBeVisible();
     await expect(emptyState(page)).toBeVisible();
+    await page
+      .getByRole("button", { name: t("states.emptySequences.clear") })
+      .click();
+    await expect(searchBox(page)).toHaveValue("");
+    await expect(emptyState(page)).toBeHidden();
   });
 
   test("creates a multi-frame sequence and stores it in order", async ({

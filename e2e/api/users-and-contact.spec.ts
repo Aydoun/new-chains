@@ -23,41 +23,51 @@ test.describe("users API", () => {
     expect((await request.get("/api/user/2147483647")).status()).toBe(404);
   });
 
-  test("updates the user's own bio, trimmed", async ({ data, apiAs }) => {
-    const user = await data.createUser();
-    const api = await apiAs(user);
+  test("updates the user's own bio, trimmed", async ({
+    request,
+    data,
+    users,
+    exclusive,
+  }) => {
+    // Other tests change this user's bio too: take turns.
+    await exclusive("bio");
     const bio = data.bio();
 
-    const response = await api.put(`/api/user/update?id=${user.id}`, {
+    const response = await request.put(`/api/user/update?id=${users.me.id}`, {
       data: { bio: `  ${bio}  ` },
     });
 
     expect(response.status()).toBe(200);
     expect((await response.json()).bio).toBe(bio);
-    expect((await db.findUser(user.id))?.bio).toBe(bio);
+    expect((await db.findUser(users.me.id))?.bio).toBe(bio);
   });
 
-  test("refuses a bio over 240 characters", async ({ data, apiAs }) => {
-    const user = await data.createUser();
-    const api = await apiAs(user);
+  test("refuses a bio over 240 characters", async ({
+    request,
+    data,
+    users,
+    exclusive,
+  }) => {
+    await exclusive("bio");
+    const before = (await db.findUser(users.me.id))?.bio;
 
-    const response = await api.put(`/api/user/update?id=${user.id}`, {
+    const response = await request.put(`/api/user/update?id=${users.me.id}`, {
       data: { bio: data.text(241) },
     });
 
     expect(response.status()).toBe(400);
-    expect((await db.findUser(user.id))?.bio).toBeNull();
+    expect((await db.findUser(users.me.id))?.bio).toBe(before);
   });
 
-  test("can't change someone else's bio", async ({ request, data }) => {
-    const target = await data.createUser();
+  test("can't change someone else's bio", async ({ request, data, users }) => {
+    const before = (await db.findUser(users.author.id))?.bio;
 
-    const response = await request.put(`/api/user/update?id=${target.id}`, {
+    const response = await request.put(`/api/user/update?id=${users.author.id}`, {
       data: { bio: data.bio() },
     });
 
     expect(response.status()).toBe(403);
-    expect((await db.findUser(target.id))?.bio).toBeNull();
+    expect((await db.findUser(users.author.id))?.bio).toBe(before);
   });
 });
 

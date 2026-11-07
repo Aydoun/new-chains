@@ -1,16 +1,10 @@
 import { createHash } from "node:crypto";
-import {
-  test as base,
-  expect,
-  type APIRequestContext,
-  type BrowserContext,
-} from "@playwright/test";
+import { test as base, expect } from "@playwright/test";
 import { Faker, base as baseLocale, en } from "@faker-js/faker";
-import { AUTHOR, TEST_EMAIL_DOMAIN, TEST_USER } from "./constants";
-import { sessionCookie } from "./session";
+import { AUTHOR, TEST_USER } from "./constants";
 import * as db from "./test-db";
 
-type Owner = "me" | "author" | db.UserRow;
+type Owner = "me" | "author";
 
 export type DataFactory = ReturnType<typeof createDataFactory>;
 
@@ -19,14 +13,19 @@ type TestFixtures = {
   fake: Faker;
   /** Random payloads and database records for this test. */
   data: DataFactory;
-  /** Signs this test's browser context in as another user. */
-  signInAs: (user: db.UserRow) => Promise<void>;
-  /** An API client signed in as the given user. */
-  apiAs: (user: db.UserRow) => Promise<APIRequestContext>;
+  /**
+   * Waits until no other test, in any worker, holds the named lock, then
+   * holds it until this test ends. For tests that change data every test
+   * shares, such as the test user's bio.
+   */
+  exclusive: (name: string) => Promise<void>;
 };
 
 type WorkerFixtures = {
-  /** The two seeded users: `me` (signed in by default) and `author`. */
+  /**
+   * The two fixed users. Every test signs in as `me`; `author` only owns
+   * sequences for `me` to browse (the feed hides your own sequences).
+   */
   users: { me: db.UserRow; author: db.UserRow };
 };
 
@@ -45,11 +44,7 @@ function seedFor(testId: string, repeatEachIndex: number, retry: number) {
 
 function createDataFactory(fake: Faker, users: WorkerFixtures["users"]) {
   const ownerId = (owner: Owner) =>
-    owner === "me"
-      ? users.me.id
-      : owner === "author"
-        ? users.author.id
-        : owner.id;
+    owner === "me" ? users.me.id : users.author.id;
 
   /** A short random marker: search for it to find this test's records. */
   const token = () => fake.string.alphanumeric({ length: 10, casing: "lower" });
@@ -102,13 +97,6 @@ function createDataFactory(fake: Faker, users: WorkerFixtures["users"]) {
         ...overrides,
       }),
 
-    /** A user nobody else uses, for tests that change user-level state. */
-    createUser: () =>
-      db.insertUser({
-        email: `e2e-${token()}@${TEST_EMAIL_DOMAIN}`,
-        username: fake.person.fullName(),
-      }),
-
     bio: () => fake.person.bio(),
 
     contactMessage: () =>
@@ -117,15 +105,6 @@ function createDataFactory(fake: Faker, users: WorkerFixtures["users"]) {
     /** A string of exactly `length` letters. */
     text: (length: number) => fake.string.alpha({ length }),
   };
-}
-
-async function addSession(
-  context: BrowserContext,
-  user: db.UserRow,
-  baseURL: string,
-) {
-  await context.clearCookies();
-  await context.addCookies([await sessionCookie(user, baseURL)]);
 }
 
 export const test = base.extend<TestFixtures, WorkerFixtures>({
@@ -154,24 +133,12 @@ export const test = base.extend<TestFixtures, WorkerFixtures>({
     await use(createDataFactory(fake, users));
   },
 
-  signInAs: async ({ context, baseURL }, use) => {
-    await use((user) => addSession(context, user, baseURL!));
-  },
-
-  apiAs: async ({ playwright, baseURL }, use) => {
-    const contexts: APIRequestContext[] = [];
-    await use(async (user) => {
-      const context = await playwright.request.newContext({
-        baseURL,
-        storageState: {
-          cookies: [await sessionCookie(user, baseURL!)],
-          origins: [],
-        },
-      });
-      contexts.push(context);
-      return context;
+  exclusive: async ({}, use) => {
+    const releases: Array<() => Promise<void>> = [];
+    await use(async (name) => {
+      releases.push(await db.acquireLock(name));
     });
-    await Promise.all(contexts.map((context) => context.dispose()));
+    for (const release of releases.reverse()) await release();
   },
 });
 

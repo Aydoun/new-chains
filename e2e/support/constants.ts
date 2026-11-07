@@ -20,5 +20,8 @@ export const AUTHOR = {
 
 export const SEEDED_USERS = [TEST_USER, AUTHOR] as const;
 
-/** Every user the tests create lives on this reserved domain. */
+/**
+ * The seeded users' domain. The setup step removes any other user on it,
+ * so only these two ever exist.
+ */
 export const TEST_EMAIL_DOMAIN = "linkntell.test";

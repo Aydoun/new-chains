@@ -94,6 +94,30 @@ async function transaction<T>(fn: (client: PoolClient) => Promise<T>) {
   }
 }
 
+/**
+ * Takes a lock shared by every Playwright worker and returns its release.
+ * It's a transaction-level advisory lock on its own connection: those work
+ * through Neon's pooler, and are released if the test process dies.
+ */
+export async function acquireLock(name: string) {
+  const client = new Client({
+    connectionString: process.env.DATABASE_URL,
+    connectionTimeoutMillis: 15_000,
+  });
+  await client.connect();
+  await client.query("BEGIN");
+  await client.query("SELECT pg_advisory_xact_lock(hashtext($1))", [
+    `e2e:${name}`,
+  ]);
+  return async () => {
+    try {
+      await client.query("COMMIT");
+    } finally {
+      await client.end();
+    }
+  };
+}
+
 // ---------------------------------------------------------------------------
 // Seeding (run once, from the setup project)
 // ---------------------------------------------------------------------------
@@ -111,8 +135,8 @@ export async function resetSeededUsers() {
   try {
     await client.query("BEGIN");
 
-    // Every user the tests ever created: the seeded ones and the per-test
-    // fresh users, all on the reserved @linkntell.test domain.
+    // Every user on the reserved test domain. Only the seeded users are
+    // kept; any other one (e.g. left by older versions of this suite) goes.
     const { rows: testUsers } = await client.query<{ id: number }>(
       `SELECT id FROM "User" WHERE email LIKE $1`,
       [`%@${TEST_EMAIL_DOMAIN}`],
@@ -215,16 +239,6 @@ export async function findUserByEmail(email: string) {
     [email],
   );
   if (!user) throw new Error(`E2E: seeded user ${email} not found`);
-  return user;
-}
-
-/** A brand-new user, for tests that change user-level state. */
-export async function insertUser(input: { email: string; username: string }) {
-  const [user] = await query<UserRow>(
-    `INSERT INTO "User" (email, username, "updatedAt") VALUES ($1, $2, NOW())
-     RETURNING id, email, username, bio`,
-    [input.email, input.username],
-  );
   return user;
 }
 

@@ -132,7 +132,7 @@ export default function ContactPage() {
                   </a>
                 ) : (
                   <Button
-                    aria-label={`Copy ${channel.description}`}
+                    aria-label={translate("contact.copy", { value: channel.description })}
                     variant="ghost"
                     className="text-muted-foreground absolute right-4 top-4 transition-colors hover:text-primary"
                     onClick={handleCopyEmail}
@@ -170,7 +170,7 @@ export default function ContactPage() {
                   {translate("contact.form.messageLabel")}
                 </Text>
                 <TextArea
-                  aria-label="Message"
+                  aria-label={translate("contact.form.messageLabel")}
                   placeholder={translate("contact.form.messagePlaceholder")}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}

@@ -11,7 +11,11 @@ export function SnippetMenu({ onView, onDelete }: Props) {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
-        <Button variant="ghost" className="cursor-pointer">
+        <Button
+          variant="ghost"
+          className="cursor-pointer"
+          aria-label={translate("snippets.menu.label")}
+        >
           <EllipsisVertical className="text-black" />
         </Button>
       </DropdownMenu.Trigger>

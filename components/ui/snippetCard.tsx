@@ -14,7 +14,9 @@ interface Props {
 
 export function SnippetCard({ frame, notes, onView, onDelete }: Props) {
   return (
-    <div className="flex items-center bg-frame-primary border border-slate-200 dark:border-border-dark p-6 px-4 md:px-6 rounded shadow-sm mb-4">
+    <div
+      data-testid="snippet-card"
+      className="flex items-center bg-frame-primary border border-slate-200 dark:border-border-dark p-6 px-4 md:px-6 rounded shadow-sm mb-4">
       <div className="mr-4">
         <Tooltip
           content={

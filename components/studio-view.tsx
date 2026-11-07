@@ -172,6 +172,7 @@ export function StudioView({
                     },
                   )}
                   onClick={handleFetchFavorites}
+                  aria-pressed={favoritesToggle}
                 >
                   <Heart className="h-5 w-5" aria-hidden="true" />
                   <Text size="2" weight="medium" className="hidden sm:inline">

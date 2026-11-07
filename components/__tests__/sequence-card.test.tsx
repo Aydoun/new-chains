@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { Theme } from "@radix-ui/themes";
 import { vi } from "vitest";
 import { SequenceCard } from "../sequence-card";
+import { translate } from "@/lib/i18n";
 
 const baseSequence = {
   id: 7,
@@ -79,7 +80,7 @@ describe("SequenceCard", () => {
     const handleDelete = vi.fn();
     renderCard({ handleDelete });
 
-    await user.click(screen.getByLabelText("Delete sequence"));
+    await user.click(screen.getByLabelText(translate("sequence.actions.delete")));
 
     expect(handleDelete).toHaveBeenCalledWith(baseSequence.id);
   });

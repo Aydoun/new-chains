@@ -192,6 +192,9 @@ export function CreateSequenceForm({
       <div className="relative flex h-48 w-full flex-col items-center justify-center gap-3 rounded-lg bg-frame-primary text-amber-50">
         <textarea
           id={`page-${index}-content`}
+          aria-label={translate("sequence.draft.frameContent-label", {
+            index: index + 1,
+          })}
           placeholder={translate("sequence.draft.frameContent-placeholder")}
           {...register(`pages.${index}.content`, {
             required: translate("common.required"),
@@ -201,6 +204,9 @@ export function CreateSequenceForm({
         />
         <input
           id={`page-${index}-description`}
+          aria-label={translate("sequence.draft.frameDescription-label", {
+            index: index + 1,
+          })}
           placeholder={translate("sequence.draft.frameDescription-placeholder")}
           {...register(`pages.${index}.description`)}
           className="w-full max-w-xl bg-transparent text-center text-sm font-medium text-amber-700 placeholder:text-amber-600/70 focus:outline-none focus:ring-0"
@@ -231,7 +237,7 @@ export function CreateSequenceForm({
               {SequenceTitle?.trim()}
             </Heading>
           </div>
-          <Modal.Close aria-label="Close" onClick={onClose}>
+          <Modal.Close aria-label={translate("common.close")} onClick={onClose}>
             <X className="h-4 w-4" />
           </Modal.Close>
         </div>

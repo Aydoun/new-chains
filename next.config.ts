@@ -17,6 +17,9 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Lets the Playwright dev server build next to a running `yarn dev`
+  // instead of fighting it for the lock on `.next`.
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   poweredByHeader: false,
   experimental: {
     turbopackUseSystemTlsCerts: true,

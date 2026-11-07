@@ -88,7 +88,7 @@ export function Carousel({
             className="cursor-pointer"
             radius="full"
             onClick={onPrevious}
-            aria-label="carousel-previous"
+            aria-label={translate("carousel.previous")}
           >
             <CircleArrowLeft />
           </IconButton>
@@ -102,7 +102,7 @@ export function Carousel({
             className="cursor-pointer"
             radius="full"
             onClick={onNext}
-            aria-label="carousel-next"
+            aria-label={translate("carousel.next")}
           >
             <CircleArrowRight />
           </IconButton>

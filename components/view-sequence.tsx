@@ -63,7 +63,7 @@ export function ViewSequence({ sequenceId, onClose }: Props) {
               </Heading>
             )}
           </div>
-          <Modal.Close aria-label="Close" onClick={onClose}>
+          <Modal.Close aria-label={translate("common.close")} onClick={onClose}>
             <X className="h-4 w-4" />
           </Modal.Close>
         </div>

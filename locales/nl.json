@@ -65,7 +65,7 @@
       "linkedin": "LinkedIn"
     },
     "directChannels": "Directe kanalen",
-    "directChannelsDescription": "Volg ons op sociale media of stuur ons rechtstreeks een e-mail.",
+    "directChannelsDescription": "Neem contact met ons op via sociale media of stuur ons rechtstreeks een e-mail.",
     "form": {
       "email": "E-mailadres",
       "name": "Naam",
@@ -80,7 +80,7 @@
     "sendMessage": "Stuur een bericht",
     "replyTime": "We nemen zo snel mogelijk contact met je op",
     "welcomeMessage": "Neem contact op",
-    "welcomeDescription": "Vragen over de sequentieverkenner, problemen ondervonden of gewoon hallo zeggen? Neem direct contact op of stuur hieronder een bericht.",
+    "welcomeDescription": "Heb je vragen over de sequentieverkenner, loop je tegen problemen aan of wil je gewoon hallo zeggen? Neem direct contact op of stuur hieronder een bericht.",
     "copy": "{value} kopiëren"
   },
   "frame": {
@@ -124,9 +124,9 @@
   },
   "onboarding": {
     "actions": {
-      "complete": "Afronden",
+      "complete": "Markeren als klaar",
       "markDone": "Markeren als klaar",
-      "markItem": "Voltooiing van {item} wisselen",
+      "markItem": "{item} aan- of afvinken",
       "skip": "Nu overslaan",
       "undo": "Ongedaan maken"
     },
@@ -157,7 +157,7 @@
     "cta": {
       "avatar": "Avatar wijzigen"
     },
-    "connectedMessage": "Verbonden als {email}",
+    "connectedMessage": "Gekoppeld als {email}",
     "delete": "Account verwijderen",
     "deleteWarn": "Je account en al je inhoud permanent verwijderen.",
     "emailLabel": "E-mailadres",
@@ -251,7 +251,7 @@
     "lastEdit": "Laatst bewerkt",
     "greetings": "Hallo {name}",
     "explorerWelcome": "Welkom in de Studio van {name}",
-    "template-create": "Maken vanuit een sjabloon"
+    "template-create": "Maken op basis van een sjabloon"
   },
   "templates": {
     "cta": "Dit sjabloon gebruiken",
@@ -260,7 +260,7 @@
     "outcome": "Verwacht resultaat",
     "template1": {
       "title": "Plan mijn dag",
-      "description": "Krijg helder wat er vandaag echt toe doet.",
+      "description": "Krijg helderheid over wat er vandaag echt toe doet.",
       "outcome": "Een kort, realistisch plan dat je zonder stress afrondt.",
       "steps": {
         "1": {
@@ -311,7 +311,7 @@
         },
         "3": {
           "content": "Haal één ongezonde verleiding weg.",
-          "description": "Verstop snoep, zet late meldingen uit, enz."
+          "description": "Verstop junkfood, zet late meldingen uit, enz."
         }
       }
     }

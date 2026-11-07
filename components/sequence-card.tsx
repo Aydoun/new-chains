@@ -31,7 +31,7 @@ export const SequenceCard: FC<Props> = ({
   omitAuthor = false,
   deletingSequenceRef,
 }) => {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const [isLinkCopied, setIsLinkCopied] = useState(false);
   const isOwner = userId === `${sequence.userId}`;
 
@@ -106,7 +106,7 @@ export const SequenceCard: FC<Props> = ({
             <div className="flex items-center gap-1 text-muted-foreground">
               <Clock3 className="h-4 w-4" aria-hidden="true" />
               <Text size="1" weight="medium">
-                {timeAgo(sequence.createdAt)}
+                {timeAgo(sequence.createdAt, { locale })}
               </Text>
             </div>
             {deletingSequenceRef === sequence.id ? (

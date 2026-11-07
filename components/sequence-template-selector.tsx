@@ -35,7 +35,7 @@ export function SequenceTemplateSelector({
                 </Text>
               </div>
               <Modal.Close
-                aria-label="Close template selector"
+                aria-label={t("common.close")}
                 className="rounded-full bg-white/5 p-2 text-gray-300 transition hover:bg-white/10"
                 onClick={() => onOpenChange(false)}
               >

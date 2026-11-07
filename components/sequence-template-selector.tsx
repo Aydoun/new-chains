@@ -4,7 +4,7 @@ import { SequenceTemplate } from "@/app/types";
 import { Modal } from "./ui/modal";
 import { Badge, Button, Heading, Text } from "@radix-ui/themes";
 import { ArrowRight, Layers3, X } from "lucide-react";
-import { translate } from "@/lib/i18n";
+import { useTranslation } from "@/components/locale-provider";
 
 type Props = {
   open: boolean;
@@ -19,6 +19,7 @@ export function SequenceTemplateSelector({
   templates,
   onSelect,
 }: Props) {
+  const { t } = useTranslation();
   return (
     <>
       <Modal open={open} onOpenChange={onOpenChange}>
@@ -27,10 +28,10 @@ export function SequenceTemplateSelector({
             <div className="flex items-start justify-between gap-6">
               <div>
                 <Heading size="6" weight="medium" className="text-white">
-                  {translate("templates.start")}
+                  {t("templates.start")}
                 </Heading>
                 <Text size="3" color="gray">
-                  {translate("templates.startDescription")}
+                  {t("templates.startDescription")}
                 </Text>
               </div>
               <Modal.Close
@@ -62,7 +63,7 @@ export function SequenceTemplateSelector({
                     <div className="rounded-xl border border-white/5 bg-black/30 p-3">
                       <div className="flex items-center gap-2 text-sm font-semibold text-primary-main">
                         <Layers3 className="h-4 w-4" aria-hidden />
-                        {translate("templates.outcome")}
+                        {t("templates.outcome")}
                       </div>
                       <Text size="2" className="mt-1 text-white">
                         {template.outcome}
@@ -73,7 +74,7 @@ export function SequenceTemplateSelector({
                     className="cursor-pointer"
                     onClick={() => onSelect(template)}
                   >
-                    {translate("templates.cta")}
+                    {t("templates.cta")}
                     <ArrowRight className="h-4 w-4" />
                   </Button>
                 </div>

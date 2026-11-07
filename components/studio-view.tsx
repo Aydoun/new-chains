@@ -1,11 +1,11 @@
 "use client";
 
-import { translate } from "@/lib/i18n";
+import { useTranslation } from "@/components/locale-provider";
 import { Button, Callout, Text, TextField } from "@radix-ui/themes";
 import { Heart, Search, Sparkles, SquarePlus, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Sequence, SequenceTemplate, TimeFilter } from "@/app/types";
-import { sequenceTemplates } from "@/app/templates/config";
+import { getSequenceTemplates } from "@/app/templates/config";
 import { ViewSequence } from "./view-sequence";
 import { FilterDropdown } from "./filter-dropdown";
 import { CreateSequenceForm } from "./ui/create-sequence";
@@ -50,6 +50,7 @@ export function StudioView({
   onSearchChange,
   deletingSequenceRef,
 }: Props) {
+  const { t } = useTranslation();
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [showCreationSuccess, setShowCreationSuccess] = useState(false);
@@ -103,7 +104,7 @@ export function StudioView({
                 role="status"
               >
                 <Callout.Text>
-                  {translate("sequence.cta.creation-message")}
+                  {t("sequence.cta.creation-message")}
                 </Callout.Text>
               </Callout.Root>
             )}
@@ -119,7 +120,7 @@ export function StudioView({
             >
               <Sparkles />
               <Text size="2" weight="bold" className="tracking-[0.015em]">
-                {translate("studio.template-create")}
+                {t("studio.template-create")}
               </Text>
             </Button>
             <Button
@@ -130,7 +131,7 @@ export function StudioView({
             >
               <SquarePlus />
               <Text size="2" weight="bold" className="tracking-[0.015em]">
-                {translate("sequence.cta.label")}
+                {t("sequence.cta.label")}
               </Text>
             </Button>
           </div>
@@ -142,7 +143,7 @@ export function StudioView({
                 type="text"
                 value={searchTerm}
                 onChange={(e) => onSearchChange(e.target.value)}
-                placeholder={translate("common.search")}
+                placeholder={t("common.search")}
                 className="w-full rounded-lg border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground outline-none transition"
               >
                 <TextField.Slot>
@@ -176,7 +177,7 @@ export function StudioView({
                 >
                   <Heart className="h-5 w-5" aria-hidden="true" />
                   <Text size="2" weight="medium" className="hidden sm:inline">
-                    {translate("common.favorites")}
+                    {t("common.favorites")}
                   </Text>
                 </button>
               </div>
@@ -236,7 +237,7 @@ export function StudioView({
         <SequenceTemplateSelector
           open={isTemplateDialogOpen}
           onOpenChange={setIsTemplateDialogOpen}
-          templates={sequenceTemplates}
+          templates={getSequenceTemplates(t)}
           onSelect={handleTemplateSelect}
         />
       )}

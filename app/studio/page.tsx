@@ -6,7 +6,7 @@ import {
   useDeleteSequenceMutation,
   useLazyGetStudioSequencesQuery,
 } from "@/app/services/sequences";
-import { translate } from "@/lib/i18n";
+import { useTranslation } from "@/components/locale-provider";
 import { useInfinitePagination } from "@/hooks/useInfinitePagination";
 import { PaginationParams, Sequence, TimeFilter } from "@/app/types";
 import { StudioView } from "@/components/studio-view";
@@ -15,6 +15,7 @@ import { useDebounce } from "use-debounce";
 import { SessionLoader } from "@/components/ui/spinner";
 
 export default function StudioPage() {
+  const { t } = useTranslation();
   const { data: session, status } = useSession();
   const [fetchStudioSequences] = useLazyGetStudioSequencesQuery();
   const [timeFilter, setTimeFilter] = useState<TimeFilter>();
@@ -60,7 +61,7 @@ export default function StudioPage() {
 
   return (
     <StudioView
-      greeting={translate("studio.greetings", {
+      greeting={t("studio.greetings", {
         name: session?.user?.name ?? "",
       })}
       sequences={sequences}

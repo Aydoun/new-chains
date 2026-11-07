@@ -10,7 +10,7 @@ import {
   Copy,
   type LucideIcon,
 } from "lucide-react";
-import { translate } from "@/lib/i18n";
+import { useTranslation } from "@/components/locale-provider";
 import { Button, TextArea, Text, Heading } from "@radix-ui/themes";
 
 type DirectChannel = {
@@ -21,7 +21,8 @@ type DirectChannel = {
 };
 
 export default function ContactPage() {
-  const emailAddress = translate("contact.email-value");
+  const { t } = useTranslation();
+  const emailAddress = t("contact.email-value");
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [message, setMessage] = useState("");
   const [submitting, setIsSubmitting] = useState(false);
@@ -30,14 +31,14 @@ export default function ContactPage() {
     () => [
       {
         icon: Mail,
-        title: translate("contact.channel.email"),
-        description: translate("contact.email-value"),
+        title: t("contact.channel.email"),
+        description: t("contact.email-value"),
       },
       {
         icon: Linkedin,
-        title: translate("contact.channel.linkedin"),
+        title: t("contact.channel.linkedin"),
         description: "Professional updates",
-        href: translate("contact.linked-profile"),
+        href: t("contact.linked-profile"),
       },
     ],
     [emailAddress]
@@ -79,14 +80,14 @@ export default function ContactPage() {
     <div className="mx-auto flex max-w-6xl flex-col gap-8 mt-12 md:mt-6 py-8 px-6 md:px-14">
       <section className="space-y-3">
         <Text className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase text-primary">
-          {translate("navigation.contact")}
+          {t("navigation.contact")}
         </Text>
         <div className="space-y-2">
           <Heading as="h1" className="font-bold text-foreground sm:text-5xl">
-            {translate("contact.welcomeMessage")}
+            {t("contact.welcomeMessage")}
           </Heading>
           <Text className="max-w-3xl text-base text-muted-foreground sm:text-lg">
-            {translate("contact.welcomeDescription")}
+            {t("contact.welcomeDescription")}
           </Text>
         </div>
       </section>
@@ -94,10 +95,10 @@ export default function ContactPage() {
         <section className="flex flex-col gap-5 lg:col-span-5">
           <div className="space-y-1">
             <Heading as="h2" className="text-2xl font-semibold text-foreground">
-              {translate("contact.directChannels")}
+              {t("contact.directChannels")}
             </Heading>
             <Text className="text-sm text-muted-foreground">
-              {translate("contact.directChannelsDescription")}
+              {t("contact.directChannelsDescription")}
             </Text>
           </div>
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-1">
@@ -132,7 +133,7 @@ export default function ContactPage() {
                   </a>
                 ) : (
                   <Button
-                    aria-label={translate("contact.copy", { value: channel.description })}
+                    aria-label={t("contact.copy", { value: channel.description })}
                     variant="ghost"
                     className="text-muted-foreground absolute right-4 top-4 transition-colors hover:text-primary"
                     onClick={handleCopyEmail}
@@ -155,10 +156,10 @@ export default function ContactPage() {
                 as="h2"
                 className="text-xl font-semibold text-foreground"
               >
-                {translate("contact.sendMessage")}
+                {t("contact.sendMessage")}
               </Heading>
               <Text className="text-sm text-muted-foreground">
-                {translate("contact.replyTime")}
+                {t("contact.replyTime")}
               </Text>
             </div>
             <form
@@ -167,11 +168,11 @@ export default function ContactPage() {
             >
               <label className="flex flex-col gap-2">
                 <Text className="text-sm font-medium text-foreground">
-                  {translate("contact.form.messageLabel")}
+                  {t("contact.form.messageLabel")}
                 </Text>
                 <TextArea
-                  aria-label={translate("contact.form.messageLabel")}
-                  placeholder={translate("contact.form.messagePlaceholder")}
+                  aria-label={t("contact.form.messageLabel")}
+                  placeholder={t("contact.form.messagePlaceholder")}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                 />
@@ -181,7 +182,7 @@ export default function ContactPage() {
                   loading={submitting}
                   className="h-12 min-w-[150px] text-base font-semibold cursor-pointer"
                 >
-                  {translate("common.send")}
+                  {t("common.send")}
                   <Send className="h-4 w-4" aria-hidden="true" />
                 </Button>
               </div>

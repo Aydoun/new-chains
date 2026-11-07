@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { CircleArrowRight, CircleArrowLeft } from "lucide-react";
-import { translate } from "@/lib/i18n";
+import { useTranslation } from "@/components/locale-provider";
 import { IconButton, Text } from "@radix-ui/themes";
 
 export interface CarouselControlsRenderProps {
@@ -32,10 +32,11 @@ export function Carousel({
   onPrevious,
   renderControls,
 }: CarouselProps) {
+  const { t } = useTranslation();
   const frameCount = frames.length;
   const currentMaxIndex = Math.max(currentIndexProp, 0);
   const getProgressLabel = (current: number, total: number) => {
-    const label = translate("carousel.progress", { current, total });
+    const label = t("carousel.progress", { current, total });
     if (label === "carousel.progress") return `Frame ${current} of ${total}`;
     return label;
   };
@@ -88,7 +89,7 @@ export function Carousel({
             className="cursor-pointer"
             radius="full"
             onClick={onPrevious}
-            aria-label={translate("carousel.previous")}
+            aria-label={t("carousel.previous")}
           >
             <CircleArrowLeft />
           </IconButton>
@@ -102,7 +103,7 @@ export function Carousel({
             className="cursor-pointer"
             radius="full"
             onClick={onNext}
-            aria-label={translate("carousel.next")}
+            aria-label={t("carousel.next")}
           >
             <CircleArrowRight />
           </IconButton>

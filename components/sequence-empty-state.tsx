@@ -1,6 +1,6 @@
 "use client";
 
-import { translate } from "@/lib/i18n";
+import { useTranslation } from "@/components/locale-provider";
 import { FilterX, HelpCircle, Plus, SearchX } from "lucide-react";
 import { Box, Button, Card, Flex, Heading, Text } from "@radix-ui/themes";
 
@@ -14,6 +14,7 @@ export function SequenceEmptyState({
   onClear,
   onCreate,
 }: SequenceEmptyStateProps) {
+  const { t } = useTranslation();
   return (
     <Flex align="center" justify="center">
       <Card
@@ -42,7 +43,7 @@ export function SequenceEmptyState({
             </Flex>
           </Box>
           <Heading size="6" className="tracking-tight">
-            {translate("states.emptySequences.title")}
+            {t("states.emptySequences.title")}
           </Heading>
           <Text
             as="p"
@@ -50,7 +51,7 @@ export function SequenceEmptyState({
             color="gray"
             className="max-w-lg leading-relaxed"
           >
-            {translate("states.emptySequences.description")}
+            {t("states.emptySequences.description")}
           </Text>
           <Flex
             direction={{ initial: "column", sm: "row" }}
@@ -62,10 +63,10 @@ export function SequenceEmptyState({
                 size="3"
                 onClick={onClear}
                 className="w-full sm:w-auto"
-                aria-label={translate("states.emptySequences.clear")}
+                aria-label={t("states.emptySequences.clear")}
               >
                 <FilterX className="h-5 w-5" aria-hidden />
-                {translate("states.emptySequences.clear")}
+                {t("states.emptySequences.clear")}
               </Button>
             )}
 
@@ -75,10 +76,10 @@ export function SequenceEmptyState({
                 variant="outline"
                 onClick={onCreate}
                 className="w-full sm:w-auto"
-                aria-label={translate("states.emptySequences.create")}
+                aria-label={t("states.emptySequences.create")}
               >
                 <Plus className="h-5 w-5" aria-hidden />
-                {translate("states.emptySequences.create")}
+                {t("states.emptySequences.create")}
               </Button>
             )}
           </Flex>

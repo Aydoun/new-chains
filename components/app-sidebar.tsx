@@ -15,7 +15,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { translate } from "@/lib/i18n";
+import { useTranslation } from "@/components/locale-provider";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { UserMenu } from "@/hooks/userMenu";
@@ -55,6 +55,7 @@ export const navigationItems: NavigationItem[] = [
 ];
 
 export function AppSidebar() {
+  const { t } = useTranslation();
   const { data: session } = useSession();
   const pathname = usePathname();
   const isAuthenticated = Boolean(session?.user?.id);
@@ -71,7 +72,7 @@ export function AppSidebar() {
                 <Link href="/">
                   <div className="flex my-4 h-10 w-10 items-center justify-center rounded-xl bg-primary-main">
                     <span className="text-1xl font-extrabold text-white">
-                      {translate("app.nameShortcut")}
+                      {t("app.nameShortcut")}
                     </span>
                   </div>
                 </Link>
@@ -84,7 +85,7 @@ export function AppSidebar() {
                       className="py-5 px-3 text-foreground transition-colors hover:bg-muted"
                     >
                       <item.icon />
-                      <span>{translate(`navigation.${item.titleKey}`)}</span>
+                      <span>{t(`navigation.${item.titleKey}`)}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

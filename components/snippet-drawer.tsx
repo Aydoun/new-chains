@@ -1,5 +1,5 @@
 import { Snippet } from "@/app/types";
-import { translate } from "@/lib/i18n";
+import { useTranslation } from "@/components/locale-provider";
 import { cn } from "@/lib/utils";
 import { Badge, Button, Separator, Spinner, Text } from "@radix-ui/themes";
 import { BookOpenText, ExternalLink, FilePlus2, NotebookText } from "lucide-react";
@@ -20,6 +20,7 @@ export function SnippetDrawer({
   onClose,
   onInsert,
 }: Props) {
+  const { t } = useTranslation();
   return (
     <div
       className={cn(
@@ -31,9 +32,9 @@ export function SnippetDrawer({
         <div className="flex items-center gap-2">
           <NotebookText className="h-4 w-4 text-amber-300" />
           <div className="flex flex-col">
-            <Text weight="bold">{translate("snippets.drawer.title")}</Text>
+            <Text weight="bold">{t("snippets.drawer.title")}</Text>
             <Text size="1" color="gray">
-              {translate("snippets.drawer.subtitle")}
+              {t("snippets.drawer.subtitle")}
             </Text>
           </div>
         </div>
@@ -45,8 +46,8 @@ export function SnippetDrawer({
           className="cursor-pointer"
         >
           {isOpen
-            ? translate("snippets.drawer.hide")
-            : translate("snippets.drawer.show")}
+            ? t("snippets.drawer.hide")
+            : t("snippets.drawer.show")}
         </Button>
       </div>
 
@@ -60,7 +61,7 @@ export function SnippetDrawer({
               </div>
             ) : snippets.length === 0 ? (
               <div className="rounded-xl border border-dashed border-white/10 bg-white/5 p-4 text-sm text-gray-200">
-                {translate("snippets.drawer.empty")}
+                {t("snippets.drawer.empty")}
               </div>
             ) : (
               snippets.map((snippet) => (
@@ -77,7 +78,7 @@ export function SnippetDrawer({
                       href={`/?sequence=${snippet.originSequence.id}`}
                     >
                       <BookOpenText className="h-3 w-3" />
-                      {translate("snippets.originLabel")}:
+                      {t("snippets.originLabel")}:
                       <span className="font-semibold">
                         {snippet.originSequence.title}
                       </span>
@@ -95,7 +96,7 @@ export function SnippetDrawer({
                   {snippet.notes && (
                     <div className="rounded-lg bg-white/5 p-3 text-xs text-gray-200">
                       <span className="font-semibold mr-1">
-                        {translate("snippets.notesLabel")}:
+                        {t("snippets.notesLabel")}:
                       </span>
                       {snippet.notes}
                     </div>
@@ -106,7 +107,7 @@ export function SnippetDrawer({
                     onClick={() => onInsert(snippet)}
                   >
                     <FilePlus2 className="h-4 w-4" />
-                    {translate("snippets.drawer.insertAction")}
+                    {t("snippets.drawer.insertAction")}
                   </Button>
                 </article>
               ))

@@ -50,7 +50,8 @@
       "label": "System Status",
       "operational": "Operational"
     },
-    "menu": "Open profile menu"
+    "menu": "Open profile menu",
+    "avatarAlt": "{name}’s avatar"
   },
   "carousel": {
     "frame": "Frame",
@@ -105,7 +106,8 @@
   "menu": {
     "appearance": "Appearance",
     "dark": "Dark",
-    "light": "Light"
+    "light": "Light",
+    "language": "Language"
   },
   "navigation": {
     "cta": {
@@ -131,7 +133,7 @@
     "description": "Follow this quick checklist to get your first sequence live.",
     "items": {
       "create": {
-        "action": "Lunch",
+        "action": "Launch",
         "description": "Start a new sequence and outline the frames you want to tell your story.",
         "title": "Create a Sequence"
       },
@@ -216,7 +218,7 @@
     "originLabel": "Source",
     "menu": {
       "delete": "Delete",
-      "view": "View Orginal Sequence",
+      "view": "View Original Sequence",
       "label": "Snippet actions"
     },
     "notesLabel": "Notes",
@@ -282,7 +284,7 @@
       "steps": {
         "1": {
           "content": "Review last week quickly.",
-          "description": "What worked? What didnt? One sentence each."
+          "description": "What worked? What didn’t? One sentence each."
         },
         "2": {
           "content": "Choose one main goal for this week.",

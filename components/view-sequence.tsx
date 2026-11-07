@@ -5,7 +5,7 @@ import { X } from "lucide-react";
 import { Carousel } from "@/components/ui/carousel";
 import { useGetSequenceByIdQuery } from "@/app/services/sequences";
 import { useSaveSnippetMutation } from "@/app/services/snippets";
-import { translate } from "@/lib/i18n";
+import { useTranslation } from "@/components/locale-provider";
 import { Modal } from "./ui/modal";
 import { SequenceFrame } from "./sequence-card";
 import { skipToken } from "@reduxjs/toolkit/query";
@@ -18,6 +18,7 @@ interface Props {
 }
 
 export function ViewSequence({ sequenceId, onClose }: Props) {
+  const { t } = useTranslation();
   const [saveSnippet] = useSaveSnippetMutation();
   const [activeFrame, setActiveFrame] = useState(0);
   const [newLikes, setNewLikes] = useState<number[]>([]);
@@ -63,7 +64,7 @@ export function ViewSequence({ sequenceId, onClose }: Props) {
               </Heading>
             )}
           </div>
-          <Modal.Close aria-label={translate("common.close")} onClick={onClose}>
+          <Modal.Close aria-label={t("common.close")} onClick={onClose}>
             <X className="h-4 w-4" />
           </Modal.Close>
         </div>
@@ -86,7 +87,7 @@ export function ViewSequence({ sequenceId, onClose }: Props) {
                 : [
                     <SequenceFrame
                       key="empty"
-                      text={translate("frame.empty")}
+                      text={t("frame.empty")}
                       showIsLiked={false}
                     />,
                   ]

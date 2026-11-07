@@ -1,6 +1,6 @@
 "use client";
 
-import { translate } from "@/lib/i18n";
+import { useTranslation } from "@/components/locale-provider";
 import { cn } from "@/lib/utils";
 import { LayoutDashboard, RefreshCcw, ServerCrash } from "lucide-react";
 import { Button, Card, Flex, Heading, Text } from "@radix-ui/themes";
@@ -16,6 +16,7 @@ export function SequenceErrorState({
   onNavigateDashboard,
   className,
 }: SequenceErrorStateProps) {
+  const { t } = useTranslation();
   return (
     <Flex align="center" justify="center" className={cn("py-10", className)}>
       <Card
@@ -32,7 +33,7 @@ export function SequenceErrorState({
           </Flex>
 
           <Heading size="7" className="text-center tracking-tight">
-            {translate("states.sequenceError.title")}
+            {t("states.sequenceError.title")}
           </Heading>
           <Text
             as="p"
@@ -40,7 +41,7 @@ export function SequenceErrorState({
             color="gray"
             className="max-w-xl text-center leading-relaxed"
           >
-            {translate("states.sequenceError.description")}
+            {t("states.sequenceError.description")}
           </Text>
 
           <Flex
@@ -50,7 +51,7 @@ export function SequenceErrorState({
           >
             <Button size="3" onClick={onRetry} className="w-full sm:w-auto">
               <RefreshCcw className="h-5 w-5" aria-hidden />
-              {translate("states.sequenceError.retry")}
+              {t("states.sequenceError.retry")}
             </Button>
             <Button
               size="3"
@@ -59,7 +60,7 @@ export function SequenceErrorState({
               className="w-full sm:w-auto"
             >
               <LayoutDashboard className="h-5 w-5" aria-hidden />
-              {translate("states.sequenceError.dashboard")}
+              {t("states.sequenceError.dashboard")}
             </Button>
           </Flex>
         </Flex>

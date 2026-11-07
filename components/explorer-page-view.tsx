@@ -1,6 +1,6 @@
 "use client";
 
-import { translate } from "@/lib/i18n";
+import { useTranslation } from "@/components/locale-provider";
 import { Spinner, Text, TextField } from "@radix-ui/themes";
 import { Search, X } from "lucide-react";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -40,6 +40,7 @@ export function ExplorerView({
   searchTerm,
   onSearchChange,
 }: Props) {
+  const { t } = useTranslation();
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const currentSequenceId = useRef<number | string | null>(null);
 
@@ -63,7 +64,7 @@ export function ExplorerView({
                 type="text"
                 value={searchTerm}
                 onChange={(e) => onSearchChange(e.target.value)}
-                placeholder={translate("common.search")}
+                placeholder={t("common.search")}
                 className="w-full rounded-lg border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground outline-none transition focus-visible:ring-2 focus-visible:ring-primary"
               >
                 <TextField.Slot>

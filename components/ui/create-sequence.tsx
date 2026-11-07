@@ -23,7 +23,7 @@ import {
   TextField,
 } from "@radix-ui/themes";
 import { useCreateSequenceMutation } from "@/app/services/sequences";
-import { translate } from "@/lib/i18n";
+import { useTranslation } from "@/components/locale-provider";
 import clsx from "clsx";
 import { SequenceCreationFormValues, SequenceTemplate } from "@/app/types";
 
@@ -45,6 +45,7 @@ export function CreateSequenceForm({
   initialSequenceTitle,
   initialTemplate = null,
 }: Props) {
+  const { t } = useTranslation();
   const { data: session } = useSession();
   const [activeFrame, setActiveFrame] = useState(0);
   const [currentStep, setCurrentStep] = useState(initialTemplate ? 1 : 0);
@@ -86,14 +87,14 @@ export function CreateSequenceForm({
     () => [
       {
         id: 1,
-        label: translate("sequence.draft.firstStepTitle"),
+        label: t("sequence.draft.firstStepTitle"),
       },
       {
         id: 2,
-        label: translate("sequence.draft.secondStepTitle"),
+        label: t("sequence.draft.secondStepTitle"),
       },
     ],
-    []
+    [t]
   );
 
   const onModalChange = (open: boolean) => {
@@ -108,7 +109,7 @@ export function CreateSequenceForm({
     if (!lastSlideContent || lastSlideContent.length === 0) {
       setError(`pages.${activeFrame}.content`, {
         type: "required",
-        message: translate("common.required"),
+        message: t("common.required"),
       });
     } else {
       setActiveFrame((previous) => previous + 1);
@@ -156,7 +157,7 @@ export function CreateSequenceForm({
       // Keep the modal open with the user's input so they can retry.
       const message =
         (error as { data?: { message?: string } })?.data?.message ??
-        translate("sequence.draft.saveError");
+        t("sequence.draft.saveError");
       setSaveError(message);
     }
   };
@@ -192,22 +193,22 @@ export function CreateSequenceForm({
       <div className="relative flex h-48 w-full flex-col items-center justify-center gap-3 rounded-lg bg-frame-primary text-amber-50">
         <textarea
           id={`page-${index}-content`}
-          aria-label={translate("sequence.draft.frameContent-label", {
+          aria-label={t("sequence.draft.frameContent-label", {
             index: index + 1,
           })}
-          placeholder={translate("sequence.draft.frameContent-placeholder")}
+          placeholder={t("sequence.draft.frameContent-placeholder")}
           {...register(`pages.${index}.content`, {
-            required: translate("common.required"),
+            required: t("common.required"),
           })}
           rows={2}
           className="w-full max-w-2xl resize-none bg-transparent text-center font-serif text-lg leading-tight text-gray-800 placeholder:text-gray-500 focus:outline-none focus:ring-0"
         />
         <input
           id={`page-${index}-description`}
-          aria-label={translate("sequence.draft.frameDescription-label", {
+          aria-label={t("sequence.draft.frameDescription-label", {
             index: index + 1,
           })}
-          placeholder={translate("sequence.draft.frameDescription-placeholder")}
+          placeholder={t("sequence.draft.frameDescription-placeholder")}
           {...register(`pages.${index}.description`)}
           className="w-full max-w-xl bg-transparent text-center text-sm font-medium text-amber-700 placeholder:text-amber-600/70 focus:outline-none focus:ring-0"
         />
@@ -228,7 +229,7 @@ export function CreateSequenceForm({
         <div className="flex items-start justify-between gap-6">
           <div className="space-y-1">
             <Badge className="bg-amber-700 text-white px-2 py-1" radius="full">
-              {translate("sequence.draft.step", {
+              {t("sequence.draft.step", {
                 current: currentStep + 1,
                 total: steps.length,
               })}
@@ -237,7 +238,7 @@ export function CreateSequenceForm({
               {SequenceTitle?.trim()}
             </Heading>
           </div>
-          <Modal.Close aria-label={translate("common.close")} onClick={onClose}>
+          <Modal.Close aria-label={t("common.close")} onClick={onClose}>
             <X className="h-4 w-4" />
           </Modal.Close>
         </div>
@@ -293,30 +294,30 @@ export function CreateSequenceForm({
                       className="flex items-center justify-between text-sm font-medium text-white"
                       htmlFor="sequence-title"
                     >
-                      <Text>{translate("sequence.draft.title")}</Text>
+                      <Text>{t("sequence.draft.title")}</Text>
                       <Badge
                         className="bg-amber-700 px-2 py-1"
                         radius="full"
                         variant="solid"
                       >
-                        {translate("common.required")}
+                        {t("common.required")}
                       </Badge>
                     </label>
                     <TextField.Root
                       id="sequence-title"
-                      placeholder={translate(
+                      placeholder={t(
                         "sequence.draft.title-placeholder"
                       )}
                       {...register("title", {
-                        required: translate("common.required"),
+                        required: t("common.required"),
                         validate: (value) =>
                           value?.trim().length > 0 ||
-                          translate("common.required"),
+                          t("common.required"),
                       })}
                       radius="large"
                     />
                     <Text size="1" className="text-white">
-                      {translate("sequence.draft.title-advice")}
+                      {t("sequence.draft.title-advice")}
                     </Text>
                     {errors.title && (
                       <Text className="text-sm text-destructive">
@@ -329,11 +330,11 @@ export function CreateSequenceForm({
                       className="text-sm font-medium text-white"
                       htmlFor="sequence-description"
                     >
-                      {translate("sequence.draft.description")}
+                      {t("sequence.draft.description")}
                     </label>
                     <TextArea
                       id="sequence-description"
-                      placeholder={translate(
+                      placeholder={t(
                         "sequence.draft.description-placeholder"
                       )}
                       {...register("description")}
@@ -358,13 +359,13 @@ export function CreateSequenceForm({
                       radius="full"
                       type="button"
                       onClick={onPreviousSlide}
-                      aria-label={translate("carousel.previous")}
+                      aria-label={t("carousel.previous")}
                     >
                       <ArrowLeft className="h-4 w-4" />
                     </Button>
                     <div className="rounded-full border border-amber-700 px-4 py-2 text-sm">
                       <Text className="tracking-wide text-amber-700">
-                        {translate("carousel.progress", {
+                        {t("carousel.progress", {
                           current: props.currentIndex + 1,
                           total: pageFrames.length,
                         })}
@@ -374,12 +375,12 @@ export function CreateSequenceForm({
                       radius="full"
                       type="button"
                       onClick={onNextSlide}
-                      aria-label={translate("sequence.draft.appendFrame")}
+                      aria-label={t("sequence.draft.appendFrame")}
                     >
                       {props.currentIndex === pageFrames.length - 1 ? (
                         <>
                           <PlusCircle className="h-4 w-4" />
-                          <Text>{translate("sequence.draft.appendFrame")}</Text>
+                          <Text>{t("sequence.draft.appendFrame")}</Text>
                         </>
                       ) : (
                         <ArrowRight className="h-4 w-4" />
@@ -403,7 +404,7 @@ export function CreateSequenceForm({
                 variant="solid"
                 onClick={handleStepAdvance}
               >
-                {translate("common.next")}
+                {t("common.next")}
                 <ArrowRight className="h-4 w-4" />
               </Button>
             ) : (
@@ -413,7 +414,7 @@ export function CreateSequenceForm({
                 loading={isSaving}
               >
                 <Cloud />
-                {translate("sequence.cta.publish")}
+                {t("sequence.cta.publish")}
               </Button>
             )}
           </div>

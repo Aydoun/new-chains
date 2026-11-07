@@ -1,5 +1,5 @@
 import { TimeFilter } from "@/app/types";
-import { translate } from "@/lib/i18n";
+import { useTranslation } from "@/components/locale-provider";
 import { DropdownMenu, Separator, Text } from "@radix-ui/themes";
 import { Filter } from "lucide-react";
 
@@ -14,12 +14,15 @@ const FILTER_OPTIONS: TimeFilterOption[] = [
   { value: "this-month" },
 ];
 
-function getLabelForFilter(value?: TimeFilter) {
+function getLabelForFilter(
+  t: (key: string) => string,
+  value?: TimeFilter
+) {
   const translationKey = FILTER_OPTIONS.find(
     (option) => option.value === value
   )?.value;
 
-  return translationKey ? translate(`filter.${translationKey}`) : "";
+  return translationKey ? t(`filter.${translationKey}`) : "";
 }
 
 type Props = {
@@ -28,7 +31,8 @@ type Props = {
 };
 
 export function FilterDropdown({ value, onChange }: Props) {
-  const currentLabel = getLabelForFilter(value);
+  const { t } = useTranslation();
+  const currentLabel = getLabelForFilter(t, value);
 
   return (
     <DropdownMenu.Root>
@@ -37,13 +41,13 @@ export function FilterDropdown({ value, onChange }: Props) {
           <Filter className="h-5 w-5" aria-hidden="true" />
           <Text size="2" weight="medium" className="hidden sm:inline">
             {currentLabel
-              ? `${translate("common.filter")}: ${currentLabel}`
-              : translate("common.filter")}
+              ? `${t("common.filter")}: ${currentLabel}`
+              : t("common.filter")}
           </Text>
         </button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content variant="soft" color="indigo">
-        <DropdownMenu.Label>{translate("filter.label")}</DropdownMenu.Label>
+        <DropdownMenu.Label>{t("filter.label")}</DropdownMenu.Label>
         <DropdownMenu.RadioGroup
           value={value ?? ""}
           onValueChange={(selected) =>
@@ -55,12 +59,12 @@ export function FilterDropdown({ value, onChange }: Props) {
               key={option.value}
               value={option.value ?? ""}
             >
-              {translate(`filter.${option.value}`)}
+              {t(`filter.${option.value}`)}
             </DropdownMenu.RadioItem>
           ))}
           <Separator className="w-full my-3" />
           <DropdownMenu.RadioItem key="clear" value="">
-            {translate("filter.clear")}
+            {t("filter.clear")}
           </DropdownMenu.RadioItem>
         </DropdownMenu.RadioGroup>
       </DropdownMenu.Content>

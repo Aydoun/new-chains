@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "NODE_OPTIONS=--use-system-ca next dev --turbopack",
     "build": "next build",
+    "vercel-build": "sh scripts/vercel-build.sh",
     "start": "next start",
     "lint": "eslint .",
     "test": "vitest",

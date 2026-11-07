@@ -1,7 +1,7 @@
 import { FC, useState, MouseEvent as ReactMouseEvent } from "react";
 import { Sequence } from "@/app/types";
 import { Clock3, Heart, Pencil, Share2, Trash2, User } from "lucide-react";
-import { translate } from "@/lib/i18n";
+import { useTranslation } from "@/components/locale-provider";
 import { cn, timeAgo } from "@/lib/utils";
 import { IconButton, Spinner, Text } from "@radix-ui/themes";
 import Link from "next/link";
@@ -31,6 +31,7 @@ export const SequenceCard: FC<Props> = ({
   omitAuthor = false,
   deletingSequenceRef,
 }) => {
+  const { t } = useTranslation();
   const [isLinkCopied, setIsLinkCopied] = useState(false);
   const isOwner = userId === `${sequence.userId}`;
 
@@ -119,7 +120,7 @@ export const SequenceCard: FC<Props> = ({
                   {isOwner && (
                     <>
                       <IconButton
-                        aria-label={translate("sequence.actions.edit")}
+                        aria-label={t("sequence.actions.edit")}
                         size="1"
                         variant="ghost"
                         onClick={(event) => {
@@ -131,7 +132,7 @@ export const SequenceCard: FC<Props> = ({
                         <Pencil className="h-4 w-4" />
                       </IconButton>
                       <IconButton
-                        aria-label={translate("sequence.actions.delete")}
+                        aria-label={t("sequence.actions.delete")}
                         size="1"
                         variant="ghost"
                         onClick={onDelete}
@@ -144,7 +145,7 @@ export const SequenceCard: FC<Props> = ({
                     </>
                   )}
                   <IconButton
-                    aria-label={translate("sequence.actions.share")}
+                    aria-label={t("sequence.actions.share")}
                     size="1"
                     variant="ghost"
                     onClick={handleShareLink}
@@ -152,7 +153,7 @@ export const SequenceCard: FC<Props> = ({
                   >
                     {isLinkCopied ? (
                       <Text size="1">
-                        {translate("sequence.cta.url-copied")}
+                        {t("sequence.cta.url-copied")}
                       </Text>
                     ) : (
                       <Share2 className="text-primary-main h-4 w-4" />
@@ -185,6 +186,7 @@ export const SequenceFrame: FC<SequenceFrameProps> = ({
   showIsLiked = true,
   onLike,
 }) => {
+  const { t } = useTranslation();
   return (
     <div
       className={cn(
@@ -200,7 +202,7 @@ export const SequenceFrame: FC<SequenceFrameProps> = ({
       {count && (
         <div className="absolute top-3 right-3 z-20">
           <span className="inline-flex items-center gap-1 rounded-full bg-black/60 backdrop-blur-md px-2.5 py-1 text-xs font-medium text-white border border-white/10">
-            {translate("sequence.countLabel", {
+            {t("sequence.countLabel", {
               count: count ?? 0,
             })}
           </span>
@@ -209,7 +211,7 @@ export const SequenceFrame: FC<SequenceFrameProps> = ({
       {showIsLiked && (
         <button
           type="button"
-          aria-label={translate("snippets.saveAction")}
+          aria-label={t("snippets.saveAction")}
           aria-pressed={Boolean(liked)}
           onClick={onLike}
           className="absolute top-4 right-4 cursor-pointer"

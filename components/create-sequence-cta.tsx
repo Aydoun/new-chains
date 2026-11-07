@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { translate } from "@/lib/i18n";
+import { useTranslation } from "@/components/locale-provider";
 import { IconButton, TextField } from "@radix-ui/themes";
 import { CircleArrowRight, Sparkles, X } from "lucide-react";
 
@@ -8,6 +8,7 @@ interface Props {
 }
 
 export const CreateSequenceCta: FC<Props> = ({ onCreate }) => {
+  const { t } = useTranslation();
   const [sequenceTitle, setSequenceTitle] = useState("");
 
   return (
@@ -15,7 +16,7 @@ export const CreateSequenceCta: FC<Props> = ({ onCreate }) => {
       <div className="mx-auto w-full max-w-xl">
         <div className="flex items-center bg-gray-400 rounded-full gap-4 py-4 px-4 mx-4 md:mx-0">
           <TextField.Root
-            placeholder={translate("sequence.cta.title")}
+            placeholder={t("sequence.cta.title")}
             className="flex-1 outline-none"
             radius="full"
             size="3"

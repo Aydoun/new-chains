@@ -1,6 +1,6 @@
 "use client";
 
-import { translate } from "@/lib/i18n";
+import { useTranslation } from "@/components/locale-provider";
 import { Button, Heading, Text, TextArea } from "@radix-ui/themes";
 import { CheckCircle, Lock, Save } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -13,6 +13,7 @@ import { BIO_MAX_LENGTH } from "@/lib/constants";
 import { SessionLoader } from "@/components/ui/spinner";
 
 export default function ProfilePage() {
+  const { t } = useTranslation();
   const { data: session } = useSession();
   const [bioText, setBioText] = useState("");
   const userId = session?.user?.id;
@@ -53,9 +54,9 @@ export default function ProfilePage() {
     <div className="flex w-full justify-center px-6 py-8 mt-12 md:mt-6">
       <div className="flex w-full max-w-5xl flex-col gap-8 text-foreground">
         <div>
-          <Heading size="7">{translate("profile.header")}</Heading>
+          <Heading size="7">{t("profile.header")}</Heading>
           <Text className="text-base text-muted-foreground">
-            {translate("profile.description")}
+            {t("profile.description")}
           </Text>
         </div>
         <div className="flex flex-col gap-6">
@@ -70,7 +71,7 @@ export default function ProfilePage() {
                 />
                 <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
                   <Text className="material-symbols-outlined text-white">
-                    {translate("profile.image-alt")}
+                    {t("profile.image-alt")}
                   </Text>
                 </div>
               </div>
@@ -85,7 +86,7 @@ export default function ProfilePage() {
                 </div>
                 <div className="mt-1">
                   <button className="rounded-lg border border-border bg-secondary px-4 py-2 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-secondary/70">
-                    {translate("profile.cta.avatar")}
+                    {t("profile.cta.avatar")}
                   </button>
                 </div>
               </div>
@@ -94,10 +95,10 @@ export default function ProfilePage() {
               <form className="flex flex-col gap-6" onSubmit={handleBioSubmit}>
                 <div className="flex flex-col gap-2">
                   <label className="flex justify-between text-sm font-medium">
-                    <Text>{translate("profile.emailLabel")}</Text>
+                    <Text>{t("profile.emailLabel")}</Text>
                     <Text className="flex items-center gap-1 text-xs text-muted-foreground">
                       <Lock size={12} />
-                      {translate("profile.googleAuth")}
+                      {t("profile.googleAuth")}
                     </Text>
                   </label>
                   <div className="relative opacity-75">
@@ -109,13 +110,13 @@ export default function ProfilePage() {
                     />
                     <div className="absolute sm:hidden right-3 top-1/2 hidden md:flex -translate-y-1/2 items-center gap-1.5 rounded dark:bg-green-500/10 bg-green-500 px-2 py-1 text-white dark:text-green-400">
                       <CheckCircle />
-                      {translate("profile.verified")}
+                      {t("profile.verified")}
                     </div>
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
                   <label htmlFor="profile-bio" className="text-sm font-medium">
-                    {translate("profile.bioLabel")}
+                    {t("profile.bioLabel")}
                   </label>
                   <div className="relative">
                     <TextArea
@@ -126,13 +127,13 @@ export default function ProfilePage() {
                     />
                   </div>
                   <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground">
-                    <Text>{translate("profile.selfDesc")}</Text>
+                    <Text>{t("profile.selfDesc")}</Text>
                     <Text>{`${bioText.length}/${BIO_MAX_LENGTH}`}</Text>
                   </div>
                 </div>
                 <div className="flex flex-col gap-4 border-t border-border pt-4">
                   <h4 className="text-sm font-medium">
-                    {translate("profile.accounts")}
+                    {t("profile.accounts")}
                   </h4>
                   <div className="flex items-center justify-between rounded-lg border border-border bg-muted/50 p-3">
                     <div className="flex items-center gap-3">
@@ -162,10 +163,10 @@ export default function ProfilePage() {
                       </div>
                       <div className="flex flex-col">
                         <Text className="text-sm font-medium">
-                          {translate("auth.google")}
+                          {t("auth.google")}
                         </Text>
                         <Text className="text-xs text-muted-foreground">
-                          {translate("profile.connectedMessage", {
+                          {t("profile.connectedMessage", {
                             email: session?.user?.email ?? "",
                           })}
                         </Text>
@@ -180,7 +181,7 @@ export default function ProfilePage() {
                     loading={isUpdatingBio}
                   >
                     <Save />
-                    {translate("common.save")}
+                    {t("common.save")}
                   </Button>
                 </div>
               </form>
@@ -189,14 +190,14 @@ export default function ProfilePage() {
           <div className="flex flex-col items-start justify-between gap-4 rounded-xl border border-red-900/30 bg-red-900/10 p-6 text-red-300 md:flex-row md:items-center md:p-8">
             <div className="flex flex-col gap-1">
               <Heading as="h3" className="text-base font-bold">
-                {translate("profile.delete")}
+                {t("profile.delete")}
               </Heading>
               <Text className="text-sm text-red-300/70">
-                {translate("profile.deleteWarn")}
+                {t("profile.deleteWarn")}
               </Text>
             </div>
             <button className="whitespace-nowrap rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm font-bold text-red-400 transition-colors hover:bg-red-500/20">
-              {translate("profile.delete")}
+              {t("profile.delete")}
             </button>
           </div>
         </div>

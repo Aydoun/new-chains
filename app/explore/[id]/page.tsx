@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { translate } from "@/lib/i18n";
+import { useTranslation } from "@/components/locale-provider";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import { useLazyGetStudioSequencesQuery } from "@/app/services/sequences";
@@ -14,6 +14,7 @@ import { useDebounce } from "use-debounce";
 import { ExplorerView } from "@/components/explorer-page-view";
 
 export default function ExplorePage() {
+  const { t } = useTranslation();
   const { data: session, status } = useSession();
   const params = useParams<{ id: string }>();
   const [timeFilter, setTimeFilter] = useState<TimeFilter>();
@@ -58,7 +59,7 @@ export default function ExplorePage() {
 
   return (
     <ExplorerView
-      greeting={translate("studio.explorerWelcome", {
+      greeting={t("studio.explorerWelcome", {
         name: user?.username ?? "",
       })}
       sequences={sequences ?? []}

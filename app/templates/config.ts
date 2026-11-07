@@ -1,17 +1,18 @@
 import { SequenceTemplate } from "@/app/types";
-import { translate } from "@/lib/i18n";
 
-export const sequenceTemplates: SequenceTemplate[] = [1, 2, 3].map((index) => ({
-  title: translate(`templates.template${index}.title`),
-  description: translate(`templates.template${index}.description`),
-  outcome: translate(`templates.template${index}.outcome`),
-  steps: [1, 2, 3].map((step) => ({
-    content: translate(`templates.template${index}.steps.${step}.content`),
-    description: translate(
-      `templates.template${index}.steps.${step}.description`
-    ),
-  })),
-}));
+type Translate = (key: string) => string;
+
+export function getSequenceTemplates(t: Translate): SequenceTemplate[] {
+  return [1, 2, 3].map((index) => ({
+    title: t(`templates.template${index}.title`),
+    description: t(`templates.template${index}.description`),
+    outcome: t(`templates.template${index}.outcome`),
+    steps: [1, 2, 3].map((step) => ({
+      content: t(`templates.template${index}.steps.${step}.content`),
+      description: t(`templates.template${index}.steps.${step}.description`),
+    })),
+  }));
+}
 
 // export const sequenceTemplates: SequenceTemplate[] = [
 //   {

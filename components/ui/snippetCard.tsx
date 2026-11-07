@@ -1,5 +1,5 @@
 import { Frame } from "@/app/types";
-import { translate } from "@/lib/i18n";
+import { useTranslation } from "@/components/locale-provider";
 import { timeAgo } from "@/lib/utils";
 import { Tooltip, Text } from "@radix-ui/themes";
 import { Info } from "lucide-react";
@@ -13,6 +13,7 @@ interface Props {
 }
 
 export function SnippetCard({ frame, notes, onView, onDelete }: Props) {
+  const { t } = useTranslation();
   return (
     <div
       data-testid="snippet-card"
@@ -21,7 +22,7 @@ export function SnippetCard({ frame, notes, onView, onDelete }: Props) {
         <Tooltip
           content={
             notes ??
-            translate("snippets.info", {
+            t("snippets.info", {
               time: timeAgo(frame.createdAt),
             })
           }

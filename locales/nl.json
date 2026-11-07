@@ -1,35 +1,319 @@
 {
-    "common": {
-        "close": "Fermer"
+  "common": {
+    "close": "Sluiten",
+    "continue": "Doorgaan",
+    "errors": {
+      "home": "Sequenties kunnen op dit moment niet worden geladen"
     },
-    "onboarding": {
-        "actions": {
-            "complete": "Mark done",
-            "markDone": "Mark done",
-            "markItem": "Toggle completion for {item}",
-            "skip": "Skip for now",
-            "undo": "Undo"
-        },
-        "description": "Follow this quick checklist to get your first chain live.",
-        "items": {
-            "create": {
-                "action": "Create in Studio",
-                "description": "Start a new chain and outline the frames you want to tell your story.",
-                "title": "Create a chain"
-            },
-            "run": {
-                "action": "Open Studio",
-                "description": "Run your chain to preview the output and adjust any steps.",
-                "title": "Run a chain"
-            },
-            "share": {
-                "action": "View my chains",
-                "description": "Copy a shareable link from any chain card to send it to teammates.",
-                "title": "Share a link"
-            }
-        },
-        "progress": "{completed}/{total} completed",
-        "subtitle": "Welcome to Link & Tell",
-        "title": "New here?"
+    "endOfFeed": "#",
+    "favorites": "Favorieten",
+    "filter": "Filteren",
+    "items": "items",
+    "loading": "Laden",
+    "next": "Volgende",
+    "previous": "Vorige",
+    "required": "Dit veld is verplicht",
+    "save": "Opslaan",
+    "send": "Versturen",
+    "search": "Zoeken"
+  },
+  "app": {
+    "name": "Link & Tell",
+    "nameShortcut": "LT"
+  },
+  "auth": {
+    "login": "Inloggen",
+    "logout": "Uitloggen",
+    "me": "Mijn account",
+    "message": "Log in met Google om je concepten privé te houden en met naamsvermelding te delen.",
+    "cta": {
+      "google": "Doorgaan met Google",
+      "signIn": "Inloggen"
+    },
+    "error": {
+      "email": "Geen e-mailadres gevonden",
+      "signIn": "We konden Google niet bereiken om het inloggen te starten. Probeer het zo meteen opnieuw.",
+      "callback": "Inloggen met Google is niet voltooid. Probeer het opnieuw.",
+      "accessDenied": "De toegang is geweigerd voor dit Google-account.",
+      "generic": "Er ging iets mis bij het inloggen. Probeer het opnieuw."
+    },
+    "google": "Google",
+    "welcome": "Welkom terug",
+    "subtitle": "Log in om de bèta te gebruiken",
+    "continueWithEmail": "Of ga verder met e-mail",
+    "emailLabel": "E-mailadres",
+    "passwordLabel": "Wachtwoord",
+    "emailPlaceholder": "naam@bedrijf.com",
+    "passwordPlaceholder": "••••••••",
+    "forgotPassword": "Wachtwoord vergeten?",
+    "status": {
+      "label": "Systeemstatus",
+      "operational": "Operationeel"
+    },
+    "menu": "Profielmenu openen",
+    "avatarAlt": "Avatar van {name}"
+  },
+  "carousel": {
+    "frame": "Frame",
+    "progress": "Frame {current} van {total}",
+    "previous": "Vorig frame",
+    "next": "Volgend frame"
+  },
+  "contact": {
+    "channel": {
+      "email": "E-mail",
+      "linkedin": "LinkedIn"
+    },
+    "directChannels": "Directe kanalen",
+    "directChannelsDescription": "Volg ons op sociale media of stuur ons rechtstreeks een e-mail.",
+    "form": {
+      "email": "E-mailadres",
+      "name": "Naam",
+      "namePlaceholder": "Je naam",
+      "messageLabel": "Bericht",
+      "messagePlaceholder": "Je bericht..."
+    },
+    "mail": "e-mail",
+    "email-value": "mohamed.amine.aydoun@gmail.com",
+    "linked-profile": "https://www.linkedin.com/in/mohamed-amine-aydoun-5799b481",
+    "self": "Contact",
+    "sendMessage": "Stuur een bericht",
+    "replyTime": "We nemen zo snel mogelijk contact met je op",
+    "welcomeMessage": "Neem contact op",
+    "welcomeDescription": "Vragen over de sequentieverkenner, problemen ondervonden of gewoon hallo zeggen? Neem direct contact op of stuur hieronder een bericht.",
+    "copy": "{value} kopiëren"
+  },
+  "frame": {
+    "content": "Frame-inhoud",
+    "description": "Optionele notitie",
+    "empty": "Geen frames gevonden",
+    "self": "Frame",
+    "selfs": "Frames"
+  },
+  "filter": {
+    "label": "tijd",
+    "last-hour": "Afgelopen uur",
+    "today": "Vandaag",
+    "this-week": "Deze week",
+    "this-month": "Deze maand",
+    "clear": "Filter wissen"
+  },
+  "footer": {
+    "privacyPolicy": "Privacybeleid",
+    "terms": "Gebruiksvoorwaarden",
+    "rights": "Alle rechten voorbehouden"
+  },
+  "menu": {
+    "appearance": "Weergave",
+    "dark": "Donker",
+    "light": "Licht",
+    "language": "Taal"
+  },
+  "navigation": {
+    "cta": {
+      "studio-redirect": "Naar Studio"
+    },
+    "contact": "Contact",
+    "home": "Home",
+    "profile": "Profiel",
+    "search": "Zoeken",
+    "studio": "Studio",
+    "explore": "Verkennen",
+    "exploreDescription": "Elke sequentie vertelt een verhaal in frames",
+    "self": "Navigatie"
+  },
+  "onboarding": {
+    "actions": {
+      "complete": "Afronden",
+      "markDone": "Markeren als klaar",
+      "markItem": "Voltooiing van {item} wisselen",
+      "skip": "Nu overslaan",
+      "undo": "Ongedaan maken"
+    },
+    "description": "Volg deze korte checklist om je eerste sequentie online te zetten.",
+    "items": {
+      "create": {
+        "action": "Starten",
+        "description": "Begin een nieuwe sequentie en schets de frames waarmee je je verhaal vertelt.",
+        "title": "Maak een sequentie"
+      },
+      "run": {
+        "description": "Klik op een sequentiekaart om het verhaal te bekijken",
+        "title": "Bekijk een sequentie"
+      },
+      "share": {
+        "action": "Mijn sequenties bekijken",
+        "description": "Klik op het deelpictogram rechtsonder op elke sequentiekaart",
+        "title": "Deel een link"
+      }
+    },
+    "progress": "{completed}/{total} voltooid",
+    "subtitle": "Welkom bij Link & Tell",
+    "title": "Nieuw hier?"
+  },
+  "profile": {
+    "accounts": "Gekoppelde accounts",
+    "bioLabel": "Bio",
+    "cta": {
+      "avatar": "Avatar wijzigen"
+    },
+    "connectedMessage": "Verbonden als {email}",
+    "delete": "Account verwijderen",
+    "deleteWarn": "Je account en al je inhoud permanent verwijderen.",
+    "emailLabel": "E-mailadres",
+    "header": "Profielinstellingen",
+    "description": "Beheer je persoonlijke gegevens en gekoppelde accounts",
+    "googleAuth": "Beheerd via Google Auth",
+    "image-alt": "camera_alt",
+    "verified": "geverifieerd",
+    "selfDesc": "Korte beschrijving voor je profiel."
+  },
+  "sequence": {
+    "countLabel": "1/{count}",
+    "cta": {
+      "title": "Geef je sequentie een naam",
+      "publish": "Publiceren",
+      "creation-message": "Sequentie succesvol aangemaakt.",
+      "url-copied": "Link gekopieerd",
+      "label": "Nieuwe sequentie"
+    },
+    "actions": {
+      "edit": "Sequentie bewerken",
+      "delete": "Sequentie verwijderen",
+      "share": "Sequentie delen"
+    },
+    "draft": {
+      "appendFrame": "Frame toevoegen",
+      "title": "Naam van de sequentie",
+      "titleCopy": "Huidige naam van de sequentie",
+      "firstStepTitle": "Naam van de sequentie",
+      "secondStepTitle": "Frames toevoegen",
+      "description": "Beschrijving (optioneel)",
+      "descriptionLabel": "Optionele beschrijving",
+      "previousStep": "Vorige stap",
+      "step": "Stap {current} van {total}",
+      "title-placeholder": "bijv. De ochtendroutine van 10 minuten",
+      "title-advice": "Geef je sequentie een duidelijke, doorzoekbare naam.",
+      "description-placeholder": "Leg kort uit waar deze sequentie over gaat",
+      "frameContent-placeholder": "Welke boodschap wil je overbrengen?",
+      "frameContent-label": "Inhoud van frame {index}",
+      "frameContent-advice": "Voeg de prompt, instructie of boodschap voor dit frame toe",
+      "frameDescription-placeholder": "voeg optionele context toe",
+      "frameDescription-label": "Notitie bij frame {index}",
+      "saveError": "We konden je sequentie niet opslaan. Probeer het opnieuw."
+    },
+    "self": "Sequentie"
+  },
+  "snippets": {
+    "drawer": {
+      "cta": "Fragmentenlade",
+      "title": "Fragmenten",
+      "subtitle": "Hergebruik stappen in verschillende sequenties",
+      "hide": "Verbergen",
+      "show": "Fragmenten tonen",
+      "empty": "Nog geen fragmenten opgeslagen.",
+      "insertAction": "Fragment invoegen"
+    },
+    "info": "aangemaakt {time}",
+    "originLabel": "Bron",
+    "menu": {
+      "delete": "Verwijderen",
+      "view": "Originele sequentie bekijken",
+      "label": "Fragmentacties"
+    },
+    "notesLabel": "Notities",
+    "notesInput": "Notities bij fragment",
+    "notesPlaceholder": "Voeg optionele context toe aan dit fragment",
+    "saveAction": "Stap opslaan als fragment",
+    "saveTitle": "Stap opslaan als fragment",
+    "status": {
+      "error": "Opslaan mislukt",
+      "saved": "Opgeslagen"
+    },
+    "typeLabel": "Type fragment"
+  },
+  "states": {
+    "emptySequences": {
+      "clear": "Zoekopdracht wissen",
+      "create": "Nieuwe sequentie",
+      "description": "Pas je zoekfilters en types aan, of maak een nieuw item",
+      "title": "Geen sequenties gevonden"
+    },
+    "sequenceError": {
+      "dashboard": "Home",
+      "description": "De server stuitte op een onverwachte situatie; dit kan een tijdelijk verbindingsprobleem zijn",
+      "retry": "Opnieuw proberen",
+      "title": "Sequenties kunnen niet worden geladen"
     }
+  },
+  "studio": {
+    "total": "Totaal aantal sequenties",
+    "lastEdit": "Laatst bewerkt",
+    "greetings": "Hallo {name}",
+    "explorerWelcome": "Welkom in de Studio van {name}",
+    "template-create": "Maken vanuit een sjabloon"
+  },
+  "templates": {
+    "cta": "Dit sjabloon gebruiken",
+    "start": "Beginnen met een sjabloon",
+    "startDescription": "Kies een startpunt om je sequentie vooraf te vullen met voorgestelde stappen.",
+    "outcome": "Verwacht resultaat",
+    "template1": {
+      "title": "Plan mijn dag",
+      "description": "Krijg helder wat er vandaag echt toe doet.",
+      "outcome": "Een kort, realistisch plan dat je zonder stress afrondt.",
+      "steps": {
+        "1": {
+          "content": "Noteer je 3 belangrijkste prioriteiten van vandaag.",
+          "description": "Alleen taken die echt verschil maken. Geen bezigheidstherapie."
+        },
+        "2": {
+          "content": "Plan tijd in voor elke prioriteit.",
+          "description": "Ruwe tijdsblokken, geen perfect schema."
+        },
+        "3": {
+          "content": "Bepaal wat je vandaag laat liggen.",
+          "description": "Laat taken met weinig waarde bewust vallen."
+        }
+      }
+    },
+    "template2": {
+      "title": "Wekelijkse reset",
+      "description": "Maak je hoofd leeg en begin de week fris.",
+      "outcome": "Mentale helderheid en een duidelijke focus voor de week.",
+      "steps": {
+        "1": {
+          "content": "Blik snel terug op vorige week.",
+          "description": "Wat werkte? Wat niet? Eén zin per vraag."
+        },
+        "2": {
+          "content": "Kies één hoofddoel voor deze week.",
+          "description": "Als dit lukt, is de week geslaagd."
+        },
+        "3": {
+          "content": "Bereid je omgeving voor.",
+          "description": "Ruim je werkplek, bestanden of agenda op."
+        }
+      }
+    },
+    "template3": {
+      "title": "Dagelijkse gezondheidscheck",
+      "description": "Blijf je bewust van je lichaam en energie.",
+      "outcome": "Betere beslissingen op basis van hoe je je echt voelt.",
+      "steps": {
+        "1": {
+          "content": "Beoordeel je slaap, energie en stemming.",
+          "description": "Snelle scores van 1–5. Niet te lang over nadenken."
+        },
+        "2": {
+          "content": "Kies vandaag één gezonde actie.",
+          "description": "Wandelen, rekken, water drinken of rusten."
+        },
+        "3": {
+          "content": "Haal één ongezonde verleiding weg.",
+          "description": "Verstop snoep, zet late meldingen uit, enz."
+        }
+      }
+    }
+  }
 }

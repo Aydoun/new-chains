@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { useLazyGetSequencesByUserQuery } from "./services/sequences";
 import { SequenceCard } from "@/components/sequence-card";
 import { CreateSequenceForm } from "@/components/ui/create-sequence";
-import { translate } from "@/lib/i18n";
+import { useTranslation } from "@/components/locale-provider";
 import { Button, Callout, Spinner, Text, TextField } from "@radix-ui/themes";
 import Link from "next/link";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -26,6 +26,7 @@ export default function Home({
 }: {
   sequenceId: string | null | undefined;
 }) {
+  const { t } = useTranslation();
   const { data: session, status } = useSession();
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -90,7 +91,7 @@ export default function Home({
           weight="bold"
           size="6"
         >
-          {translate("navigation.explore")}
+          {t("navigation.explore")}
           <Text
             data-testid="homepage-description"
             weight="bold"
@@ -98,19 +99,19 @@ export default function Home({
             className="text-amber-700"
             as="div"
           >
-            {translate("navigation.exploreDescription")}
+            {t("navigation.exploreDescription")}
           </Text>
         </Text>
         <div className="min-h-[52px] hidden md:flex">
           {showCreationSuccess && (
             <Callout.Root className="mt-1 p-3 px-4" color="green" role="status">
               <Callout.Text>
-                {translate("sequence.cta.creation-message")}{" "}
+                {t("sequence.cta.creation-message")}{" "}
                 <Link
                   href="/studio"
                   className="font-semibold underline underline-offset-4"
                 >
-                  {translate("navigation.cta.studio-redirect")}
+                  {t("navigation.cta.studio-redirect")}
                 </Link>
               </Callout.Text>
             </Callout.Root>
@@ -125,7 +126,7 @@ export default function Home({
           >
             <SquarePlus />
             <Text size="2" weight="bold">
-              {translate("sequence.cta.label")}
+              {t("sequence.cta.label")}
             </Text>
           </Button>
         </div>
@@ -136,7 +137,7 @@ export default function Home({
             type="text"
             onChange={(e) => setSearchTerm(e.target.value)}
             value={searchTerm}
-            placeholder={translate("common.search")}
+            placeholder={t("common.search")}
             className="w-full rounded-lg border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground outline-none transition"
           >
             <TextField.Slot>

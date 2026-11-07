@@ -1,36 +1,319 @@
 {
-    "common": {
-        "close": "Fermer",
-        "required": ""
+  "common": {
+    "close": "Fermer",
+    "continue": "Continuer",
+    "errors": {
+      "home": "Impossible de charger les séquences pour le moment"
     },
-    "onboarding": {
-        "actions": {
-            "complete": "Mark done",
-            "markDone": "Mark done",
-            "markItem": "Toggle completion for {item}",
-            "skip": "Skip for now",
-            "undo": "Undo"
-        },
-        "description": "Follow this quick checklist to get your first chain live.",
-        "items": {
-            "create": {
-                "action": "Create in Studio",
-                "description": "Start a new chain and outline the frames you want to tell your story.",
-                "title": "Create a chain"
-            },
-            "run": {
-                "action": "Open Studio",
-                "description": "Run your chain to preview the output and adjust any steps.",
-                "title": "Run a chain"
-            },
-            "share": {
-                "action": "View my chains",
-                "description": "Copy a shareable link from any chain card to send it to teammates.",
-                "title": "Share a link"
-            }
-        },
-        "progress": "{completed}/{total} completed",
-        "subtitle": "Welcome to Link & Tell",
-        "title": "New here?"
+    "endOfFeed": "#",
+    "favorites": "Favoris",
+    "filter": "Filtrer",
+    "items": "éléments",
+    "loading": "Chargement",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "required": "Ce champ est obligatoire",
+    "save": "Enregistrer",
+    "send": "Envoyer",
+    "search": "Rechercher"
+  },
+  "app": {
+    "name": "Link & Tell",
+    "nameShortcut": "LT"
+  },
+  "auth": {
+    "login": "Connexion",
+    "logout": "Déconnexion",
+    "me": "Mon compte",
+    "message": "Connectez-vous avec Google pour garder vos brouillons privés et partager avec attribution.",
+    "cta": {
+      "google": "Continuer avec Google",
+      "signIn": "Se connecter"
+    },
+    "error": {
+      "email": "Aucune adresse e-mail trouvée",
+      "signIn": "Impossible de joindre Google pour lancer la connexion. Veuillez réessayer dans un instant.",
+      "callback": "La connexion avec Google n’a pas abouti. Veuillez réessayer.",
+      "accessDenied": "L’accès a été refusé pour ce compte Google.",
+      "generic": "Une erreur est survenue lors de la connexion. Veuillez réessayer."
+    },
+    "google": "Google",
+    "welcome": "Bon retour",
+    "subtitle": "Connectez-vous pour accéder à la bêta",
+    "continueWithEmail": "Ou continuer avec un e-mail",
+    "emailLabel": "Adresse e-mail",
+    "passwordLabel": "Mot de passe",
+    "emailPlaceholder": "nom@entreprise.com",
+    "passwordPlaceholder": "••••••••",
+    "forgotPassword": "Mot de passe oublié ?",
+    "status": {
+      "label": "État du système",
+      "operational": "Opérationnel"
+    },
+    "menu": "Ouvrir le menu du profil",
+    "avatarAlt": "Avatar de {name}"
+  },
+  "carousel": {
+    "frame": "Cadre",
+    "progress": "Cadre {current} sur {total}",
+    "previous": "Cadre précédent",
+    "next": "Cadre suivant"
+  },
+  "contact": {
+    "channel": {
+      "email": "E-mail",
+      "linkedin": "LinkedIn"
+    },
+    "directChannels": "Canaux directs",
+    "directChannelsDescription": "Retrouvez-nous sur les réseaux sociaux ou envoyez-nous directement un e-mail.",
+    "form": {
+      "email": "Adresse e-mail",
+      "name": "Nom",
+      "namePlaceholder": "Votre nom",
+      "messageLabel": "Message",
+      "messagePlaceholder": "Votre message..."
+    },
+    "mail": "e-mail",
+    "email-value": "mohamed.amine.aydoun@gmail.com",
+    "linked-profile": "https://www.linkedin.com/in/mohamed-amine-aydoun-5799b481",
+    "self": "Contact",
+    "sendMessage": "Envoyer un message",
+    "replyTime": "Nous vous répondrons dès que possible",
+    "welcomeMessage": "Contactez-nous",
+    "welcomeDescription": "Des questions sur l’explorateur de séquences, un problème, ou simplement envie de dire bonjour ? Contactez-nous directement ou envoyez un message ci-dessous.",
+    "copy": "Copier {value}"
+  },
+  "frame": {
+    "content": "Contenu du cadre",
+    "description": "Note facultative",
+    "empty": "Aucun cadre trouvé",
+    "self": "Cadre",
+    "selfs": "Cadres"
+  },
+  "filter": {
+    "label": "période",
+    "last-hour": "Dernière heure",
+    "today": "Aujourd’hui",
+    "this-week": "Cette semaine",
+    "this-month": "Ce mois-ci",
+    "clear": "Effacer le filtre"
+  },
+  "footer": {
+    "privacyPolicy": "Politique de confidentialité",
+    "terms": "Conditions d’utilisation",
+    "rights": "Tous droits réservés"
+  },
+  "menu": {
+    "appearance": "Apparence",
+    "dark": "Sombre",
+    "light": "Clair",
+    "language": "Langue"
+  },
+  "navigation": {
+    "cta": {
+      "studio-redirect": "Aller au Studio"
+    },
+    "contact": "Contact",
+    "home": "Accueil",
+    "profile": "Profil",
+    "search": "Rechercher",
+    "studio": "Studio",
+    "explore": "Explorer",
+    "exploreDescription": "Chaque séquence raconte une histoire à travers ses cadres",
+    "self": "Navigation"
+  },
+  "onboarding": {
+    "actions": {
+      "complete": "Terminer",
+      "markDone": "Marquer comme fait",
+      "markItem": "Basculer l’état de {item}",
+      "skip": "Passer pour l’instant",
+      "undo": "Annuler"
+    },
+    "description": "Suivez cette courte liste pour publier votre première séquence.",
+    "items": {
+      "create": {
+        "action": "Lancer",
+        "description": "Démarrez une nouvelle séquence et esquissez les cadres qui raconteront votre histoire.",
+        "title": "Créer une séquence"
+      },
+      "run": {
+        "description": "Cliquez sur n’importe quelle carte de séquence pour voir l’histoire",
+        "title": "Voir une séquence"
+      },
+      "share": {
+        "action": "Voir mes séquences",
+        "description": "Cliquez sur l’icône de partage en bas à droite de chaque carte de séquence",
+        "title": "Partager un lien"
+      }
+    },
+    "progress": "{completed}/{total} terminé(s)",
+    "subtitle": "Bienvenue sur Link & Tell",
+    "title": "Nouveau ici ?"
+  },
+  "profile": {
+    "accounts": "Comptes connectés",
+    "bioLabel": "Bio",
+    "cta": {
+      "avatar": "Changer d’avatar"
+    },
+    "connectedMessage": "Connecté en tant que {email}",
+    "delete": "Supprimer le compte",
+    "deleteWarn": "Supprimer définitivement votre compte et tout votre contenu.",
+    "emailLabel": "Adresse e-mail",
+    "header": "Paramètres du profil",
+    "description": "Gérez vos informations personnelles et vos comptes connectés",
+    "googleAuth": "Géré via Google Auth",
+    "image-alt": "camera_alt",
+    "verified": "vérifié",
+    "selfDesc": "Brève description pour votre profil."
+  },
+  "sequence": {
+    "countLabel": "1/{count}",
+    "cta": {
+      "title": "Nommez votre séquence",
+      "publish": "Publier",
+      "creation-message": "Séquence créée avec succès.",
+      "url-copied": "Lien copié",
+      "label": "Nouvelle séquence"
+    },
+    "actions": {
+      "edit": "Modifier la séquence",
+      "delete": "Supprimer la séquence",
+      "share": "Partager la séquence"
+    },
+    "draft": {
+      "appendFrame": "Ajouter un cadre",
+      "title": "Nom de la séquence",
+      "titleCopy": "Nom actuel de la séquence",
+      "firstStepTitle": "Nom de la séquence",
+      "secondStepTitle": "Ajouter des cadres",
+      "description": "Description facultative",
+      "descriptionLabel": "Description facultative",
+      "previousStep": "Étape précédente",
+      "step": "Étape {current} sur {total}",
+      "title-placeholder": "ex. : La routine matinale de 10 minutes",
+      "title-advice": "Donnez à votre séquence un nom clair et facile à rechercher.",
+      "description-placeholder": "Expliquez brièvement le sujet de cette séquence",
+      "frameContent-placeholder": "Quel message voulez-vous transmettre ?",
+      "frameContent-label": "Contenu du cadre {index}",
+      "frameContent-advice": "Ajoutez la consigne, l’instruction ou le message de ce cadre",
+      "frameDescription-placeholder": "ajoutez un contexte facultatif",
+      "frameDescription-label": "Note du cadre {index}",
+      "saveError": "Impossible d’enregistrer votre séquence. Veuillez réessayer."
+    },
+    "self": "Séquence"
+  },
+  "snippets": {
+    "drawer": {
+      "cta": "Tiroir des extraits",
+      "title": "Extraits",
+      "subtitle": "Réutilisez des étapes entre séquences",
+      "hide": "Masquer",
+      "show": "Afficher les extraits",
+      "empty": "Aucun extrait enregistré pour l’instant.",
+      "insertAction": "Insérer l’extrait"
+    },
+    "info": "créé {time}",
+    "originLabel": "Source",
+    "menu": {
+      "delete": "Supprimer",
+      "view": "Voir la séquence d’origine",
+      "label": "Actions de l’extrait"
+    },
+    "notesLabel": "Notes",
+    "notesInput": "Notes de l’extrait",
+    "notesPlaceholder": "Ajoutez un contexte facultatif pour cet extrait",
+    "saveAction": "Enregistrer l’étape comme extrait",
+    "saveTitle": "Enregistrer l’étape comme extrait",
+    "status": {
+      "error": "Enregistrement impossible",
+      "saved": "Enregistré"
+    },
+    "typeLabel": "Type d’extrait"
+  },
+  "states": {
+    "emptySequences": {
+      "clear": "Effacer la recherche",
+      "create": "Nouvelle séquence",
+      "description": "Essayez d’ajuster vos filtres de recherche et vos types, ou créez une nouvelle entrée",
+      "title": "Aucune séquence trouvée"
+    },
+    "sequenceError": {
+      "dashboard": "Accueil",
+      "description": "Le serveur a rencontré une condition inattendue, il s’agit peut-être d’un problème de connexion temporaire",
+      "retry": "Réessayer",
+      "title": "Impossible de charger les séquences"
     }
+  },
+  "studio": {
+    "total": "Total des séquences",
+    "lastEdit": "Dernière modification",
+    "greetings": "Bonjour {name}",
+    "explorerWelcome": "Bienvenue dans le Studio de {name}",
+    "template-create": "Créer à partir d’un modèle"
+  },
+  "templates": {
+    "cta": "Utiliser ce modèle",
+    "start": "Partir d’un modèle",
+    "startDescription": "Choisissez un point de départ pour préremplir votre séquence avec des étapes suggérées.",
+    "outcome": "Résultat attendu",
+    "template1": {
+      "title": "Planifier ma journée",
+      "description": "Voyez clairement ce qui compte vraiment aujourd’hui.",
+      "outcome": "Un plan court et réaliste que vous pouvez terminer sans stress.",
+      "steps": {
+        "1": {
+          "content": "Listez vos 3 priorités du jour.",
+          "description": "Uniquement les tâches qui font avancer les choses. Pas de remplissage."
+        },
+        "2": {
+          "content": "Réservez du temps pour chaque priorité.",
+          "description": "Des créneaux approximatifs, pas un emploi du temps parfait."
+        },
+        "3": {
+          "content": "Décidez de ce que vous ignorerez aujourd’hui.",
+          "description": "Abandonnez consciemment les tâches à faible valeur."
+        }
+      }
+    },
+    "template2": {
+      "title": "Remise à zéro hebdomadaire",
+      "description": "Videz-vous la tête et commencez la semaine du bon pied.",
+      "outcome": "Clarté mentale et une direction précise pour la semaine.",
+      "steps": {
+        "1": {
+          "content": "Passez rapidement en revue la semaine dernière.",
+          "description": "Qu’est-ce qui a marché ? Qu’est-ce qui n’a pas marché ? Une phrase chacun."
+        },
+        "2": {
+          "content": "Choisissez un objectif principal pour cette semaine.",
+          "description": "S’il est atteint, la semaine est réussie."
+        },
+        "3": {
+          "content": "Préparez votre environnement.",
+          "description": "Rangez votre espace de travail, vos fichiers ou votre agenda."
+        }
+      }
+    },
+    "template3": {
+      "title": "Bilan santé quotidien",
+      "description": "Restez à l’écoute de votre corps et de votre énergie.",
+      "outcome": "De meilleures décisions fondées sur ce que vous ressentez vraiment.",
+      "steps": {
+        "1": {
+          "content": "Notez votre sommeil, votre énergie et votre humeur.",
+          "description": "Des notes rapides de 1 à 5. Sans trop réfléchir."
+        },
+        "2": {
+          "content": "Choisissez une action santé pour aujourd’hui.",
+          "description": "Marcher, s’étirer, s’hydrater ou se reposer."
+        },
+        "3": {
+          "content": "Supprimez une source de mauvaises habitudes.",
+          "description": "Cachez la malbouffe, coupez les notifications tardives, etc."
+        }
+      }
+    }
+  }
 }

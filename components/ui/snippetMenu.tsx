@@ -1,4 +1,4 @@
-import { translate } from "@/lib/i18n";
+import { useTranslation } from "@/components/locale-provider";
 import { Button, DropdownMenu } from "@radix-ui/themes";
 import { EllipsisVertical } from "lucide-react";
 
@@ -8,24 +8,25 @@ interface Props {
 }
 
 export function SnippetMenu({ onView, onDelete }: Props) {
+  const { t } = useTranslation();
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
         <Button
           variant="ghost"
           className="cursor-pointer"
-          aria-label={translate("snippets.menu.label")}
+          aria-label={t("snippets.menu.label")}
         >
           <EllipsisVertical className="text-black" />
         </Button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content>
         <DropdownMenu.Item onClick={onView}>
-          {translate("snippets.menu.view")}
+          {t("snippets.menu.view")}
         </DropdownMenu.Item>
         <DropdownMenu.Separator />
         <DropdownMenu.Item onClick={onDelete} color="red">
-          {translate("snippets.menu.delete")}
+          {t("snippets.menu.delete")}
         </DropdownMenu.Item>
       </DropdownMenu.Content>
     </DropdownMenu.Root>

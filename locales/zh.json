@@ -1,0 +1,319 @@
+{
+  "common": {
+    "close": "关闭",
+    "continue": "继续",
+    "errors": {
+      "home": "暂时无法加载序列"
+    },
+    "endOfFeed": "#",
+    "favorites": "收藏",
+    "filter": "筛选",
+    "items": "项",
+    "loading": "加载中",
+    "next": "下一步",
+    "previous": "上一步",
+    "required": "此字段为必填项",
+    "save": "保存",
+    "send": "发送",
+    "search": "搜索"
+  },
+  "app": {
+    "name": "Link & Tell",
+    "nameShortcut": "LT"
+  },
+  "auth": {
+    "login": "登录",
+    "logout": "退出登录",
+    "me": "我的账户",
+    "message": "使用 Google 登录，让你的草稿保持私密，并在分享时署名。",
+    "cta": {
+      "google": "使用 Google 继续",
+      "signIn": "登录"
+    },
+    "error": {
+      "email": "未找到电子邮件地址",
+      "signIn": "无法连接 Google 以开始登录，请稍后再试。",
+      "callback": "Google 登录未完成，请重试。",
+      "accessDenied": "此 Google 账户的访问被拒绝。",
+      "generic": "登录时出现问题，请重试。"
+    },
+    "google": "Google",
+    "welcome": "欢迎回来",
+    "subtitle": "登录以访问测试版",
+    "continueWithEmail": "或使用电子邮件继续",
+    "emailLabel": "电子邮件地址",
+    "passwordLabel": "密码",
+    "emailPlaceholder": "name@company.com",
+    "passwordPlaceholder": "••••••••",
+    "forgotPassword": "忘记密码？",
+    "status": {
+      "label": "系统状态",
+      "operational": "运行正常"
+    },
+    "menu": "打开个人资料菜单",
+    "avatarAlt": "{name} 的头像"
+  },
+  "carousel": {
+    "frame": "画面",
+    "progress": "第 {current} 个画面，共 {total} 个",
+    "previous": "上一个画面",
+    "next": "下一个画面"
+  },
+  "contact": {
+    "channel": {
+      "email": "电子邮件",
+      "linkedin": "LinkedIn"
+    },
+    "directChannels": "直接联系方式",
+    "directChannelsDescription": "在社交平台上关注我们，或直接发送电子邮件。",
+    "form": {
+      "email": "电子邮件地址",
+      "name": "姓名",
+      "namePlaceholder": "你的姓名",
+      "messageLabel": "留言",
+      "messagePlaceholder": "你的留言……"
+    },
+    "mail": "电子邮件",
+    "email-value": "mohamed.amine.aydoun@gmail.com",
+    "linked-profile": "https://www.linkedin.com/in/mohamed-amine-aydoun-5799b481",
+    "self": "联系",
+    "sendMessage": "发送留言",
+    "replyTime": "我们会尽快回复你",
+    "welcomeMessage": "联系我们",
+    "welcomeDescription": "对序列浏览器有疑问、遇到问题，或者只是想打个招呼？请直接联系我们，或在下方留言。",
+    "copy": "复制 {value}"
+  },
+  "frame": {
+    "content": "画面内容",
+    "description": "可选备注",
+    "empty": "未找到画面",
+    "self": "画面",
+    "selfs": "画面"
+  },
+  "filter": {
+    "label": "时间",
+    "last-hour": "过去一小时",
+    "today": "今天",
+    "this-week": "本周",
+    "this-month": "本月",
+    "clear": "清除筛选"
+  },
+  "footer": {
+    "privacyPolicy": "隐私政策",
+    "terms": "服务条款",
+    "rights": "保留所有权利"
+  },
+  "menu": {
+    "appearance": "外观",
+    "dark": "深色",
+    "light": "浅色",
+    "language": "语言"
+  },
+  "navigation": {
+    "cta": {
+      "studio-redirect": "前往工作室"
+    },
+    "contact": "联系",
+    "home": "首页",
+    "profile": "个人资料",
+    "search": "搜索",
+    "studio": "工作室",
+    "explore": "探索",
+    "exploreDescription": "每个序列都通过画面讲述一个故事",
+    "self": "导航"
+  },
+  "onboarding": {
+    "actions": {
+      "complete": "完成",
+      "markDone": "标记为完成",
+      "markItem": "切换 {item} 的完成状态",
+      "skip": "暂时跳过",
+      "undo": "撤销"
+    },
+    "description": "按照这份简短清单发布你的第一个序列。",
+    "items": {
+      "create": {
+        "action": "开始",
+        "description": "新建一个序列，并规划用来讲述你故事的画面。",
+        "title": "创建序列"
+      },
+      "run": {
+        "description": "点击任意序列卡片即可查看故事",
+        "title": "查看序列"
+      },
+      "share": {
+        "action": "查看我的序列",
+        "description": "点击每张序列卡片右下角的分享图标",
+        "title": "分享链接"
+      }
+    },
+    "progress": "已完成 {completed}/{total}",
+    "subtitle": "欢迎使用 Link & Tell",
+    "title": "初次使用？"
+  },
+  "profile": {
+    "accounts": "已关联账户",
+    "bioLabel": "简介",
+    "cta": {
+      "avatar": "更换头像"
+    },
+    "connectedMessage": "已作为 {email} 关联",
+    "delete": "删除账户",
+    "deleteWarn": "永久删除你的账户及所有内容。",
+    "emailLabel": "电子邮件地址",
+    "header": "个人资料设置",
+    "description": "管理你的个人信息和已关联账户",
+    "googleAuth": "通过 Google 身份验证管理",
+    "image-alt": "camera_alt",
+    "verified": "已验证",
+    "selfDesc": "个人资料的简短介绍。"
+  },
+  "sequence": {
+    "countLabel": "1/{count}",
+    "cta": {
+      "title": "为你的序列命名",
+      "publish": "发布",
+      "creation-message": "序列创建成功。",
+      "url-copied": "链接已复制",
+      "label": "新建序列"
+    },
+    "actions": {
+      "edit": "编辑序列",
+      "delete": "删除序列",
+      "share": "分享序列"
+    },
+    "draft": {
+      "appendFrame": "添加画面",
+      "title": "序列名称",
+      "titleCopy": "当前序列名称",
+      "firstStepTitle": "序列名称",
+      "secondStepTitle": "添加画面",
+      "description": "描述（可选）",
+      "descriptionLabel": "可选描述",
+      "previousStep": "上一步",
+      "step": "第 {current} 步，共 {total} 步",
+      "title-placeholder": "例如：10 分钟晨间习惯",
+      "title-advice": "为你的序列取一个清晰、便于搜索的名称。",
+      "description-placeholder": "简要说明这个序列的内容",
+      "frameContent-placeholder": "你想传达什么信息？",
+      "frameContent-label": "画面 {index} 内容",
+      "frameContent-advice": "为此画面添加提示、说明或信息",
+      "frameDescription-placeholder": "添加可选的背景信息",
+      "frameDescription-label": "画面 {index} 备注",
+      "saveError": "无法保存你的序列，请重试。"
+    },
+    "self": "序列"
+  },
+  "snippets": {
+    "drawer": {
+      "cta": "片段抽屉",
+      "title": "片段",
+      "subtitle": "在不同序列中复用步骤",
+      "hide": "隐藏",
+      "show": "显示片段",
+      "empty": "尚未保存任何片段。",
+      "insertAction": "插入片段"
+    },
+    "info": "创建于 {time}",
+    "originLabel": "来源",
+    "menu": {
+      "delete": "删除",
+      "view": "查看原始序列",
+      "label": "片段操作"
+    },
+    "notesLabel": "备注",
+    "notesInput": "片段备注",
+    "notesPlaceholder": "为此片段添加可选的背景信息",
+    "saveAction": "将步骤保存为片段",
+    "saveTitle": "将步骤保存为片段",
+    "status": {
+      "error": "无法保存",
+      "saved": "已保存"
+    },
+    "typeLabel": "片段类型"
+  },
+  "states": {
+    "emptySequences": {
+      "clear": "清除搜索",
+      "create": "新建序列",
+      "description": "请尝试调整搜索筛选条件和类型，或新建一个条目",
+      "title": "未找到序列"
+    },
+    "sequenceError": {
+      "dashboard": "首页",
+      "description": "服务器遇到意外情况，可能是暂时的连接问题",
+      "retry": "重试",
+      "title": "无法加载序列"
+    }
+  },
+  "studio": {
+    "total": "序列总数",
+    "lastEdit": "最近编辑",
+    "greetings": "你好，{name}",
+    "explorerWelcome": "欢迎来到 {name} 的工作室",
+    "template-create": "从模板创建"
+  },
+  "templates": {
+    "cta": "使用此模板",
+    "start": "从模板开始",
+    "startDescription": "选择一个起点，用推荐步骤预先填充你的序列。",
+    "outcome": "预期结果",
+    "template1": {
+      "title": "规划我的一天",
+      "description": "理清今天真正重要的事。",
+      "outcome": "一份简短、现实、可以轻松完成的计划。",
+      "steps": {
+        "1": {
+          "content": "列出今天最重要的 3 件事。",
+          "description": "只写真正有推动作用的任务，不做无用功。"
+        },
+        "2": {
+          "content": "为每件要事安排时间。",
+          "description": "大致的时间段即可，不必追求完美的日程。"
+        },
+        "3": {
+          "content": "决定今天要放下哪些事。",
+          "description": "有意识地舍弃低价值的任务。"
+        }
+      }
+    },
+    "template2": {
+      "title": "每周重启",
+      "description": "清空思绪，轻装开启新的一周。",
+      "outcome": "头脑清晰，本周方向明确。",
+      "steps": {
+        "1": {
+          "content": "快速回顾上周。",
+          "description": "哪些做得好？哪些不顺利？各用一句话概括。"
+        },
+        "2": {
+          "content": "为本周选定一个主要目标。",
+          "description": "只要完成它，这一周就算成功。"
+        },
+        "3": {
+          "content": "整理你的环境。",
+          "description": "整理工作区、文件或日历。"
+        }
+      }
+    },
+    "template3": {
+      "title": "每日健康检查",
+      "description": "时刻留意自己的身体和精力。",
+      "outcome": "根据真实感受做出更好的决定。",
+      "steps": {
+        "1": {
+          "content": "为睡眠、精力和情绪打分。",
+          "description": "快速打 1–5 分，不要想太多。"
+        },
+        "2": {
+          "content": "今天选择一项健康行动。",
+          "description": "散步、拉伸、喝水或休息。"
+        },
+        "3": {
+          "content": "消除一个不健康的诱因。",
+          "description": "把零食藏起来、关闭深夜通知等。"
+        }
+      }
+    }
+  }
+}

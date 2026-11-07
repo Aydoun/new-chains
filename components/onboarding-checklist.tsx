@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, CheckCircle2, Circle, Sparkles, X } from "lucide-react";
-import { translate } from "@/lib/i18n";
+import { useTranslation } from "@/components/locale-provider";
 
 const STORAGE_KEY = "onboarding-checklist-state";
 
@@ -59,6 +59,7 @@ function persistState(state: ChecklistState) {
 }
 
 export function OnboardingChecklist({ onCreate }: { onCreate?: () => void }) {
+  const { t } = useTranslation();
   const [state, setState] = useState<ChecklistState | null>(loadState());
 
   useEffect(() => {
@@ -69,25 +70,25 @@ export function OnboardingChecklist({ onCreate }: { onCreate?: () => void }) {
     () => [
       {
         id: "create",
-        title: translate("onboarding.items.create.title"),
-        description: translate("onboarding.items.create.description"),
-        actionLabel: translate("onboarding.items.create.action"),
+        title: t("onboarding.items.create.title"),
+        description: t("onboarding.items.create.description"),
+        actionLabel: t("onboarding.items.create.action"),
         onAction: onCreate,
       },
       {
         id: "run",
-        title: translate("onboarding.items.run.title"),
-        description: translate("onboarding.items.run.description"),
-        actionLabel: translate("onboarding.items.run.action"),
+        title: t("onboarding.items.run.title"),
+        description: t("onboarding.items.run.description"),
+        actionLabel: t("onboarding.items.run.action"),
       },
       {
         id: "share",
-        title: translate("onboarding.items.share.title"),
-        description: translate("onboarding.items.share.description"),
-        actionLabel: translate("onboarding.items.share.action"),
+        title: t("onboarding.items.share.title"),
+        description: t("onboarding.items.share.description"),
+        actionLabel: t("onboarding.items.share.action"),
       },
     ],
-    [onCreate]
+    [onCreate, t]
   );
 
   const completedCount = useMemo(() => {
@@ -149,21 +150,21 @@ export function OnboardingChecklist({ onCreate }: { onCreate?: () => void }) {
           <div className="flex items-center gap-2 text-primary-main">
             <Sparkles className="h-4 w-4" />
             <span className="text-xs font-semibold uppercase tracking-wide">
-              {translate("onboarding.title")}
+              {t("onboarding.title")}
             </span>
           </div>
           <h2 className="text-xl font-semibold text-white">
-            {translate("onboarding.subtitle")}
+            {t("onboarding.subtitle")}
           </h2>
           <p className="text-sm text-[#9ab6da] max-w-2xl">
-            {translate("onboarding.description")}
+            {t("onboarding.description")}
           </p>
         </div>
         <button
           type="button"
           onClick={handleSkip}
           className="text-[#9ab6da] hover:text-white"
-          aria-label={translate("onboarding.actions.skip")}
+          aria-label={t("onboarding.actions.skip")}
         >
           <X className="h-5 w-5" />
         </button>
@@ -178,7 +179,7 @@ export function OnboardingChecklist({ onCreate }: { onCreate?: () => void }) {
           />
         </div>
         <span className="text-xs font-semibold text-[#c7d7ee]">
-          {translate("onboarding.progress", {
+          {t("onboarding.progress", {
             completed: completedCount,
             total: totalCount,
           })}
@@ -199,7 +200,7 @@ export function OnboardingChecklist({ onCreate }: { onCreate?: () => void }) {
                   onClick={() => toggleItem(item.id)}
                   className="mt-0.5 text-primary-main"
                   aria-pressed={isDone}
-                  aria-label={translate("onboarding.actions.markItem", {
+                  aria-label={t("onboarding.actions.markItem", {
                     item: item.title,
                   })}
                 >
@@ -235,8 +236,8 @@ export function OnboardingChecklist({ onCreate }: { onCreate?: () => void }) {
                       className="text-xs font-semibold uppercase tracking-wide text-[#9ab6da] hover:text-white"
                     >
                       {isDone
-                        ? translate("onboarding.actions.undo")
-                        : translate("onboarding.actions.markDone")}
+                        ? t("onboarding.actions.undo")
+                        : t("onboarding.actions.markDone")}
                     </button>
                   </div>
                 </div>
@@ -251,14 +252,14 @@ export function OnboardingChecklist({ onCreate }: { onCreate?: () => void }) {
           onClick={handleSkip}
           className="rounded-lg px-4 py-2 text-[#9ab6da] hover:text-white"
         >
-          {translate("onboarding.actions.skip")}
+          {t("onboarding.actions.skip")}
         </button>
         <button
           type="button"
           onClick={markAllDone}
           className="inline-flex items-center gap-2 rounded-lg bg-primary-main px-4 py-2 text-white shadow hover:bg-primary-main/90"
         >
-          {translate("onboarding.actions.complete")}
+          {t("onboarding.actions.complete")}
           <CheckCircle2 className="h-4 w-4" />
         </button>
       </div>

@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
-import { translate } from "@/lib/i18n";
+import { useTranslation } from "@/components/locale-provider";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
@@ -42,6 +42,7 @@ export default function LoginClient({
   callbackUrl: string;
   error: string | null;
 }) {
+  const { t } = useTranslation();
   const router = useRouter();
   const { status } = useSession();
 
@@ -65,17 +66,17 @@ export default function LoginClient({
         <div className="mb-6 flex flex-col items-center gap-4 text-center">
           <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-main shadow-[0_20px_50px_-12px_rgba(19,109,236,0.6)] ring-1 ring-white/10">
             <span className="text-2xl font-extrabold text-white">
-              {translate("app.nameShortcut")}
+              {t("app.nameShortcut")}
             </span>
           </div>
         </div>
         <div className="w-full max-w-[480px] rounded-2xl border border-white/10 bg-white/5 p-8 shadow-[0_25px_80px_-20px_rgba(0,0,0,0.6)] backdrop-blur-2xl sm:p-10">
           <div className="mb-6 flex flex-col gap-2 text-center">
             <h2 className="text-xl font-semibold sm:text-2xl">
-              {translate("auth.welcome")}
+              {t("auth.welcome")}
             </h2>
             <p className="text-sm text-slate-200">
-              {translate("auth.subtitle")}
+              {t("auth.subtitle")}
             </p>
           </div>
           <div className="flex flex-col gap-4">
@@ -84,7 +85,7 @@ export default function LoginClient({
                 role="alert"
                 className="rounded-lg border border-red-400/30 bg-red-500/10 px-4 py-3 text-center text-sm text-red-200"
               >
-                {translate(errorMessageKey(error))}
+                {t(errorMessageKey(error))}
               </p>
             )}
             <button
@@ -118,7 +119,7 @@ export default function LoginClient({
                 />
               </svg>
               <span className="text-base font-semibold leading-normal tracking-[0.015em]">
-                {translate("auth.cta.google")}
+                {t("auth.cta.google")}
               </span>
             </button>
           </div>
@@ -126,15 +127,15 @@ export default function LoginClient({
         <footer className="mt-8 flex flex-col gap-4 text-center text-sm text-slate-200">
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
             <Link className="transition-colors hover:text-white" href="/privacy">
-              {translate("footer.privacyPolicy")}
+              {t("footer.privacyPolicy")}
             </Link>
             <span className="text-slate-300">•</span>
             <Link className="transition-colors hover:text-white" href="/terms">
-              {translate("footer.terms")}
+              {t("footer.terms")}
             </Link>
           </div>
           <p className="text-xs text-slate-300">
-            © {`${new Date().getFullYear()} ${translate("footer.rights")}`}
+            © {`${new Date().getFullYear()} ${t("footer.rights")}`}
           </p>
         </footer>
       </div>

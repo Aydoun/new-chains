@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslation } from "@/components/locale-provider";
-import { Button, Callout, Text, TextField } from "@radix-ui/themes";
+import { Button, Text, TextField } from "@radix-ui/themes";
 import { Heart, Search, Sparkles, SquarePlus, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Sequence, SequenceTemplate, TimeFilter } from "@/app/types";
@@ -33,6 +33,12 @@ type Props = {
   onSearchChange: (value: string) => void;
   deletingSequenceRef?: string | number;
   viewerId?: string;
+  /** Open the "new sequence" form as soon as the studio loads. */
+  openCreateOnLoad?: boolean;
+  /** Called once the form was opened because of `openCreateOnLoad`. */
+  onCreateOpened?: () => void;
+  /** Called after a sequence was saved, to reload the list. */
+  onSequenceCreated?: () => void;
 };
 
 export function StudioView({
@@ -49,11 +55,13 @@ export function StudioView({
   searchTerm,
   onSearchChange,
   deletingSequenceRef,
+  openCreateOnLoad = false,
+  onCreateOpened,
+  onSequenceCreated,
 }: Props) {
   const { t } = useTranslation();
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [showCreationSuccess, setShowCreationSuccess] = useState(false);
   const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
   const [favoritesToggle, setFavoritesToggle] = useState(false);
   const [selectedTemplate, setSelectedTemplate] =
@@ -82,10 +90,13 @@ export function StudioView({
   };
 
   useEffect(() => {
-    if (showCreationSuccess) {
-      setTimeout(() => setShowCreationSuccess(false), 1000 * 10);
-    }
-  }, [showCreationSuccess]);
+    if (!openCreateOnLoad) return;
+
+    setSelectedTemplate(null);
+    setIsCreateDialogOpen(true);
+    onCreateOpened?.();
+    // Only react to the flag turning on; the callback's identity may change.
+  }, [openCreateOnLoad]);
 
   return (
     <div className="mt-12 md:mt-6">
@@ -95,19 +106,6 @@ export function StudioView({
             <Text size="6" weight="bold">
               {greeting}
             </Text>
-          </div>
-          <div className="min-h-[52px]">
-            {showCreationSuccess && (
-              <Callout.Root
-                className="mt-1 p-3 px-4"
-                color="green"
-                role="status"
-              >
-                <Callout.Text>
-                  {t("sequence.cta.creation-message")}
-                </Callout.Text>
-              </Callout.Root>
-            )}
           </div>
           <div className="flex flex-wrap gap-4 self-center">
             <Button
@@ -251,8 +249,8 @@ export function StudioView({
           initialSequenceTitle={selectedTemplate?.title ?? ""}
           initialTemplate={selectedTemplate}
           onSequenceCreated={() => {
-            setShowCreationSuccess(true);
             setSelectedTemplate(null);
+            onSequenceCreated?.();
           }}
         />
       )}

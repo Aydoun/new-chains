@@ -110,9 +110,6 @@
     "language": "Taal"
   },
   "navigation": {
-    "cta": {
-      "studio-redirect": "Naar Studio"
-    },
     "contact": "Contact",
     "home": "Home",
     "profile": "Profiel",
@@ -173,7 +170,6 @@
     "cta": {
       "title": "Geef je sequentie een naam",
       "publish": "Publiceren",
-      "creation-message": "Sequentie succesvol aangemaakt.",
       "url-copied": "Link gekopieerd",
       "label": "Nieuwe sequentie"
     },

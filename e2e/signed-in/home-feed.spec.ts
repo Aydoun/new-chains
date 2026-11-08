@@ -6,6 +6,7 @@ import {
   searchBox,
   sequenceCard,
   sequenceViewer,
+  sidebarLink,
   t,
 } from "../support/ui";
 
@@ -120,15 +121,26 @@ test.describe("home feed", () => {
     await expect(page).toHaveURL(`/explore/${users.author.id}`);
   });
 
-  test("creates a sequence from the home page", async ({ page, data, users }) => {
+  test("create button opens the form in the studio, then lists the new sequence", async ({
+    page,
+    data,
+    users,
+  }) => {
     const title = data.sequenceTitle();
     const frame = data.frame();
 
     await page.goto("/");
+    await expect(sidebarLink(page, "home")).toHaveAttribute("data-active", "true");
     await page
       .getByRole("button", { name: t("sequence.cta.label") })
       .first()
       .click();
+
+    // Redirected to the studio (the one-shot param is dropped), with the
+    // sidebar following along and the form already open.
+    await expect(page).toHaveURL("/studio");
+    await expect(sidebarLink(page, "studio")).toHaveAttribute("data-active", "true");
+    await expect(sidebarLink(page, "home")).toHaveAttribute("data-active", "false");
     const dialog = page.getByRole("dialog");
     await dialog.getByRole("textbox", { name: t("sequence.draft.title") }).fill(title);
     await dialog.getByRole("button", { name: t("common.next"), exact: true }).click();
@@ -139,16 +151,41 @@ test.describe("home feed", () => {
       .fill(frame.content);
     await dialog.getByRole("button", { name: t("sequence.cta.publish") }).click();
 
-    const status = page.getByRole("status");
-    await expect(status).toContainText(t("sequence.cta.creation-message"));
+    // No confirmation banner: the new sequence simply shows up in the list,
+    // without reloading or searching.
+    await expect(dialog).toBeHidden();
+    await expect(sequenceCard(page, title)).toBeVisible();
+    await expect(page.getByRole("status")).toHaveCount(0);
     await expect
       .poll(async () => (await db.findSequenceByTitle(users.me.id, title))?.frames)
       .toEqual([expect.objectContaining({ content: frame.content })]);
 
-    await status
-      .getByRole("link", { name: t("navigation.cta.studio-redirect") })
+    // Reloading the studio doesn't reopen the form.
+    await page.reload();
+    await expect(sequenceCard(page, title)).toBeVisible();
+    await expect(dialog).toBeHidden();
+  });
+
+  test("empty state's create button also opens the form in the studio", async ({
+    page,
+    data,
+  }) => {
+    await page.goto("/");
+    await search(page, `no-match-${data.token()}`);
+    await expect(emptyState(page)).toBeVisible();
+
+    // The header button has the same label; the empty state's comes last.
+    await page
+      .getByRole("button", { name: t("states.emptySequences.create") })
+      .last()
       .click();
+
     await expect(page).toHaveURL("/studio");
+    await expect(
+      page
+        .getByRole("dialog")
+        .getByRole("textbox", { name: t("sequence.draft.title") }),
+    ).toBeVisible();
   });
 
   test("onboarding checklist tracks progress and stays dismissed", async ({

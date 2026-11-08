@@ -9,3 +9,7 @@ export const BIO_MAX_LENGTH = 240;
 export const CONTACT_MESSAGE_MAX_LENGTH = 240;
 
 export const SEARCH_DEBOUNCE_DELAY = 800;
+
+/** Query param that makes the studio open the "new sequence" form on load. */
+export const CREATE_SEQUENCE_PARAM = "create";
+export const STUDIO_CREATE_PATH = `/studio?${CREATE_SEQUENCE_PARAM}=1`;

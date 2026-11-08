@@ -110,9 +110,6 @@
     "language": "Langue"
   },
   "navigation": {
-    "cta": {
-      "studio-redirect": "Aller au Studio"
-    },
     "contact": "Contact",
     "home": "Accueil",
     "profile": "Profil",
@@ -173,7 +170,6 @@
     "cta": {
       "title": "Nommez votre séquence",
       "publish": "Publier",
-      "creation-message": "Séquence créée avec succès.",
       "url-copied": "Lien copié",
       "label": "Nouvelle séquence"
     },

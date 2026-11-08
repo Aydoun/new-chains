@@ -82,10 +82,10 @@ test.describe("studio", () => {
     await dialog
       .getByRole("button", { name: t("sequence.cta.publish") })
       .click();
-    await expect(page.getByRole("status")).toHaveText(
-      t("sequence.cta.creation-message"),
-    );
     await expect(dialog).toBeHidden();
+    // The list reloads by itself: the new sequence is there, no banner.
+    await expect(sequenceCard(page, title)).toBeVisible();
+    await expect(page.getByRole("status")).toHaveCount(0);
 
     // The database holds exactly what was typed, frames in order.
     const stored = await db.findSequenceByTitle(users.me.id, title);
@@ -102,11 +102,6 @@ test.describe("studio", () => {
       true,
     );
 
-    // And the studio lists it. Search for it: parallel tests add sequences
-    // for the same user, so it may not be on the first page.
-    await page.reload();
-    await search(page, title);
-    await expect(sequenceCard(page, title)).toBeVisible();
   });
 
   test("won't move on or publish without the required fields", async ({
@@ -177,9 +172,8 @@ test.describe("studio", () => {
       .getByRole("button", { name: t("common.next"), exact: true })
       .click();
     await form.getByRole("button", { name: t("sequence.cta.publish") }).click();
-    await expect(page.getByRole("status")).toHaveText(
-      t("sequence.cta.creation-message"),
-    );
+    await expect(form).toBeHidden();
+    await expect(sequenceCard(page, title)).toBeVisible();
 
     const stored = await db.findSequenceByTitle(users.me.id, title);
     expect(

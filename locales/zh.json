@@ -110,9 +110,6 @@
     "language": "语言"
   },
   "navigation": {
-    "cta": {
-      "studio-redirect": "前往工作室"
-    },
     "contact": "联系",
     "home": "首页",
     "profile": "个人资料",
@@ -173,7 +170,6 @@
     "cta": {
       "title": "为你的序列命名",
       "publish": "发布",
-      "creation-message": "序列创建成功。",
       "url-copied": "链接已复制",
       "label": "新建序列"
     },

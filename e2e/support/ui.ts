@@ -7,6 +7,12 @@ export const t = translate;
 export const sequenceCard = (page: Page, title: string) =>
   page.getByTestId("sequence-card").filter({ hasText: title });
 
+/** A sidebar navigation link; its `data-active` marks the current page. */
+export const sidebarLink = (
+  page: Page,
+  item: "home" | "studio" | "profile" | "contact",
+) => page.getByRole("link", { name: t(`navigation.${item}`), exact: true });
+
 export const searchBox = (page: Page) =>
   page.getByRole("textbox", { name: t("common.search") });
 

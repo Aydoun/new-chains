@@ -11,6 +11,7 @@ import { api } from "./api";
 export type FrameInput = {
   content: string;
   description?: string;
+  assetId?: number;
 };
 
 /** Frames are created together with their sequence, in one request. */

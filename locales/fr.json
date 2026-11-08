@@ -311,5 +311,21 @@
         }
       }
     }
+  },
+  "images": {
+    "add": "Ajouter une image",
+    "remove": "Retirer l’image",
+    "uploading": "Envoi de l’image…",
+    "preview": "Image du cadre {index}",
+    "hint": "JPEG, PNG ou WebP, jusqu’à {maxMb} Mo, du 9:16 au 1,91:1 comme sur Instagram ou TikTok",
+    "errors": {
+      "type": "Utilisez une image JPEG, PNG ou WebP.",
+      "tooLarge": "L’image ne doit pas dépasser {maxMb} Mo.",
+      "tooSmall": "L’image doit faire au moins {minWidth}×{minHeight} pixels.",
+      "tooBig": "L’image doit faire au plus {maxWidth}×{maxHeight} pixels.",
+      "ratio": "Utilisez un format entre 9:16 (portrait) et 1,91:1 (paysage), comme sur Instagram ou TikTok.",
+      "empty": "Le fichier est vide.",
+      "upload": "Impossible d’envoyer l’image. Veuillez réessayer."
+    }
   }
 }

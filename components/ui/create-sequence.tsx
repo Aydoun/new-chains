@@ -26,6 +26,7 @@ import { useCreateSequenceMutation } from "@/app/services/sequences";
 import { useTranslation } from "@/components/locale-provider";
 import clsx from "clsx";
 import { SequenceCreationFormValues, SequenceTemplate } from "@/app/types";
+import { FrameImageField } from "./frame-image-field";
 
 interface Props {
   onClose: () => void;
@@ -37,6 +38,7 @@ interface Props {
 const createEmptyFrame = () => ({
   content: "",
   description: "",
+  asset: null,
 });
 
 export function CreateSequenceForm({
@@ -52,6 +54,8 @@ export function CreateSequenceForm({
   const [createSequenceMutation, { isLoading: isSaving }] =
     useCreateSequenceMutation();
   const [saveError, setSaveError] = useState<string | null>(null);
+  // Uploads in progress; publishing waits for them.
+  const [uploadingCount, setUploadingCount] = useState(0);
   const {
     control,
     register,
@@ -60,6 +64,7 @@ export function CreateSequenceForm({
     formState: { errors, isValid },
     handleSubmit,
     setFocus,
+    setValue,
   } = useForm<SequenceCreationFormValues>({
     mode: "onChange",
     defaultValues: {
@@ -70,6 +75,7 @@ export function CreateSequenceForm({
           ? initialTemplate.steps.map((step) => ({
               content: step.content,
               description: step.description,
+              asset: null,
             }))
           : [createEmptyFrame()],
     },
@@ -137,6 +143,7 @@ export function CreateSequenceForm({
       .map((frame) => ({
         content: frame.content.trim(),
         description: frame.description?.trim() || "",
+        ...(frame.asset ? { assetId: frame.asset.id } : {}),
       }));
 
     if (frames.length === 0) return;
@@ -218,6 +225,16 @@ export function CreateSequenceForm({
           {errors.pages[index]?.content?.message}
         </Text>
       )}
+      <FrameImageField
+        index={index + 1}
+        asset={pages[index]?.asset}
+        onChange={(asset) =>
+          setValue(`pages.${index}.asset`, asset, { shouldDirty: true })
+        }
+        onUploadingChange={(uploading) =>
+          setUploadingCount((count) => count + (uploading ? 1 : -1))
+        }
+      />
     </div>
   ));
 
@@ -410,7 +427,7 @@ export function CreateSequenceForm({
             ) : (
               <Button
                 type="submit"
-                disabled={!isValid}
+                disabled={!isValid || uploadingCount > 0}
                 loading={isSaving}
               >
                 <Cloud />

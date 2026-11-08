@@ -18,6 +18,10 @@ vi.mock("@/app/services/sequences", () => ({
   useCreateSequenceMutation: () => [createSequence, { isLoading: false }],
 }));
 
+vi.mock("@/app/services/assets", () => ({
+  useUploadImageMutation: () => [vi.fn(), { isLoading: false }],
+}));
+
 vi.mock("@/app/services/snippets", () => ({
   useLazyGetSnippetsQuery: () => [vi.fn(), { data: [], isFetching: false }],
   useDeleteSnippetMutation: () => [vi.fn()],

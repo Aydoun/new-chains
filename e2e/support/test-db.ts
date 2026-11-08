@@ -1,8 +1,17 @@
 import fs from "node:fs";
 import path from "node:path";
 import { parse } from "dotenv";
-import { Client, Pool, type PoolClient } from "pg";
+import pg, { Client, Pool, type PoolClient } from "pg";
 import { SEEDED_USERS, TEST_EMAIL_DOMAIN } from "./constants";
+
+// Prisma stores `timestamp without time zone` columns in UTC. node-postgres
+// would otherwise write JS Dates in the machine's local time (dropping the
+// offset) and read them back as local time, so rows inserted here would sort
+// hours away from rows the app created (e.g. "in 60 minutes" on CET).
+pg.defaults.parseInputDatesAsUTC = true;
+pg.types.setTypeParser(pg.types.builtins.TIMESTAMP, (value) =>
+  new Date(`${value.replace(" ", "T")}Z`),
+);
 
 const ROOT = path.resolve(__dirname, "../..");
 
@@ -156,6 +165,12 @@ export async function resetSeededUsers() {
       `DELETE FROM "Frame" f
        WHERE f."createdById" = ANY($1)
          AND NOT EXISTS (SELECT 1 FROM "Snippet" s WHERE s."frameId" = f.id)`,
+      [userIds],
+    );
+    await client.query(
+      `DELETE FROM "Asset" a
+       WHERE a."uploadedById" = ANY($1)
+         AND NOT EXISTS (SELECT 1 FROM "Frame" f WHERE f."assetId" = a.id)`,
       [userIds],
     );
     await client.query(`DELETE FROM "Contact" WHERE "userId" = ANY($1)`, [
@@ -353,4 +368,53 @@ export function findContacts(userId: number, message: string) {
     `SELECT id, message, "userId" FROM "Contact" WHERE "userId" = $1 AND message = $2`,
     [userId, message],
   );
+}
+
+// ---------------------------------------------------------------------------
+// Assets (uploaded images)
+// ---------------------------------------------------------------------------
+
+export type AssetRow = {
+  id: number;
+  url: string;
+  pathname: string;
+  contentType: string;
+  width: number;
+  height: number;
+  uploadedById: number;
+};
+
+const ASSET_COLUMNS = `id, url, pathname, "contentType", width, height, "uploadedById"`;
+
+export async function findAsset(id: number) {
+  const [asset] = await query<AssetRow>(
+    `SELECT ${ASSET_COLUMNS} FROM "Asset" WHERE id = $1`,
+    [id],
+  );
+  return asset ?? null;
+}
+
+/** A frame's media type and, for IMAGE frames, its asset. */
+export async function findFrameMedia(frameId: number) {
+  const [frame] = await query<{ type: string; assetId: number | null }>(
+    `SELECT type, "assetId" FROM "Frame" WHERE id = $1`,
+    [frameId],
+  );
+  if (!frame) return null;
+  return {
+    type: frame.type,
+    asset: frame.assetId ? await findAsset(frame.assetId) : null,
+  };
+}
+
+/** Records an asset row directly (no file), e.g. one owned by another user. */
+export async function insertAsset(uploadedById: number) {
+  const pathname = `assets/${uploadedById}/e2e-${Date.now()}-${Math.random()}.png`;
+  const [asset] = await query<AssetRow>(
+    `INSERT INTO "Asset" (url, pathname, "contentType", size, width, height, "uploadedById")
+     VALUES ($1, $2, 'image/png', 1000, 1080, 1080, $3)
+     RETURNING ${ASSET_COLUMNS}`,
+    [`/api/asset/file/${pathname}`, pathname, uploadedById],
+  );
+  return asset;
 }

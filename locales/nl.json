@@ -311,5 +311,21 @@
         }
       }
     }
+  },
+  "images": {
+    "add": "Afbeelding toevoegen",
+    "remove": "Afbeelding verwijderen",
+    "uploading": "Afbeelding uploaden…",
+    "preview": "Afbeelding bij frame {index}",
+    "hint": "JPEG, PNG of WebP, tot {maxMb} MB, van 9:16 tot 1,91:1 zoals op Instagram of TikTok",
+    "errors": {
+      "type": "Gebruik een JPEG-, PNG- of WebP-afbeelding.",
+      "tooLarge": "De afbeelding mag maximaal {maxMb} MB zijn.",
+      "tooSmall": "De afbeelding moet minstens {minWidth}×{minHeight} pixels zijn.",
+      "tooBig": "De afbeelding mag maximaal {maxWidth}×{maxHeight} pixels zijn.",
+      "ratio": "Gebruik een verhouding tussen 9:16 (staand) en 1,91:1 (liggend), zoals op Instagram of TikTok.",
+      "empty": "Het bestand is leeg.",
+      "upload": "De afbeelding kon niet worden geüpload. Probeer het opnieuw."
+    }
   }
 }

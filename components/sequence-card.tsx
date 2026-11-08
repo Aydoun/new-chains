@@ -1,10 +1,11 @@
 import { FC, useState, MouseEvent as ReactMouseEvent } from "react";
-import { Sequence } from "@/app/types";
+import { FrameAsset, Sequence } from "@/app/types";
 import { Clock3, Heart, Pencil, Share2, Trash2, User } from "lucide-react";
 import { useTranslation } from "@/components/locale-provider";
 import { cn, timeAgo } from "@/lib/utils";
 import { IconButton, Spinner, Text } from "@radix-ui/themes";
 import Link from "next/link";
+import Image from "next/image";
 import clsx from "clsx";
 
 export interface SequenceCardProps {
@@ -68,11 +69,20 @@ export const SequenceCard: FC<Props> = ({
         className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-xl border border-border border-t-0"
       >
         <div className="h-44 w-full overflow-hidden">
-          <SequenceFrame
-            text={sequence.firstFrame?.content}
-            count={sequence.FrameOrder.length}
-            showIsLiked={false}
-          />
+          {sequence.firstFrame?.type === "IMAGE" &&
+          sequence.firstFrame.asset ? (
+            <CardImageFrame
+              asset={sequence.firstFrame.asset}
+              text={sequence.firstFrame.content}
+              count={sequence.FrameOrder.length}
+            />
+          ) : (
+            <SequenceFrame
+              text={sequence.firstFrame?.content}
+              count={sequence.FrameOrder.length}
+              showIsLiked={false}
+            />
+          )}
         </div>
         <div className="flex flex-1 flex-col gap-3 p-5">
           <div className="space-y-1">
@@ -199,15 +209,7 @@ export const SequenceFrame: FC<SequenceFrameProps> = ({
       {description && (
         <p className="px-8 text-sm text-amber-700 font-medium">{description}</p>
       )}
-      {count && (
-        <div className="absolute top-3 right-3 z-20">
-          <span className="inline-flex items-center gap-1 rounded-full bg-black/60 backdrop-blur-md px-2.5 py-1 text-xs font-medium text-white border border-white/10">
-            {t("sequence.countLabel", {
-              count: count ?? 0,
-            })}
-          </span>
-        </div>
-      )}
+      {count && <FrameCountBadge count={count} />}
       {showIsLiked && (
         <button
           type="button"
@@ -228,3 +230,41 @@ export const SequenceFrame: FC<SequenceFrameProps> = ({
     </div>
   );
 };
+
+const FrameCountBadge: FC<{ count: number }> = ({ count }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="absolute top-3 right-3 z-20">
+      <span className="inline-flex items-center gap-1 rounded-full bg-black/60 backdrop-blur-md px-2.5 py-1 text-xs font-medium text-white border border-white/10">
+        {t("sequence.countLabel", { count })}
+      </span>
+    </div>
+  );
+};
+
+/**
+ * Card preview of an IMAGE first frame: the picture cropped to fill the
+ * card (cards share one height), the frame text over a gradient.
+ */
+const CardImageFrame: FC<{ asset: FrameAsset; text: string; count?: number }> = ({
+  asset,
+  text,
+  count,
+}) => (
+  <div data-testid="card-image-frame" className="relative h-full w-full">
+    <Image
+      src={asset.url}
+      alt={text}
+      width={asset.width}
+      height={asset.height}
+      unoptimized
+      className="h-full w-full object-cover"
+    />
+    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-4 pb-3 pt-8">
+      <p className="line-clamp-2 font-serif text-base leading-tight text-white">
+        {text}
+      </p>
+    </div>
+    {count ? <FrameCountBadge count={count} /> : null}
+  </div>
+);

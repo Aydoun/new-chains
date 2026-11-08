@@ -311,5 +311,21 @@
         }
       }
     }
+  },
+  "images": {
+    "add": "Add image",
+    "remove": "Remove image",
+    "uploading": "Uploading image…",
+    "preview": "Image for frame {index}",
+    "hint": "JPEG, PNG or WebP, up to {maxMb} MB, from 9:16 to 1.91:1 like Instagram or TikTok",
+    "errors": {
+      "type": "Use a JPEG, PNG or WebP image.",
+      "tooLarge": "The image must be {maxMb} MB or smaller.",
+      "tooSmall": "The image must be at least {minWidth}×{minHeight} pixels.",
+      "tooBig": "The image must be at most {maxWidth}×{maxHeight} pixels.",
+      "ratio": "Use a proportion between 9:16 (portrait) and 1.91:1 (landscape), like Instagram or TikTok.",
+      "empty": "The file is empty.",
+      "upload": "The image couldn’t be uploaded. Please try again."
+    }
   }
 }

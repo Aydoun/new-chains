@@ -311,5 +311,21 @@
         }
       }
     }
+  },
+  "images": {
+    "add": "添加图片",
+    "remove": "移除图片",
+    "uploading": "正在上传图片…",
+    "preview": "画面 {index} 的图片",
+    "hint": "JPEG、PNG 或 WebP，最大 {maxMb} MB，比例从 9:16 到 1.91:1（与 Instagram 或 TikTok 相同）",
+    "errors": {
+      "type": "请使用 JPEG、PNG 或 WebP 图片。",
+      "tooLarge": "图片不能超过 {maxMb} MB。",
+      "tooSmall": "图片至少需要 {minWidth}×{minHeight} 像素。",
+      "tooBig": "图片最多 {maxWidth}×{maxHeight} 像素。",
+      "ratio": "请使用 9:16（竖版）到 1.91:1（横版）之间的比例，与 Instagram 或 TikTok 相同。",
+      "empty": "文件为空。",
+      "upload": "图片上传失败，请重试。"
+    }
   }
 }

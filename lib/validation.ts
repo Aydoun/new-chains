@@ -52,6 +52,8 @@ export const visibilitySchema = z.enum(["PUBLIC", "PRIVATE", "FRIENDS_ONLY"]);
 export const frameInputSchema = z.object({
   content: trimmed(FRAME_CONTENT_MAX_LENGTH).min(1, "Frame content is required"),
   description: trimmed(FRAME_DESCRIPTION_MAX_LENGTH).optional().default(""),
+  /** An image the same user uploaded; makes this an IMAGE frame. */
+  assetId: idSchema.optional(),
 });
 
 export const createSequenceBody = z

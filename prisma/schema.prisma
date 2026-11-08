@@ -20,6 +20,7 @@ model User {
   Sequences Sequence[]
   snippets  Snippet[]
   frames    Frame[]
+  assets    Asset[]
 }
 
 model Sequence {
@@ -46,12 +47,34 @@ model Frame {
   content     String
   createdById Int?
   createdBy   User?     @relation(fields: [createdById], references: [id])
+  /// Set for IMAGE frames: the picture shown in the frame.
+  assetId     Int?
+  asset       Asset?    @relation(fields: [assetId], references: [id])
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   snippets    Snippet[]
 
   @@index([createdAt])
   @@index([createdById])
+  @@index([assetId])
+}
+
+/// An uploaded file (Vercel Blob, or local disk in dev/e2e).
+model Asset {
+  id           Int      @id @default(autoincrement())
+  url          String
+  /// Storage key, `assets/<uploadedById>/<uuid>.<ext>`.
+  pathname     String   @unique
+  contentType  String
+  size         Int
+  width        Int
+  height       Int
+  uploadedById Int
+  uploadedBy   User     @relation(fields: [uploadedById], references: [id])
+  frames       Frame[]
+  createdAt    DateTime @default(now())
+
+  @@index([uploadedById])
 }
 
 model Contact {

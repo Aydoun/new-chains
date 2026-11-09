@@ -54,6 +54,8 @@ export default function Home({
     isLoading,
     error,
     loadMore,
+    refresh,
+    updateItem,
   } = useInfinitePagination<Sequence, PaginationParams>({
     fetchPage: (params) => fetchSequences(params).unwrap(),
     initialParams,
@@ -177,7 +179,7 @@ export default function Home({
                 )}
               </>
             ) : (
-              <SequenceErrorState />
+              <SequenceErrorState onRetry={refresh} />
             )}
           </>
         )}
@@ -186,6 +188,9 @@ export default function Home({
         <ViewSequence
           sequenceId={sequenceIdRef.current}
           onClose={() => setIsViewDialogOpen(false)}
+          onCommentCountChange={(id, commentCount) =>
+            updateItem(id, { commentCount })
+          }
         />
       )}
     </div>

@@ -21,6 +21,7 @@ model User {
   snippets  Snippet[]
   frames    Frame[]
   assets    Asset[]
+  comments  Comment[]
 }
 
 model Sequence {
@@ -36,6 +37,7 @@ model Sequence {
   updatedAt   DateTime   @updatedAt
   user        User       @relation(fields: [userId], references: [id])
   snippets    Snippet[]
+  comments    Comment[]
 
   @@index([title, userId])
 }
@@ -50,6 +52,9 @@ model Frame {
   /// Set for IMAGE frames: the picture shown in the frame.
   assetId     Int?
   asset       Asset?    @relation(fields: [assetId], references: [id])
+  /// Optional web link the frame opens in a new tab. Always an http(s) URL
+  /// checked by `parseFrameLink` (lib/frame-link.ts) before it's stored.
+  linkUrl     String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   snippets    Snippet[]
@@ -75,6 +80,22 @@ model Asset {
   createdAt    DateTime @default(now())
 
   @@index([uploadedById])
+}
+
+/// A comment on a sequence. Soft-deleted with `isDeleted`.
+model Comment {
+  id         Int      @id @default(autoincrement())
+  content    String
+  sequenceId Int
+  authorId   Int
+  isDeleted  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  sequence   Sequence @relation(fields: [sequenceId], references: [id])
+  author     User     @relation(fields: [authorId], references: [id])
+
+  @@index([sequenceId, createdAt])
+  @@index([authorId])
 }
 
 model Contact {

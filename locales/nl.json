@@ -88,7 +88,22 @@
     "description": "Optionele notitie",
     "empty": "Geen frames gevonden",
     "self": "Frame",
-    "selfs": "Frames"
+    "selfs": "Frames",
+    "link": {
+      "add": "Link toevoegen",
+      "label": "Link van frame {index}",
+      "placeholder": "https://voorbeeld.nl/pagina",
+      "hint": "Opent in een nieuw tabblad als iemand op het frame klikt.",
+      "remove": "Link verwijderen",
+      "opensInNewTab": "(opent in een nieuw tabblad)",
+      "errors": {
+        "invalid": "Voer een webadres in, zoals voorbeeld.nl/pagina.",
+        "protocol": "Alleen weblinks die beginnen met http:// of https:// zijn toegestaan.",
+        "credentials": "Een link mag geen gebruikersnaam of wachtwoord bevatten.",
+        "host": "Link naar een openbare website, niet naar een lokaal adres of IP-adres.",
+        "tooLong": "Deze link is te lang."
+      }
+    }
   },
   "filter": {
     "label": "tijd",
@@ -117,7 +132,8 @@
     "studio": "Studio",
     "explore": "Verkennen",
     "exploreDescription": "Elke sequentie vertelt een verhaal in frames",
-    "self": "Navigatie"
+    "self": "Navigatie",
+    "assets": "Afbeeldingenmap"
   },
   "onboarding": {
     "actions": {
@@ -327,5 +343,38 @@
       "empty": "Het bestand is leeg.",
       "upload": "De afbeelding kon niet worden geüpload. Probeer het opnieuw."
     }
+  },
+  "comments": {
+    "title": "Reacties",
+    "label": "Schrijf een reactie",
+    "placeholder": "Voeg een reactie toe",
+    "post": "Plaatsen",
+    "postError": "Je reactie kon niet worden geplaatst. Probeer het opnieuw.",
+    "loadError": "Reacties konden niet worden geladen.",
+    "retry": "Opnieuw proberen",
+    "empty": "Nog geen reacties. Wees de eerste die iets deelt.",
+    "loadMore": "Meer reacties laden",
+    "delete": "Verwijderen",
+    "confirmDelete": "Deze reactie verwijderen?",
+    "cancel": "Annuleren",
+    "unknownUser": "Onbekende gebruiker",
+    "count": "Reacties: {count}"
+  },
+  "assets": {
+    "title": "Afbeeldingenmap",
+    "description": "Alle afbeeldingen die je hebt geüpload, nieuwste eerst.",
+    "uploaded": "Geüpload {time}",
+    "usedIn": "Gebruikt in",
+    "notUsed": "Niet gebruikt in een sequentie",
+    "more": "+{count} meer",
+    "showLess": "Minder tonen",
+    "empty": {
+      "title": "Je afbeeldingen verschijnen hier",
+      "description": "Voeg een afbeelding toe aan een frame wanneer je een sequentie maakt.",
+      "cta": "Een sequentie maken"
+    },
+    "loadError": "Je afbeeldingen konden niet worden geladen.",
+    "retry": "Opnieuw proberen",
+    "imageAlt": "Geüploade afbeelding"
   }
 }

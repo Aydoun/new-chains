@@ -81,3 +81,62 @@ test.describe("POST /api/sequence/create with images", () => {
     expect(await db.findSequenceByTitle(users.me.id, title)).toBeFalsy();
   });
 });
+
+test.describe("GET /api/asset/list", () => {
+  type Listed = { id: number; sequences: { id: number; title: string }[] };
+
+  /** Every page of the test user's images. */
+  async function listAll(request: import("@playwright/test").APIRequestContext) {
+    const items: Listed[] = [];
+    for (let page = 1; ; page++) {
+      const response = await request.get(`/api/asset/list?page=${page}&limit=50`);
+      expect(response.status()).toBe(200);
+      const body = await response.json();
+      items.push(...body.items);
+      if (!body.hasMore) return items;
+    }
+  }
+
+  test("lists my uploads with the sequences that use them", async ({ request, data }) => {
+    const used = await (await upload(request, makePng(1080, 1080))).json();
+    const unused = await (await upload(request, makePng(1080, 1080))).json();
+    const title = data.sequenceTitle();
+    const sequence = await (
+      await request.post("/api/sequence/create", {
+        data: { title, frames: [{ content: "Look", assetId: used.id }] },
+      })
+    ).json();
+
+    const items = await listAll(request);
+    const ids = items.map((item) => item.id);
+
+    // Newest first: the unused one was uploaded last.
+    expect(ids.indexOf(unused.id)).toBeLessThan(ids.indexOf(used.id));
+    expect(items.find((item) => item.id === used.id)?.sequences).toEqual([
+      { id: sequence.id, title },
+    ]);
+    expect(items.find((item) => item.id === unused.id)?.sequences).toEqual([]);
+  });
+
+  test("leaves out deleted sequences", async ({ request, data }) => {
+    const asset = await (await upload(request, makePng(1080, 1080))).json();
+    const sequence = await (
+      await request.post("/api/sequence/create", {
+        data: { title: data.sequenceTitle(), frames: [{ content: "Gone", assetId: asset.id }] },
+      })
+    ).json();
+    await request.delete(`/api/sequence/delete?id=${sequence.id}`);
+
+    const items = await listAll(request);
+
+    expect(items.find((item) => item.id === asset.id)?.sequences).toEqual([]);
+  });
+
+  test("never lists someone else's images", async ({ request, users }) => {
+    const foreign = await db.insertAsset(users.author.id);
+
+    const items = await listAll(request);
+
+    expect(items.map((item) => item.id)).not.toContain(foreign.id);
+  });
+});

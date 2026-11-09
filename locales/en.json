@@ -88,7 +88,22 @@
     "description": "Optional note",
     "empty": "No frames found",
     "self": "Frame",
-    "selfs": "Frames"
+    "selfs": "Frames",
+    "link": {
+      "add": "Add link",
+      "label": "Frame {index} link",
+      "placeholder": "https://example.com/page",
+      "hint": "Opens in a new tab when someone clicks the frame.",
+      "remove": "Remove link",
+      "opensInNewTab": "(opens in a new tab)",
+      "errors": {
+        "invalid": "Enter a web address, like example.com/page.",
+        "protocol": "Only web links starting with http:// or https:// are allowed.",
+        "credentials": "Links can't contain a username or password.",
+        "host": "Link to a public website, not a local address or IP.",
+        "tooLong": "This link is too long."
+      }
+    }
   },
   "filter": {
     "label": "time",
@@ -117,7 +132,8 @@
     "studio": "Studio",
     "explore": "Explore",
     "exploreDescription": "Every Sequence tells a story through frames",
-    "self": "Navigation"
+    "self": "Navigation",
+    "assets": "Assets folder"
   },
   "onboarding": {
     "actions": {
@@ -327,5 +343,38 @@
       "empty": "The file is empty.",
       "upload": "The image couldn’t be uploaded. Please try again."
     }
+  },
+  "comments": {
+    "title": "Comments",
+    "label": "Write a comment",
+    "placeholder": "Add a comment",
+    "post": "Post",
+    "postError": "Your comment couldn't be posted. Try again.",
+    "loadError": "Comments couldn't load.",
+    "retry": "Retry",
+    "empty": "No comments yet. Be the first to share a thought.",
+    "loadMore": "Load more comments",
+    "delete": "Delete",
+    "confirmDelete": "Delete this comment?",
+    "cancel": "Cancel",
+    "unknownUser": "Unknown user",
+    "count": "Comments: {count}"
+  },
+  "assets": {
+    "title": "Assets folder",
+    "description": "Every image you've uploaded, newest first.",
+    "uploaded": "Uploaded {time}",
+    "usedIn": "Used in",
+    "notUsed": "Not used in a sequence",
+    "more": "+{count} more",
+    "showLess": "Show less",
+    "empty": {
+      "title": "Your images will show up here",
+      "description": "Add a picture to a frame when you create a sequence.",
+      "cta": "Create a sequence"
+    },
+    "loadError": "Your images couldn't load.",
+    "retry": "Retry",
+    "imageAlt": "Uploaded image"
   }
 }

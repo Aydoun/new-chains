@@ -96,6 +96,55 @@ describe("POST /api/sequence/create", () => {
   });
 });
 
+describe("POST /api/sequence/create with links", () => {
+  const create = async (linkUrl: string) => {
+    const { res, store } = mockResponse();
+    await createHandler(
+      mockRequest({
+        method: "POST",
+        body: { title: "Links", frames: [{ content: "Read this", linkUrl }] },
+      }),
+      res,
+    );
+    return store;
+  };
+
+  it("stores the normalised link on the frame", async () => {
+    db.tx.frame.create.mockResolvedValue({ id: 10 });
+    db.tx.sequence.create.mockResolvedValue({ id: 5 });
+
+    const store = await create("  example.com/article  ");
+
+    expect(store.status).toBe(201);
+    expect(db.tx.frame.create.mock.calls[0][0].data).toMatchObject({
+      type: "PHRASE",
+      linkUrl: "https://example.com/article",
+    });
+  });
+
+  it("treats an empty link as no link", async () => {
+    db.tx.frame.create.mockResolvedValue({ id: 10 });
+    db.tx.sequence.create.mockResolvedValue({ id: 5 });
+
+    const store = await create("   ");
+
+    expect(store.status).toBe(201);
+    expect(db.tx.frame.create.mock.calls[0][0].data.linkUrl).toBeUndefined();
+  });
+
+  it.each([
+    ["javascript:alert(1)", "link:protocol"],
+    ["https://user:pw@example.com", "link:credentials"],
+    ["http://localhost:3000", "link:host"],
+  ])("refuses %j and creates nothing", async (linkUrl, message) => {
+    const store = await create(linkUrl);
+
+    expect(store.status).toBe(400);
+    expect(store.body.issues).toEqual([{ path: "frames.0.linkUrl", message }]);
+    expect(db.$transaction).not.toHaveBeenCalled();
+  });
+});
+
 describe("POST /api/sequence/create with images", () => {
   const body = (assetId: number) => ({
     title: "Trip",
@@ -184,6 +233,21 @@ describe("GET /api/sequence/fetch", () => {
     expect(store.body.items[0].firstFrame).toEqual({ id: 7, content: "first" });
     expect(store.body.hasMore).toBe(false);
   });
+
+  it("counts each sequence's live comments", async () => {
+    db.sequence.findMany.mockResolvedValue([
+      { id: 1, FrameOrder: [], user: { id: 2, username: "a" }, _count: { comments: 3 } },
+    ]);
+
+    const { res, store } = mockResponse();
+    await fetchHandler(mockRequest({ method: "GET" }), res);
+
+    expect(db.sequence.findMany.mock.calls[0][0].include._count).toEqual({
+      select: { comments: { where: { isDeleted: false } } },
+    });
+    expect(store.body.items[0].commentCount).toBe(3);
+    expect(store.body.items[0]).not.toHaveProperty("_count");
+  });
 });
 
 describe("GET /api/sequence/studio", () => {
@@ -219,6 +283,9 @@ describe("GET /api/sequence/[id]", () => {
         isDeleted: false,
         OR: [{ visibility: "PUBLIC" }, { userId: 1 }],
       },
+      include: {
+        _count: { select: { comments: { where: { isDeleted: false } } } },
+      },
     });
     expect(store.status).toBe(404);
     expect(store.body).toEqual({ message: "Sequence not found" });
@@ -235,6 +302,20 @@ describe("GET /api/sequence/[id]", () => {
     expect(store.status).toBe(200);
     expect(store.body.frames.map((f: { id: number }) => f.id)).toEqual([9, 4]);
     expect(store.body.likedFrames).toEqual([4]);
+  });
+
+  it("returns the live comment count instead of Prisma's _count", async () => {
+    db.sequence.findFirst.mockResolvedValue({
+      id: 3,
+      FrameOrder: [],
+      _count: { comments: 7 },
+    });
+
+    const { res, store } = mockResponse();
+    await readHandler(mockRequest({ method: "GET", query: { id: "3" } }), res);
+
+    expect(store.body.commentCount).toBe(7);
+    expect(store.body).not.toHaveProperty("_count");
   });
 
   it("rejects a non-numeric id", async () => {

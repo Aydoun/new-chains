@@ -44,6 +44,19 @@ describe("SequenceCard", () => {
     vi.clearAllMocks();
   });
 
+  it("shows the comment count", () => {
+    renderCard({ sequenceOverrides: { commentCount: 12 } as Partial<typeof baseSequence> });
+
+    const count = screen.getByTestId("comment-count");
+    expect(count).toHaveTextContent("12");
+    expect(count).toHaveAccessibleName(translate("comments.count", { count: 12 }));
+  });
+
+  it("shows zero comments when the count is missing", () => {
+    renderCard();
+    expect(screen.getByTestId("comment-count")).toHaveTextContent("0");
+  });
+
   it("renders sequence metadata and author link", () => {
     renderCard();
 

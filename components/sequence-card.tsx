@@ -1,12 +1,21 @@
 import { FC, useState, MouseEvent as ReactMouseEvent } from "react";
 import { FrameAsset, Sequence } from "@/app/types";
-import { Clock3, Heart, Pencil, Share2, Trash2, User } from "lucide-react";
+import {
+  Clock3,
+  Heart,
+  MessageCircle,
+  Pencil,
+  Share2,
+  Trash2,
+  User,
+} from "lucide-react";
 import { useTranslation } from "@/components/locale-provider";
 import { cn, timeAgo } from "@/lib/utils";
 import { IconButton, Spinner, Text } from "@radix-ui/themes";
 import Link from "next/link";
 import Image from "next/image";
 import clsx from "clsx";
+import { FrameLink } from "./frame-link";
 
 export interface SequenceCardProps {
   title: string;
@@ -113,11 +122,25 @@ export const SequenceCard: FC<Props> = ({
             data-testid="card-menu"
             className="mt-auto flex items-center justify-between"
           >
-            <div className="flex items-center gap-1 text-muted-foreground">
-              <Clock3 className="h-4 w-4" aria-hidden="true" />
-              <Text size="1" weight="medium">
-                {timeAgo(sequence.createdAt, { locale })}
-              </Text>
+            <div className="flex items-center gap-3 text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <Clock3 className="h-4 w-4" aria-hidden="true" />
+                <Text size="1" weight="medium">
+                  {timeAgo(sequence.createdAt, { locale })}
+                </Text>
+              </div>
+              <div
+                className="flex items-center gap-1"
+                data-testid="comment-count"
+                aria-label={t("comments.count", {
+                  count: sequence.commentCount ?? 0,
+                })}
+              >
+                <MessageCircle className="h-4 w-4" aria-hidden="true" />
+                <Text size="1" weight="medium" aria-hidden="true">
+                  {sequence.commentCount ?? 0}
+                </Text>
+              </div>
             </div>
             {deletingSequenceRef === sequence.id ? (
               <Spinner />
@@ -186,6 +209,8 @@ interface SequenceFrameProps {
   liked?: boolean;
   showIsLiked?: boolean;
   onLike?: () => void;
+  /** Opens in a new tab when the frame's text is clicked. */
+  linkUrl?: string | null;
 }
 
 export const SequenceFrame: FC<SequenceFrameProps> = ({
@@ -195,6 +220,7 @@ export const SequenceFrame: FC<SequenceFrameProps> = ({
   liked,
   showIsLiked = true,
   onLike,
+  linkUrl,
 }) => {
   const { t } = useTranslation();
   return (
@@ -203,12 +229,14 @@ export const SequenceFrame: FC<SequenceFrameProps> = ({
         "relative flex px-2 h-48 w-full flex-col items-center justify-center gap-2 bg-frame-primary rounded-lg",
       )}
     >
-      <blockquote className="max-w-2xl text-center text-gray-800">
-        <p className="font-serif text-1xl md:text-2xl leading-tight">{text}</p>
-      </blockquote>
-      {description && (
-        <p className="px-8 text-sm text-amber-700 font-medium">{description}</p>
-      )}
+      <FrameLink linkUrl={linkUrl} className="px-8">
+        <blockquote className="max-w-2xl text-center text-gray-800">
+          <p className="font-serif text-1xl md:text-2xl leading-tight">{text}</p>
+        </blockquote>
+        {description && (
+          <p className="px-8 text-sm text-amber-700 font-medium">{description}</p>
+        )}
+      </FrameLink>
       {count && <FrameCountBadge count={count} />}
       {showIsLiked && (
         <button

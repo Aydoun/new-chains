@@ -12,6 +12,7 @@ export type FrameInput = {
   content: string;
   description?: string;
   assetId?: number;
+  linkUrl?: string;
 };
 
 /** Frames are created together with their sequence, in one request. */

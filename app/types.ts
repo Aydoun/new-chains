@@ -23,6 +23,8 @@ export interface Sequence {
   };
   firstFrame: Frame | null;
   FrameOrder: number[];
+  /** Live (not deleted) comments on the sequence. */
+  commentCount?: number;
   visibility: Visibility;
   isDeleted: boolean;
   createdAt: string;
@@ -49,6 +51,8 @@ export interface Frame {
   content: string;
   assetId?: number | null;
   asset?: FrameAsset | null;
+  /** Web link the frame opens in a new tab, if any. */
+  linkUrl?: string | null;
   createdById?: number | null;
   createdAt: string;
   updatedAt: string;
@@ -84,6 +88,8 @@ export type SequenceCreationFormValues = {
     description?: string;
     /** Uploaded image for this frame, if any. */
     asset?: UploadedAsset | null;
+    /** Web link as typed; checked and normalised on save. */
+    linkUrl?: string;
   }[];
 };
 
@@ -111,3 +117,37 @@ export type TimeFilter =
   | "this-week"
   | "this-month"
   | undefined;
+
+export interface CommentAuthor {
+  id: number;
+  username: string;
+  avatarUrl?: string | null;
+}
+
+export interface SequenceComment {
+  id: number;
+  content: string;
+  sequenceId: number;
+  authorId: number;
+  author: CommentAuthor;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** A page of comments, newest first; `nextCursor` loads the older ones. */
+export interface CommentsPage {
+  items: SequenceComment[];
+  hasMore: boolean;
+  nextCursor: number | null;
+  /** Live comments on the sequence, across all pages. */
+  total: number;
+}
+
+/** An uploaded image in the user's assets folder. */
+export interface LibraryAsset extends FrameAsset {
+  id: number;
+  contentType: string;
+  createdAt: string;
+  /** The user's live sequences that show this image, newest first. */
+  sequences: { id: number; title: string }[];
+}

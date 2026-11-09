@@ -6,6 +6,8 @@ import clsx from "clsx";
 import { Heart } from "lucide-react";
 import { useTranslation } from "@/components/locale-provider";
 import type { FrameAsset } from "@/app/types";
+import { FrameLink } from "./frame-link";
+import { safeFrameLink } from "@/lib/frame-link";
 
 type Props = {
   asset: FrameAsset;
@@ -14,6 +16,8 @@ type Props = {
   liked?: boolean;
   showIsLiked?: boolean;
   onLike?: () => void;
+  /** Opens in a new tab when the picture or its caption is clicked. */
+  linkUrl?: string | null;
 };
 
 /**
@@ -27,30 +31,35 @@ export const ImageFrame: FC<Props> = ({
   liked,
   showIsLiked = true,
   onLike,
+  linkUrl,
 }) => {
   const { t } = useTranslation();
+  const Caption = safeFrameLink(linkUrl) ? "div" : "figcaption";
 
   return (
     <figure
       data-testid="image-frame"
       className="relative flex w-full flex-col items-center gap-3 rounded-lg bg-frame-primary p-3"
     >
-      <Image
-        src={asset.url}
-        alt={text}
-        width={asset.width}
-        height={asset.height}
-        unoptimized
-        className="h-auto max-h-[60vh] w-auto max-w-full rounded-md object-contain"
-      />
-      <figcaption className="flex flex-col items-center gap-1 px-8 text-center">
-        <p className="font-serif text-lg leading-tight text-gray-800 md:text-xl">
-          {text}
-        </p>
-        {description && (
-          <p className="text-sm font-medium text-amber-700">{description}</p>
-        )}
-      </figcaption>
+      <FrameLink linkUrl={linkUrl} className="w-full gap-3" overImage>
+        <Image
+          src={asset.url}
+          alt={text}
+          width={asset.width}
+          height={asset.height}
+          unoptimized
+          className="h-auto max-h-[40vh] w-auto max-w-full rounded-md object-contain"
+        />
+        {/* A figcaption must sit directly in the figure, so inside a link it's a div. */}
+        <Caption className="flex flex-col items-center gap-1 px-8 text-center">
+          <p className="font-serif text-lg leading-tight text-gray-800 md:text-xl">
+            {text}
+          </p>
+          {description && (
+            <p className="text-sm font-medium text-amber-700">{description}</p>
+          )}
+        </Caption>
+      </FrameLink>
       {showIsLiked && (
         <button
           type="button"

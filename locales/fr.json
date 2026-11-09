@@ -88,7 +88,22 @@
     "description": "Note facultative",
     "empty": "Aucun cadre trouvé",
     "self": "Cadre",
-    "selfs": "Cadres"
+    "selfs": "Cadres",
+    "link": {
+      "add": "Ajouter un lien",
+      "label": "Lien du cadre {index}",
+      "placeholder": "https://exemple.com/page",
+      "hint": "S'ouvre dans un nouvel onglet quand on clique sur le cadre.",
+      "remove": "Retirer le lien",
+      "opensInNewTab": "(s'ouvre dans un nouvel onglet)",
+      "errors": {
+        "invalid": "Saisissez une adresse web, comme exemple.com/page.",
+        "protocol": "Seuls les liens web commençant par http:// ou https:// sont autorisés.",
+        "credentials": "Un lien ne peut pas contenir de nom d'utilisateur ni de mot de passe.",
+        "host": "Utilisez un site web public, pas une adresse locale ou IP.",
+        "tooLong": "Ce lien est trop long."
+      }
+    }
   },
   "filter": {
     "label": "période",
@@ -117,7 +132,8 @@
     "studio": "Studio",
     "explore": "Explorer",
     "exploreDescription": "Chaque séquence raconte une histoire à travers ses cadres",
-    "self": "Navigation"
+    "self": "Navigation",
+    "assets": "Dossier d'images"
   },
   "onboarding": {
     "actions": {
@@ -327,5 +343,38 @@
       "empty": "Le fichier est vide.",
       "upload": "Impossible d’envoyer l’image. Veuillez réessayer."
     }
+  },
+  "comments": {
+    "title": "Commentaires",
+    "label": "Écrire un commentaire",
+    "placeholder": "Ajouter un commentaire",
+    "post": "Publier",
+    "postError": "Votre commentaire n'a pas pu être publié. Réessayez.",
+    "loadError": "Impossible de charger les commentaires.",
+    "retry": "Réessayer",
+    "empty": "Aucun commentaire pour l'instant. Soyez le premier à réagir.",
+    "loadMore": "Charger plus de commentaires",
+    "delete": "Supprimer",
+    "confirmDelete": "Supprimer ce commentaire ?",
+    "cancel": "Annuler",
+    "unknownUser": "Utilisateur inconnu",
+    "count": "Commentaires : {count}"
+  },
+  "assets": {
+    "title": "Dossier d'images",
+    "description": "Toutes les images que vous avez importées, des plus récentes aux plus anciennes.",
+    "uploaded": "Importée {time}",
+    "usedIn": "Utilisée dans",
+    "notUsed": "Utilisée dans aucune séquence",
+    "more": "+{count} de plus",
+    "showLess": "Afficher moins",
+    "empty": {
+      "title": "Vos images apparaîtront ici",
+      "description": "Ajoutez une image à un cadre lorsque vous créez une séquence.",
+      "cta": "Créer une séquence"
+    },
+    "loadError": "Impossible de charger vos images.",
+    "retry": "Réessayer",
+    "imageAlt": "Image importée"
   }
 }

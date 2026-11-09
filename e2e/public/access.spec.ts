@@ -13,7 +13,7 @@ test.describe("signed-out visitor", () => {
     ).toBeEnabled();
   });
 
-  for (const path of ["/", "/studio", "/profile"]) {
+  for (const path of ["/", "/studio", "/profile", "/assets"]) {
     test(`is sent to login when opening ${path}`, async ({ page }) => {
       await page.goto(path);
 

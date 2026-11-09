@@ -10,7 +10,7 @@ export const sequenceCard = (page: Page, title: string) =>
 /** A sidebar navigation link; its `data-active` marks the current page. */
 export const sidebarLink = (
   page: Page,
-  item: "home" | "studio" | "profile" | "contact",
+  item: "home" | "studio" | "profile" | "contact" | "assets",
 ) => page.getByRole("link", { name: t(`navigation.${item}`), exact: true });
 
 export const searchBox = (page: Page) =>

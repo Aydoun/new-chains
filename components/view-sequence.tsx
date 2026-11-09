@@ -12,14 +12,23 @@ import { ImageFrame } from "./image-frame";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { Heading } from "@radix-ui/themes";
 import { FrameSkeleton } from "./sequence-skeleton";
+import { CommentSection } from "./comments/comment-section";
+import { useSession } from "next-auth/react";
 
 interface Props {
   sequenceId: string | number | null;
   onClose: () => void;
+  /** Reports the sequence's comment count so the list can update its card. */
+  onCommentCountChange?: (sequenceId: number, count: number) => void;
 }
 
-export function ViewSequence({ sequenceId, onClose }: Props) {
+export function ViewSequence({
+  sequenceId,
+  onClose,
+  onCommentCountChange,
+}: Props) {
   const { t } = useTranslation();
+  const { data: session } = useSession();
   const [saveSnippet] = useSaveSnippetMutation();
   const [activeFrame, setActiveFrame] = useState(0);
   const [newLikes, setNewLikes] = useState<number[]>([]);
@@ -78,6 +87,7 @@ export function ViewSequence({ sequenceId, onClose }: Props) {
                       text: frame.content,
                       description: frame.description,
                       onLike: handleSaveSnippet(frame.id),
+                      linkUrl: frame.linkUrl,
                       liked:
                         data?.likedFrames.includes(frame.id) ||
                         newLikes.includes(frame.id),
@@ -116,6 +126,14 @@ export function ViewSequence({ sequenceId, onClose }: Props) {
             onPrevious={() =>
               setActiveFrame((current) => Math.max(current - 1, 0))
             }
+          />
+        )}
+        {!isError && data && (
+          <CommentSection
+            sequenceId={data.id}
+            sequenceOwnerId={data.userId}
+            viewer={session?.user}
+            onCountChange={(count) => onCommentCountChange?.(data.id, count)}
           />
         )}
       </Modal.Content>

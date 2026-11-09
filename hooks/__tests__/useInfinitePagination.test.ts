@@ -2,7 +2,7 @@ import { act, renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { useInfinitePagination } from "../useInfinitePagination";
 
-type Item = { id: number };
+type Item = { id: number; commentCount?: number };
 
 const page = (items: Item[]) => ({
   items,
@@ -32,5 +32,27 @@ describe("useInfinitePagination", () => {
 
     expect(fetchPage).toHaveBeenLastCalledWith({ limit: 20, page: 1 });
     expect(result.current.items).toEqual([{ id: 2 }, { id: 1 }]);
+  });
+
+  it("updateItem patches one loaded item and leaves the others", async () => {
+    const fetchPage = vi
+      .fn()
+      .mockResolvedValue(page([{ id: 1, commentCount: 0 }, { id: 2, commentCount: 4 }]));
+    const initialParams = { limit: 20 };
+
+    const { result } = renderHook(() =>
+      useInfinitePagination<Item, typeof initialParams>({
+        fetchPage,
+        initialParams,
+      })
+    );
+    await waitFor(() => expect(result.current.items).toHaveLength(2));
+
+    act(() => result.current.updateItem(1, { commentCount: 3 }));
+
+    expect(result.current.items).toEqual([
+      { id: 1, commentCount: 3 },
+      { id: 2, commentCount: 4 },
+    ]);
   });
 });

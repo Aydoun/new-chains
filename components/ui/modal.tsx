@@ -55,7 +55,10 @@ const ModalRoot = ({ open, onOpenChange, children }: ModalProps) => {
           aria-label={t("common.close")}
           className="absolute inset-0 h-full w-full bg-black/60"
         />
-        <div className="relative z-10 flex h-full items-center justify-center overflow-y-auto px-4 py-10">
+        {/* Centred with auto margins (see ModalContent), not items-center:
+            a dialog taller than the window would overflow off the top,
+            where scrolling can't reach its close button. */}
+        <div className="relative z-10 flex h-full justify-center overflow-y-auto px-4 py-10">
           {children}
         </div>
       </div>,
@@ -72,7 +75,7 @@ const ModalContent = ({ className, children, ...props }: ModalContentProps) => (
   <div
     role="dialog"
     aria-modal="true"
-    className={cn("relative w-full max-w-2xl z-1000", className)}
+    className={cn("relative my-auto w-full max-w-2xl z-1000", className)}
     onClick={(event) => event.stopPropagation()}
     {...props}
   >

@@ -327,5 +327,21 @@
       "empty": "Het bestand is leeg.",
       "upload": "De afbeelding kon niet worden geüpload. Probeer het opnieuw."
     }
+  },
+  "comments": {
+    "title": "Reacties",
+    "label": "Schrijf een reactie",
+    "placeholder": "Voeg een reactie toe",
+    "post": "Plaatsen",
+    "postError": "Je reactie kon niet worden geplaatst. Probeer het opnieuw.",
+    "loadError": "Reacties konden niet worden geladen.",
+    "retry": "Opnieuw proberen",
+    "empty": "Nog geen reacties. Wees de eerste die iets deelt.",
+    "loadMore": "Meer reacties laden",
+    "delete": "Verwijderen",
+    "confirmDelete": "Deze reactie verwijderen?",
+    "cancel": "Annuleren",
+    "unknownUser": "Onbekende gebruiker",
+    "count": "Reacties: {count}"
   }
 }

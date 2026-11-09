@@ -46,6 +46,7 @@ export default function ExplorePage() {
     isLoading,
     error,
     loadMore,
+    updateItem,
   } = useInfinitePagination<Sequence, PaginationParams>({
     fetchPage: (params) => fetchStudioSequences(params).unwrap(),
     initialParams,
@@ -72,6 +73,9 @@ export default function ExplorePage() {
       searchTerm={searchTerm}
       onSearchChange={setSearchTerm}
       isLoading={isBusy}
+      onCommentCountChange={(id, commentCount) =>
+        updateItem(id, { commentCount })
+      }
     />
   );
 }

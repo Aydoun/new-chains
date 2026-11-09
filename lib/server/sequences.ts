@@ -16,6 +16,19 @@ const frameAsset = {
   asset: { select: { url: true, width: true, height: true } },
 } satisfies Prisma.FrameInclude;
 
+/** How many live comments a sequence has. */
+const commentCount = {
+  _count: { select: { comments: { where: { isDeleted: false } } } },
+} satisfies Prisma.SequenceInclude;
+
+/** Replaces Prisma's `_count` with a plain `commentCount`. */
+function withCommentCount<T extends { _count?: { comments: number } }>(
+  sequence: T,
+) {
+  const { _count, ...rest } = sequence;
+  return { ...rest, commentCount: _count?.comments ?? 0 };
+}
+
 /** A sequence is visible to its owner, and to everyone when it's public. */
 const visibleTo = (viewerId: number): Prisma.SequenceWhereInput => ({
   OR: [{ visibility: "PUBLIC" }, { userId: viewerId }],
@@ -45,7 +58,10 @@ async function paginate(where: Prisma.SequenceWhereInput, query: ListQuery) {
     skip: (page - 1) * limit,
     take: limit + 1,
     orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-    include: { user: { select: { id: true, username: true } } },
+    include: {
+      user: { select: { id: true, username: true } },
+      ...commentCount,
+    },
   });
 
   const hasMore = sequences.length > limit;
@@ -65,7 +81,7 @@ async function paginate(where: Prisma.SequenceWhereInput, query: ListQuery) {
 
   return {
     items: pageSequences.map((sequence) => ({
-      ...sequence,
+      ...withCommentCount(sequence),
       firstFrame: framesById.get(sequence.FrameOrder?.[0]) ?? null,
     })),
     page,
@@ -95,6 +111,7 @@ export function listUserSequences(viewerId: number, query: ListQuery) {
 export async function getSequenceForViewer(id: number, viewerId: number) {
   const sequence = await prisma.sequence.findFirst({
     where: { id, isDeleted: false, ...visibleTo(viewerId) },
+    include: commentCount,
   });
   if (!sequence) throw notFound("Sequence");
 
@@ -115,7 +132,7 @@ export async function getSequenceForViewer(id: number, viewerId: number) {
   frames.sort((a, b) => (position.get(a.id) ?? 0) - (position.get(b.id) ?? 0));
 
   return {
-    ...sequence,
+    ...withCommentCount(sequence),
     frames,
     likedFrames: snippets.map((snippet) => snippet.frameId),
   };

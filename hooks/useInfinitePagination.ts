@@ -72,6 +72,15 @@ export function useInfinitePagination<
     [fetchAndSet, initialPage]
   );
 
+  /** Changes one loaded item in place, e.g. after its comment count changed. */
+  const updateItem = useCallback(
+    (targetId: string | number, patch: Partial<TItem>) =>
+      setItems((prev) =>
+        prev.map((item) => (item.id === targetId ? { ...item, ...patch } : item)),
+      ),
+    [],
+  );
+
   const exludeItem = useCallback(
     (targetId: string | number) => {
       const filteredItems = items.filter((item) => item.id !== targetId);
@@ -95,6 +104,7 @@ export function useInfinitePagination<
     loadMore,
     refresh,
     setItems,
+    updateItem,
     exludeItem,
   };
 }

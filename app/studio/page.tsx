@@ -45,6 +45,7 @@ export default function StudioPage() {
     error,
     loadMore,
     refresh,
+    updateItem,
     exludeItem,
   } = useInfinitePagination<Sequence, PaginationParams>({
     fetchPage: (params) => fetchStudioSequences(params).unwrap(),
@@ -89,6 +90,9 @@ export default function StudioPage() {
       // Drop the param so a reload or "back" doesn't reopen the form.
       onCreateOpened={() => router.replace("/studio", { scroll: false })}
       onSequenceCreated={refresh}
+      onCommentCountChange={(id, commentCount) =>
+        updateItem(id, { commentCount })
+      }
     />
   );
 }

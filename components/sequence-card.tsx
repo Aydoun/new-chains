@@ -1,6 +1,14 @@
 import { FC, useState, MouseEvent as ReactMouseEvent } from "react";
 import { FrameAsset, Sequence } from "@/app/types";
-import { Clock3, Heart, Pencil, Share2, Trash2, User } from "lucide-react";
+import {
+  Clock3,
+  Heart,
+  MessageCircle,
+  Pencil,
+  Share2,
+  Trash2,
+  User,
+} from "lucide-react";
 import { useTranslation } from "@/components/locale-provider";
 import { cn, timeAgo } from "@/lib/utils";
 import { IconButton, Spinner, Text } from "@radix-ui/themes";
@@ -113,11 +121,25 @@ export const SequenceCard: FC<Props> = ({
             data-testid="card-menu"
             className="mt-auto flex items-center justify-between"
           >
-            <div className="flex items-center gap-1 text-muted-foreground">
-              <Clock3 className="h-4 w-4" aria-hidden="true" />
-              <Text size="1" weight="medium">
-                {timeAgo(sequence.createdAt, { locale })}
-              </Text>
+            <div className="flex items-center gap-3 text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <Clock3 className="h-4 w-4" aria-hidden="true" />
+                <Text size="1" weight="medium">
+                  {timeAgo(sequence.createdAt, { locale })}
+                </Text>
+              </div>
+              <div
+                className="flex items-center gap-1"
+                data-testid="comment-count"
+                aria-label={t("comments.count", {
+                  count: sequence.commentCount ?? 0,
+                })}
+              >
+                <MessageCircle className="h-4 w-4" aria-hidden="true" />
+                <Text size="1" weight="medium" aria-hidden="true">
+                  {sequence.commentCount ?? 0}
+                </Text>
+              </div>
             </div>
             {deletingSequenceRef === sequence.id ? (
               <Spinner />

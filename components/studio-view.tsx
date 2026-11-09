@@ -33,6 +33,8 @@ type Props = {
   onSearchChange: (value: string) => void;
   deletingSequenceRef?: string | number;
   viewerId?: string;
+  /** Updates a card after its comment count changed in the open sequence. */
+  onCommentCountChange?: (sequenceId: number, count: number) => void;
   /** Open the "new sequence" form as soon as the studio loads. */
   openCreateOnLoad?: boolean;
   /** Called once the form was opened because of `openCreateOnLoad`. */
@@ -58,6 +60,7 @@ export function StudioView({
   openCreateOnLoad = false,
   onCreateOpened,
   onSequenceCreated,
+  onCommentCountChange,
 }: Props) {
   const { t } = useTranslation();
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
@@ -228,6 +231,7 @@ export function StudioView({
         <ViewSequence
           sequenceId={currentSequenceId.current}
           onClose={() => setIsViewDialogOpen(false)}
+          onCommentCountChange={onCommentCountChange}
         />
       )}
 

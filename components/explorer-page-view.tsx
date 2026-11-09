@@ -25,6 +25,8 @@ type Props = {
   searchTerm: string;
   onSearchChange: (value: string) => void;
   viewerId?: string;
+  /** Updates a card after its comment count changed in the open sequence. */
+  onCommentCountChange?: (sequenceId: number, count: number) => void;
 };
 
 export function ExplorerView({
@@ -39,6 +41,7 @@ export function ExplorerView({
   filter,
   searchTerm,
   onSearchChange,
+  onCommentCountChange,
 }: Props) {
   const { t } = useTranslation();
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
@@ -135,6 +138,7 @@ export function ExplorerView({
         <ViewSequence
           sequenceId={currentSequenceId.current}
           onClose={() => setIsViewDialogOpen(false)}
+          onCommentCountChange={onCommentCountChange}
         />
       )}
     </div>

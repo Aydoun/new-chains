@@ -327,5 +327,21 @@
       "empty": "The file is empty.",
       "upload": "The image couldn’t be uploaded. Please try again."
     }
+  },
+  "comments": {
+    "title": "Comments",
+    "label": "Write a comment",
+    "placeholder": "Add a comment",
+    "post": "Post",
+    "postError": "Your comment couldn't be posted. Try again.",
+    "loadError": "Comments couldn't load.",
+    "retry": "Retry",
+    "empty": "No comments yet. Be the first to share a thought.",
+    "loadMore": "Load more comments",
+    "delete": "Delete",
+    "confirmDelete": "Delete this comment?",
+    "cancel": "Cancel",
+    "unknownUser": "Unknown user",
+    "count": "Comments: {count}"
   }
 }

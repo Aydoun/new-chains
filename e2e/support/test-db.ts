@@ -152,6 +152,14 @@ export async function resetSeededUsers() {
     );
     const userIds = testUsers.map((user) => user.id);
 
+    // Comments by the test users, and any comment on their sequences, go
+    // first: they reference sequences and users.
+    await client.query(
+      `DELETE FROM "Comment"
+       WHERE "authorId" = ANY($1)
+          OR "sequenceId" IN (SELECT id FROM "Sequence" WHERE "userId" = ANY($1))`,
+      [userIds],
+    );
     await client.query(
       `DELETE FROM "Snippet"
        WHERE "createdById" = ANY($1)
@@ -417,4 +425,43 @@ export async function insertAsset(uploadedById: number) {
     [`/api/asset/file/${pathname}`, pathname, uploadedById],
   );
   return asset;
+}
+
+// ---------------------------------------------------------------------------
+// Comments
+// ---------------------------------------------------------------------------
+
+export type CommentRow = {
+  id: number;
+  content: string;
+  sequenceId: number;
+  authorId: number;
+  isDeleted: boolean;
+  createdAt: Date;
+};
+
+const COMMENT_COLUMNS = `id, content, "sequenceId", "authorId", "isDeleted", "createdAt"`;
+
+export async function findComment(id: number) {
+  const [comment] = await query<CommentRow>(
+    `SELECT ${COMMENT_COLUMNS} FROM "Comment" WHERE id = $1`,
+    [id],
+  );
+  return comment ?? null;
+}
+
+/** Inserts comments directly; `createdAt` defaults to now. */
+export async function insertComment(input: {
+  sequenceId: number;
+  authorId: number;
+  content: string;
+  createdAt?: Date;
+}) {
+  const [comment] = await query<CommentRow>(
+    `INSERT INTO "Comment" (content, "sequenceId", "authorId", "createdAt", "updatedAt")
+     VALUES ($1, $2, $3, $4, NOW())
+     RETURNING ${COMMENT_COLUMNS}`,
+    [input.content, input.sequenceId, input.authorId, input.createdAt ?? new Date()],
+  );
+  return comment;
 }

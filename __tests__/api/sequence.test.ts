@@ -184,6 +184,21 @@ describe("GET /api/sequence/fetch", () => {
     expect(store.body.items[0].firstFrame).toEqual({ id: 7, content: "first" });
     expect(store.body.hasMore).toBe(false);
   });
+
+  it("counts each sequence's live comments", async () => {
+    db.sequence.findMany.mockResolvedValue([
+      { id: 1, FrameOrder: [], user: { id: 2, username: "a" }, _count: { comments: 3 } },
+    ]);
+
+    const { res, store } = mockResponse();
+    await fetchHandler(mockRequest({ method: "GET" }), res);
+
+    expect(db.sequence.findMany.mock.calls[0][0].include._count).toEqual({
+      select: { comments: { where: { isDeleted: false } } },
+    });
+    expect(store.body.items[0].commentCount).toBe(3);
+    expect(store.body.items[0]).not.toHaveProperty("_count");
+  });
 });
 
 describe("GET /api/sequence/studio", () => {
@@ -219,6 +234,9 @@ describe("GET /api/sequence/[id]", () => {
         isDeleted: false,
         OR: [{ visibility: "PUBLIC" }, { userId: 1 }],
       },
+      include: {
+        _count: { select: { comments: { where: { isDeleted: false } } } },
+      },
     });
     expect(store.status).toBe(404);
     expect(store.body).toEqual({ message: "Sequence not found" });
@@ -235,6 +253,20 @@ describe("GET /api/sequence/[id]", () => {
     expect(store.status).toBe(200);
     expect(store.body.frames.map((f: { id: number }) => f.id)).toEqual([9, 4]);
     expect(store.body.likedFrames).toEqual([4]);
+  });
+
+  it("returns the live comment count instead of Prisma's _count", async () => {
+    db.sequence.findFirst.mockResolvedValue({
+      id: 3,
+      FrameOrder: [],
+      _count: { comments: 7 },
+    });
+
+    const { res, store } = mockResponse();
+    await readHandler(mockRequest({ method: "GET", query: { id: "3" } }), res);
+
+    expect(store.body.commentCount).toBe(7);
+    expect(store.body).not.toHaveProperty("_count");
   });
 
   it("rejects a non-numeric id", async () => {

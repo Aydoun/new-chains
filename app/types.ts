@@ -23,6 +23,8 @@ export interface Sequence {
   };
   firstFrame: Frame | null;
   FrameOrder: number[];
+  /** Live (not deleted) comments on the sequence. */
+  commentCount?: number;
   visibility: Visibility;
   isDeleted: boolean;
   createdAt: string;
@@ -111,3 +113,28 @@ export type TimeFilter =
   | "this-week"
   | "this-month"
   | undefined;
+
+export interface CommentAuthor {
+  id: number;
+  username: string;
+  avatarUrl?: string | null;
+}
+
+export interface SequenceComment {
+  id: number;
+  content: string;
+  sequenceId: number;
+  authorId: number;
+  author: CommentAuthor;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** A page of comments, newest first; `nextCursor` loads the older ones. */
+export interface CommentsPage {
+  items: SequenceComment[];
+  hasMore: boolean;
+  nextCursor: number | null;
+  /** Live comments on the sequence, across all pages. */
+  total: number;
+}

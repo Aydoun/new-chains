@@ -138,3 +138,12 @@ export interface CommentsPage {
   /** Live comments on the sequence, across all pages. */
   total: number;
 }
+
+/** An uploaded image in the user's assets folder. */
+export interface LibraryAsset extends FrameAsset {
+  id: number;
+  contentType: string;
+  createdAt: string;
+  /** The user's live sequences that show this image, newest first. */
+  sequences: { id: number; title: string }[];
+}

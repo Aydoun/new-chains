@@ -15,6 +15,7 @@ test.describe("navigation and session", () => {
       { name: t("navigation.studio"), url: "/studio" },
       { name: t("navigation.profile"), url: "/profile" },
       { name: t("navigation.contact"), url: "/contact" },
+      { name: t("navigation.assets"), url: "/assets" },
       { name: t("navigation.home"), url: "/" },
     ];
     for (const { name, url } of destinations) {

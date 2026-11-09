@@ -117,7 +117,8 @@
     "studio": "工作室",
     "explore": "探索",
     "exploreDescription": "每个序列都通过画面讲述一个故事",
-    "self": "导航"
+    "self": "导航",
+    "assets": "素材库"
   },
   "onboarding": {
     "actions": {
@@ -343,5 +344,22 @@
     "cancel": "取消",
     "unknownUser": "未知用户",
     "count": "评论：{count}"
+  },
+  "assets": {
+    "title": "素材库",
+    "description": "你上传的所有图片，最新的在前。",
+    "uploaded": "上传于{time}",
+    "usedIn": "用于",
+    "notUsed": "未用于任何序列",
+    "more": "另外 {count} 个",
+    "showLess": "收起",
+    "empty": {
+      "title": "你的图片会显示在这里",
+      "description": "创建序列时为画面添加图片。",
+      "cta": "创建序列"
+    },
+    "loadError": "无法加载你的图片。",
+    "retry": "重试",
+    "imageAlt": "已上传的图片"
   }
 }

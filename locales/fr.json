@@ -117,7 +117,8 @@
     "studio": "Studio",
     "explore": "Explorer",
     "exploreDescription": "Chaque séquence raconte une histoire à travers ses cadres",
-    "self": "Navigation"
+    "self": "Navigation",
+    "assets": "Dossier d'images"
   },
   "onboarding": {
     "actions": {
@@ -343,5 +344,22 @@
     "cancel": "Annuler",
     "unknownUser": "Utilisateur inconnu",
     "count": "Commentaires : {count}"
+  },
+  "assets": {
+    "title": "Dossier d'images",
+    "description": "Toutes les images que vous avez importées, des plus récentes aux plus anciennes.",
+    "uploaded": "Importée {time}",
+    "usedIn": "Utilisée dans",
+    "notUsed": "Utilisée dans aucune séquence",
+    "more": "+{count} de plus",
+    "showLess": "Afficher moins",
+    "empty": {
+      "title": "Vos images apparaîtront ici",
+      "description": "Ajoutez une image à un cadre lorsque vous créez une séquence.",
+      "cta": "Créer une séquence"
+    },
+    "loadError": "Impossible de charger vos images.",
+    "retry": "Réessayer",
+    "imageAlt": "Image importée"
   }
 }

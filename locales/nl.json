@@ -117,7 +117,8 @@
     "studio": "Studio",
     "explore": "Verkennen",
     "exploreDescription": "Elke sequentie vertelt een verhaal in frames",
-    "self": "Navigatie"
+    "self": "Navigatie",
+    "assets": "Afbeeldingenmap"
   },
   "onboarding": {
     "actions": {
@@ -343,5 +344,22 @@
     "cancel": "Annuleren",
     "unknownUser": "Onbekende gebruiker",
     "count": "Reacties: {count}"
+  },
+  "assets": {
+    "title": "Afbeeldingenmap",
+    "description": "Alle afbeeldingen die je hebt geüpload, nieuwste eerst.",
+    "uploaded": "Geüpload {time}",
+    "usedIn": "Gebruikt in",
+    "notUsed": "Niet gebruikt in een sequentie",
+    "more": "+{count} meer",
+    "showLess": "Minder tonen",
+    "empty": {
+      "title": "Je afbeeldingen verschijnen hier",
+      "description": "Voeg een afbeelding toe aan een frame wanneer je een sequentie maakt.",
+      "cta": "Een sequentie maken"
+    },
+    "loadError": "Je afbeeldingen konden niet worden geladen.",
+    "retry": "Opnieuw proberen",
+    "imageAlt": "Geüploade afbeelding"
   }
 }

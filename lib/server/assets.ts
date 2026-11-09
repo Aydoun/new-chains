@@ -97,4 +97,59 @@ export async function findForeignAssetIds(userId: number, assetIds: number[]) {
   return assetIds.filter((id) => !ownedIds.has(id));
 }
 
+/**
+ * A page of the user's uploaded images, newest first, each with the live
+ * sequences it appears in. Sequences don't point at images: an IMAGE frame
+ * has the `assetId`, and a sequence lists its frames in `FrameOrder`.
+ */
+export async function listUserAssets(
+  userId: number,
+  { page, limit }: { page: number; limit: number },
+) {
+  const assets = await prisma.asset.findMany({
+    where: { uploadedById: userId },
+    orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+    skip: (page - 1) * limit,
+    take: limit + 1,
+    select: {
+      id: true,
+      url: true,
+      width: true,
+      height: true,
+      contentType: true,
+      createdAt: true,
+      frames: { select: { id: true } },
+    },
+  });
+
+  const hasMore = assets.length > limit;
+  const pageAssets = hasMore ? assets.slice(0, limit) : assets;
+
+  const frameIds = pageAssets.flatMap((asset) => asset.frames.map((f) => f.id));
+  // Only the user's own sequences: an image can only go in its uploader's.
+  const sequences = frameIds.length
+    ? await prisma.sequence.findMany({
+        where: { userId, isDeleted: false, FrameOrder: { hasSome: frameIds } },
+        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+        select: { id: true, title: true, FrameOrder: true },
+      })
+    : [];
+
+  return {
+    items: pageAssets.map(({ frames, ...asset }) => {
+      const ids = new Set(frames.map((frame) => frame.id));
+      return {
+        ...asset,
+        sequences: sequences
+          .filter((sequence) => sequence.FrameOrder.some((id) => ids.has(id)))
+          .map(({ id, title }) => ({ id, title })),
+      };
+    }),
+    page,
+    pageSize: limit,
+    hasMore,
+    nextPage: hasMore ? page + 1 : null,
+  };
+}
+
 export const MAX_UPLOAD_BYTES = IMAGE_RULES.maxBytes;

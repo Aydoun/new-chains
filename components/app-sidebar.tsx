@@ -1,11 +1,13 @@
 import {
   Home,
+  Images,
   Mail,
   UserRound,
   type LucideIcon,
   LayoutGrid,
 } from "lucide-react";
 import Link from "next/link";
+import { Fragment } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -25,6 +27,8 @@ type NavigationItem = {
   isProtected: boolean;
   titleKey: string;
   url: string;
+  /** Draws a divider above the item, in the sidebar and the mobile menu. */
+  separatorBefore?: boolean;
 };
 
 export const navigationItems: NavigationItem[] = [
@@ -52,6 +56,13 @@ export const navigationItems: NavigationItem[] = [
     icon: Mail,
     isProtected: true,
   },
+  {
+    titleKey: "assets",
+    url: "/assets",
+    icon: Images,
+    isProtected: true,
+    separatorBefore: true,
+  },
 ];
 
 export function AppSidebar() {
@@ -78,17 +89,26 @@ export function AppSidebar() {
                 </Link>
               </SidebarMenuItem>
               {navigationItems.map((item) => (
-                <SidebarMenuItem key={item.titleKey}>
-                  <SidebarMenuButton asChild isActive={pathname === item.url}>
-                    <Link
-                      href={item.url}
-                      className="py-5 px-3 text-foreground transition-colors hover:bg-muted"
-                    >
-                      <item.icon />
-                      <span>{t(`navigation.${item.titleKey}`)}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                <Fragment key={item.titleKey}>
+                  {item.separatorBefore && (
+                    <li
+                      role="separator"
+                      data-testid="sidebar-separator"
+                      className="mx-3 my-2 h-px bg-sidebar-border"
+                    />
+                  )}
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={pathname === item.url}>
+                      <Link
+                        href={item.url}
+                        className="py-5 px-3 text-foreground transition-colors hover:bg-muted"
+                      >
+                        <item.icon />
+                        <span>{t(`navigation.${item.titleKey}`)}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </Fragment>
               ))}
             </SidebarMenu>
           </SidebarGroupContent>

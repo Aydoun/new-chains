@@ -134,3 +134,11 @@ export const listCommentsQuery = z.object({
     z.coerce.number().int().min(1).max(MAX_PAGE_SIZE).default(COMMENTS_PAGE_SIZE),
   ),
 });
+
+export const listAssetsQuery = z.object({
+  page: z.preprocess(firstValue, z.coerce.number().int().min(1).default(1)),
+  limit: z.preprocess(
+    firstValue,
+    z.coerce.number().int().min(1).max(MAX_PAGE_SIZE).default(DEFAULT_PAGE_SIZE),
+  ),
+});

@@ -6,6 +6,7 @@ import { useTranslation } from "@/components/locale-provider";
 import { LanguageMenu } from "./language-menu";
 import { signOut } from "next-auth/react";
 import clsx from "clsx";
+import { Fragment } from "react";
 import { ThemePreference, useTheme } from "./theme-provider";
 
 export function MobileMenu() {
@@ -26,17 +27,19 @@ export function MobileMenu() {
       <DropdownMenu.Content className="px-1 py-1 w-40">
         <DropdownMenu.Label>{t("navigation.self")}</DropdownMenu.Label>
         {navigationItems.map((item, index) => (
-          <DropdownMenu.Item
-            className={clsx("mb-4", {
-              "mb-0": index === navigationItems.length - 1,
-            })}
-            key={item.titleKey}
-          >
-            <Link href={item.url} className="flex gap-2">
-              <item.icon className="w-5 h-5" />
-              <Text>{t(`navigation.${item.titleKey}`)}</Text>
-            </Link>
-          </DropdownMenu.Item>
+          <Fragment key={item.titleKey}>
+            {item.separatorBefore && <DropdownMenu.Separator />}
+            <DropdownMenu.Item
+              className={clsx("mb-4", {
+                "mb-0": index === navigationItems.length - 1,
+              })}
+            >
+              <Link href={item.url} className="flex gap-2">
+                <item.icon className="w-5 h-5" />
+                <Text>{t(`navigation.${item.titleKey}`)}</Text>
+              </Link>
+            </DropdownMenu.Item>
+          </Fragment>
         ))}
         <DropdownMenu.Label>{t("menu.appearance")}</DropdownMenu.Label>
         <DropdownMenu.RadioGroup

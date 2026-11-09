@@ -117,7 +117,8 @@
     "studio": "Studio",
     "explore": "Explore",
     "exploreDescription": "Every Sequence tells a story through frames",
-    "self": "Navigation"
+    "self": "Navigation",
+    "assets": "Assets folder"
   },
   "onboarding": {
     "actions": {
@@ -343,5 +344,22 @@
     "cancel": "Cancel",
     "unknownUser": "Unknown user",
     "count": "Comments: {count}"
+  },
+  "assets": {
+    "title": "Assets folder",
+    "description": "Every image you've uploaded, newest first.",
+    "uploaded": "Uploaded {time}",
+    "usedIn": "Used in",
+    "notUsed": "Not used in a sequence",
+    "more": "+{count} more",
+    "showLess": "Show less",
+    "empty": {
+      "title": "Your images will show up here",
+      "description": "Add a picture to a frame when you create a sequence.",
+      "cta": "Create a sequence"
+    },
+    "loadError": "Your images couldn't load.",
+    "retry": "Retry",
+    "imageAlt": "Uploaded image"
   }
 }

@@ -7,6 +7,7 @@ import {
   DEFAULT_PAGE_SIZE,
   MAX_PAGE_SIZE,
 } from "@/lib/constants";
+import { parseFrameLink } from "@/lib/frame-link";
 
 const MAX_INT32 = 2_147_483_647;
 
@@ -51,11 +52,30 @@ const trimmed = (max: number) => z.string().trim().max(max);
 
 export const visibilitySchema = z.enum(["PUBLIC", "PRIVATE", "FRIENDS_ONLY"]);
 
+/**
+ * Optional frame link: empty means none; anything else must pass
+ * `parseFrameLink` and is stored normalised (e.g. `https://` added).
+ */
+const frameLinkSchema = z
+  .string()
+  .optional()
+  .transform((value, ctx) => {
+    if (!value?.trim()) return undefined;
+    const result = parseFrameLink(value);
+    if (!result.ok) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: `link:${result.error}` });
+      return z.NEVER;
+    }
+    return result.url;
+  });
+
 export const frameInputSchema = z.object({
   content: trimmed(FRAME_CONTENT_MAX_LENGTH).min(1, "Frame content is required"),
   description: trimmed(FRAME_DESCRIPTION_MAX_LENGTH).optional().default(""),
   /** An image the same user uploaded; makes this an IMAGE frame. */
   assetId: idSchema.optional(),
+  /** A web link the frame opens in a new tab. */
+  linkUrl: frameLinkSchema,
 });
 
 export const createSequenceBody = z

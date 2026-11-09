@@ -87,6 +87,7 @@ export function ViewSequence({
                       text: frame.content,
                       description: frame.description,
                       onLike: handleSaveSnippet(frame.id),
+                      linkUrl: frame.linkUrl,
                       liked:
                         data?.likedFrames.includes(frame.id) ||
                         newLikes.includes(frame.id),

@@ -88,7 +88,22 @@
     "description": "可选备注",
     "empty": "未找到画面",
     "self": "画面",
-    "selfs": "画面"
+    "selfs": "画面",
+    "link": {
+      "add": "添加链接",
+      "label": "画面 {index} 的链接",
+      "placeholder": "https://example.com/page",
+      "hint": "点击画面时会在新标签页中打开。",
+      "remove": "移除链接",
+      "opensInNewTab": "（在新标签页中打开）",
+      "errors": {
+        "invalid": "请输入网址，例如 example.com/page。",
+        "protocol": "只允许以 http:// 或 https:// 开头的网页链接。",
+        "credentials": "链接中不能包含用户名或密码。",
+        "host": "请链接到公开网站，而不是本地地址或 IP。",
+        "tooLong": "链接太长。"
+      }
+    }
   },
   "filter": {
     "label": "时间",

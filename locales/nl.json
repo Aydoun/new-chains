@@ -88,7 +88,22 @@
     "description": "Optionele notitie",
     "empty": "Geen frames gevonden",
     "self": "Frame",
-    "selfs": "Frames"
+    "selfs": "Frames",
+    "link": {
+      "add": "Link toevoegen",
+      "label": "Link van frame {index}",
+      "placeholder": "https://voorbeeld.nl/pagina",
+      "hint": "Opent in een nieuw tabblad als iemand op het frame klikt.",
+      "remove": "Link verwijderen",
+      "opensInNewTab": "(opent in een nieuw tabblad)",
+      "errors": {
+        "invalid": "Voer een webadres in, zoals voorbeeld.nl/pagina.",
+        "protocol": "Alleen weblinks die beginnen met http:// of https:// zijn toegestaan.",
+        "credentials": "Een link mag geen gebruikersnaam of wachtwoord bevatten.",
+        "host": "Link naar een openbare website, niet naar een lokaal adres of IP-adres.",
+        "tooLong": "Deze link is te lang."
+      }
+    }
   },
   "filter": {
     "label": "tijd",

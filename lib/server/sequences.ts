@@ -164,6 +164,7 @@ export function createSequenceWithFrames(
           content: frame.content,
           description: frame.description,
           assetId: frame.assetId,
+          linkUrl: frame.linkUrl,
           createdById: userId,
         },
         select: { id: true },

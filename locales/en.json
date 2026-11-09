@@ -88,7 +88,22 @@
     "description": "Optional note",
     "empty": "No frames found",
     "self": "Frame",
-    "selfs": "Frames"
+    "selfs": "Frames",
+    "link": {
+      "add": "Add link",
+      "label": "Frame {index} link",
+      "placeholder": "https://example.com/page",
+      "hint": "Opens in a new tab when someone clicks the frame.",
+      "remove": "Remove link",
+      "opensInNewTab": "(opens in a new tab)",
+      "errors": {
+        "invalid": "Enter a web address, like example.com/page.",
+        "protocol": "Only web links starting with http:// or https:// are allowed.",
+        "credentials": "Links can't contain a username or password.",
+        "host": "Link to a public website, not a local address or IP.",
+        "tooLong": "This link is too long."
+      }
+    }
   },
   "filter": {
     "label": "time",

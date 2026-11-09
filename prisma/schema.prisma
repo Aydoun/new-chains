@@ -52,6 +52,9 @@ model Frame {
   /// Set for IMAGE frames: the picture shown in the frame.
   assetId     Int?
   asset       Asset?    @relation(fields: [assetId], references: [id])
+  /// Optional web link the frame opens in a new tab. Always an http(s) URL
+  /// checked by `parseFrameLink` (lib/frame-link.ts) before it's stored.
+  linkUrl     String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   snippets    Snippet[]

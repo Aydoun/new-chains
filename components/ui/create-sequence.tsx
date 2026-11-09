@@ -27,6 +27,8 @@ import { useTranslation } from "@/components/locale-provider";
 import clsx from "clsx";
 import { SequenceCreationFormValues, SequenceTemplate } from "@/app/types";
 import { FrameImageField } from "./frame-image-field";
+import { FrameLinkField } from "./frame-link-field";
+import { parseFrameLink } from "@/lib/frame-link";
 
 interface Props {
   onClose: () => void;
@@ -39,6 +41,7 @@ const createEmptyFrame = () => ({
   content: "",
   description: "",
   asset: null,
+  linkUrl: "",
 });
 
 export function CreateSequenceForm({
@@ -144,6 +147,7 @@ export function CreateSequenceForm({
         content: frame.content.trim(),
         description: frame.description?.trim() || "",
         ...(frame.asset ? { assetId: frame.asset.id } : {}),
+        ...(frame.linkUrl?.trim() ? { linkUrl: frame.linkUrl.trim() } : {}),
       }));
 
     if (frames.length === 0) return;
@@ -233,6 +237,24 @@ export function CreateSequenceForm({
         }
         onUploadingChange={(uploading) =>
           setUploadingCount((count) => count + (uploading ? 1 : -1))
+        }
+      />
+      <FrameLinkField
+        index={index + 1}
+        value={pages[index]?.linkUrl}
+        error={errors.pages?.[index]?.linkUrl?.message}
+        registration={register(`pages.${index}.linkUrl`, {
+          validate: (value) => {
+            if (!value?.trim()) return true;
+            const result = parseFrameLink(value);
+            return result.ok || t(`frame.link.errors.${result.error}`);
+          },
+        })}
+        onRemove={() =>
+          setValue(`pages.${index}.linkUrl`, "", {
+            shouldDirty: true,
+            shouldValidate: true,
+          })
         }
       />
     </div>

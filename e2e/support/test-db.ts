@@ -465,3 +465,23 @@ export async function insertComment(input: {
   );
   return comment;
 }
+
+// ---------------------------------------------------------------------------
+// Frame links
+// ---------------------------------------------------------------------------
+
+export async function findFrameLink(frameId: number) {
+  const [frame] = await query<{ linkUrl: string | null }>(
+    `SELECT "linkUrl" FROM "Frame" WHERE id = $1`,
+    [frameId],
+  );
+  return frame?.linkUrl ?? null;
+}
+
+/**
+ * Writes a frame's link directly, skipping the API's checks: also used to
+ * plant an unsafe value and prove the viewer still won't render it.
+ */
+export async function setFrameLink(frameId: number, linkUrl: string | null) {
+  await query(`UPDATE "Frame" SET "linkUrl" = $1 WHERE id = $2`, [linkUrl, frameId]);
+}

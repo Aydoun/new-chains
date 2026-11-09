@@ -88,7 +88,22 @@
     "description": "Note facultative",
     "empty": "Aucun cadre trouvé",
     "self": "Cadre",
-    "selfs": "Cadres"
+    "selfs": "Cadres",
+    "link": {
+      "add": "Ajouter un lien",
+      "label": "Lien du cadre {index}",
+      "placeholder": "https://exemple.com/page",
+      "hint": "S'ouvre dans un nouvel onglet quand on clique sur le cadre.",
+      "remove": "Retirer le lien",
+      "opensInNewTab": "(s'ouvre dans un nouvel onglet)",
+      "errors": {
+        "invalid": "Saisissez une adresse web, comme exemple.com/page.",
+        "protocol": "Seuls les liens web commençant par http:// ou https:// sont autorisés.",
+        "credentials": "Un lien ne peut pas contenir de nom d'utilisateur ni de mot de passe.",
+        "host": "Utilisez un site web public, pas une adresse locale ou IP.",
+        "tooLong": "Ce lien est trop long."
+      }
+    }
   },
   "filter": {
     "label": "période",

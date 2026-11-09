@@ -15,6 +15,7 @@ import { IconButton, Spinner, Text } from "@radix-ui/themes";
 import Link from "next/link";
 import Image from "next/image";
 import clsx from "clsx";
+import { FrameLink } from "./frame-link";
 
 export interface SequenceCardProps {
   title: string;
@@ -208,6 +209,8 @@ interface SequenceFrameProps {
   liked?: boolean;
   showIsLiked?: boolean;
   onLike?: () => void;
+  /** Opens in a new tab when the frame's text is clicked. */
+  linkUrl?: string | null;
 }
 
 export const SequenceFrame: FC<SequenceFrameProps> = ({
@@ -217,6 +220,7 @@ export const SequenceFrame: FC<SequenceFrameProps> = ({
   liked,
   showIsLiked = true,
   onLike,
+  linkUrl,
 }) => {
   const { t } = useTranslation();
   return (
@@ -225,12 +229,14 @@ export const SequenceFrame: FC<SequenceFrameProps> = ({
         "relative flex px-2 h-48 w-full flex-col items-center justify-center gap-2 bg-frame-primary rounded-lg",
       )}
     >
-      <blockquote className="max-w-2xl text-center text-gray-800">
-        <p className="font-serif text-1xl md:text-2xl leading-tight">{text}</p>
-      </blockquote>
-      {description && (
-        <p className="px-8 text-sm text-amber-700 font-medium">{description}</p>
-      )}
+      <FrameLink linkUrl={linkUrl} className="px-8">
+        <blockquote className="max-w-2xl text-center text-gray-800">
+          <p className="font-serif text-1xl md:text-2xl leading-tight">{text}</p>
+        </blockquote>
+        {description && (
+          <p className="px-8 text-sm text-amber-700 font-medium">{description}</p>
+        )}
+      </FrameLink>
       {count && <FrameCountBadge count={count} />}
       {showIsLiked && (
         <button

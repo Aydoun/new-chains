@@ -96,6 +96,55 @@ describe("POST /api/sequence/create", () => {
   });
 });
 
+describe("POST /api/sequence/create with links", () => {
+  const create = async (linkUrl: string) => {
+    const { res, store } = mockResponse();
+    await createHandler(
+      mockRequest({
+        method: "POST",
+        body: { title: "Links", frames: [{ content: "Read this", linkUrl }] },
+      }),
+      res,
+    );
+    return store;
+  };
+
+  it("stores the normalised link on the frame", async () => {
+    db.tx.frame.create.mockResolvedValue({ id: 10 });
+    db.tx.sequence.create.mockResolvedValue({ id: 5 });
+
+    const store = await create("  example.com/article  ");
+
+    expect(store.status).toBe(201);
+    expect(db.tx.frame.create.mock.calls[0][0].data).toMatchObject({
+      type: "PHRASE",
+      linkUrl: "https://example.com/article",
+    });
+  });
+
+  it("treats an empty link as no link", async () => {
+    db.tx.frame.create.mockResolvedValue({ id: 10 });
+    db.tx.sequence.create.mockResolvedValue({ id: 5 });
+
+    const store = await create("   ");
+
+    expect(store.status).toBe(201);
+    expect(db.tx.frame.create.mock.calls[0][0].data.linkUrl).toBeUndefined();
+  });
+
+  it.each([
+    ["javascript:alert(1)", "link:protocol"],
+    ["https://user:pw@example.com", "link:credentials"],
+    ["http://localhost:3000", "link:host"],
+  ])("refuses %j and creates nothing", async (linkUrl, message) => {
+    const store = await create(linkUrl);
+
+    expect(store.status).toBe(400);
+    expect(store.body.issues).toEqual([{ path: "frames.0.linkUrl", message }]);
+    expect(db.$transaction).not.toHaveBeenCalled();
+  });
+});
+
 describe("POST /api/sequence/create with images", () => {
   const body = (assetId: number) => ({
     title: "Trip",

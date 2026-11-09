@@ -51,6 +51,8 @@ export interface Frame {
   content: string;
   assetId?: number | null;
   asset?: FrameAsset | null;
+  /** Web link the frame opens in a new tab, if any. */
+  linkUrl?: string | null;
   createdById?: number | null;
   createdAt: string;
   updatedAt: string;
@@ -86,6 +88,8 @@ export type SequenceCreationFormValues = {
     description?: string;
     /** Uploaded image for this frame, if any. */
     asset?: UploadedAsset | null;
+    /** Web link as typed; checked and normalised on save. */
+    linkUrl?: string;
   }[];
 };
 

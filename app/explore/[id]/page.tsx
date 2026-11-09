@@ -46,6 +46,7 @@ export default function ExplorePage() {
     isLoading,
     error,
     loadMore,
+    refresh,
     updateItem,
   } = useInfinitePagination<Sequence, PaginationParams>({
     fetchPage: (params) => fetchStudioSequences(params).unwrap(),
@@ -76,6 +77,7 @@ export default function ExplorePage() {
       onCommentCountChange={(id, commentCount) =>
         updateItem(id, { commentCount })
       }
+      onRetry={refresh}
     />
   );
 }

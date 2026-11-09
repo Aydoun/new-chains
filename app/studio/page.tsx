@@ -90,6 +90,7 @@ export default function StudioPage() {
       // Drop the param so a reload or "back" doesn't reopen the form.
       onCreateOpened={() => router.replace("/studio", { scroll: false })}
       onSequenceCreated={refresh}
+      onRetry={refresh}
       onCommentCountChange={(id, commentCount) =>
         updateItem(id, { commentCount })
       }

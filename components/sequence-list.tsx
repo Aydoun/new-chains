@@ -18,6 +18,8 @@ type Props = {
   onSequenceSelect: (sequenceId: string | number) => void;
   onClearSearch: () => void;
   onCreate?: () => void;
+  /** Reloads the list after an error. */
+  onRetry: () => void;
 };
 
 export function SequenceList({
@@ -32,13 +34,14 @@ export function SequenceList({
   onSequenceSelect,
   onClearSearch,
   onCreate,
+  onRetry,
 }: Props) {
   if (isLoading) {
     return <DataLoader className="mt-64 md:mt-48" />;
   }
 
   if (isError) {
-    return <SequenceErrorState />;
+    return <SequenceErrorState onRetry={onRetry} />;
   }
 
   if (!Array.isArray(sequences) || sequences.length === 0) {

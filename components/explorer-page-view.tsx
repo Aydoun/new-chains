@@ -27,6 +27,8 @@ type Props = {
   viewerId?: string;
   /** Updates a card after its comment count changed in the open sequence. */
   onCommentCountChange?: (sequenceId: number, count: number) => void;
+  /** Reloads the list after an error. */
+  onRetry: () => void;
 };
 
 export function ExplorerView({
@@ -42,6 +44,7 @@ export function ExplorerView({
   searchTerm,
   onSearchChange,
   onCommentCountChange,
+  onRetry,
 }: Props) {
   const { t } = useTranslation();
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
@@ -127,7 +130,7 @@ export function ExplorerView({
                     )}
                   </>
                 ) : (
-                  <SequenceErrorState />
+                  <SequenceErrorState onRetry={onRetry} />
                 )}
               </>
             )}

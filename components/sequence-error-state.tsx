@@ -4,19 +4,19 @@ import { useTranslation } from "@/components/locale-provider";
 import { cn } from "@/lib/utils";
 import { LayoutDashboard, RefreshCcw, ServerCrash } from "lucide-react";
 import { Button, Card, Flex, Heading, Text } from "@radix-ui/themes";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface SequenceErrorStateProps {
-  onRetry?: () => void;
-  onNavigateDashboard?: () => void;
+  /** Reloads the list that failed. */
+  onRetry: () => void;
   className?: string;
 }
 
-export function SequenceErrorState({
-  onRetry,
-  onNavigateDashboard,
-  className,
-}: SequenceErrorStateProps) {
+export function SequenceErrorState({ onRetry, className }: SequenceErrorStateProps) {
   const { t } = useTranslation();
+  // "Home" would go nowhere on the home page itself.
+  const isHome = usePathname() === "/";
   return (
     <Flex align="center" justify="center" className={cn("py-10", className)}>
       <Card
@@ -53,15 +53,14 @@ export function SequenceErrorState({
               <RefreshCcw className="h-5 w-5" aria-hidden />
               {t("states.sequenceError.retry")}
             </Button>
-            <Button
-              size="3"
-              variant="outline"
-              onClick={onNavigateDashboard}
-              className="w-full sm:w-auto"
-            >
-              <LayoutDashboard className="h-5 w-5" aria-hidden />
-              {t("states.sequenceError.dashboard")}
-            </Button>
+            {!isHome && (
+              <Button size="3" variant="outline" asChild className="w-full sm:w-auto">
+                <Link href="/">
+                  <LayoutDashboard className="h-5 w-5" aria-hidden />
+                  {t("states.sequenceError.dashboard")}
+                </Link>
+              </Button>
+            )}
           </Flex>
         </Flex>
       </Card>

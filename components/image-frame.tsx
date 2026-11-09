@@ -48,7 +48,7 @@ export const ImageFrame: FC<Props> = ({
           width={asset.width}
           height={asset.height}
           unoptimized
-          className="h-auto max-h-[60vh] w-auto max-w-full rounded-md object-contain"
+          className="h-auto max-h-[40vh] w-auto max-w-full rounded-md object-contain"
         />
         {/* A figcaption must sit directly in the figure, so inside a link it's a div. */}
         <Caption className="flex flex-col items-center gap-1 px-8 text-center">

@@ -54,6 +54,7 @@ export default function Home({
     isLoading,
     error,
     loadMore,
+    refresh,
     updateItem,
   } = useInfinitePagination<Sequence, PaginationParams>({
     fetchPage: (params) => fetchSequences(params).unwrap(),
@@ -178,7 +179,7 @@ export default function Home({
                 )}
               </>
             ) : (
-              <SequenceErrorState />
+              <SequenceErrorState onRetry={refresh} />
             )}
           </>
         )}

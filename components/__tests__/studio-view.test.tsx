@@ -41,6 +41,7 @@ function renderStudio(props: Partial<Parameters<typeof StudioView>[0]> = {}) {
         onFilterChange={vi.fn()}
         searchTerm=""
         onSearchChange={vi.fn()}
+        onRetry={vi.fn()}
         {...props}
       />
     </Theme>
@@ -54,6 +55,24 @@ const titleField = () => screen.getByRole("textbox", { name: titleName });
 describe("StudioView creation flow", () => {
   beforeEach(() => {
     createSequence.mockReset();
+  });
+
+  it("opens the form from the empty state's New Sequence button", async () => {
+    renderStudio();
+
+    // The header has a "New Sequence" button too; the empty state's is last.
+    const buttons = screen.getAllByRole("button", { name: t("states.emptySequences.create") });
+    await userEvent.click(buttons[buttons.length - 1]);
+
+    expect(await screen.findByRole("dialog")).toBeInTheDocument();
+  });
+
+  it("retries the list from the error state", async () => {
+    const onRetry = vi.fn();
+    renderStudio({ isError: true, onRetry });
+
+    await userEvent.click(screen.getByRole("button", { name: t("states.sequenceError.retry") }));
+    expect(onRetry).toHaveBeenCalled();
   });
 
   it("keeps the form closed by default", () => {

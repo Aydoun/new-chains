@@ -41,7 +41,7 @@ export const ImageFrame: FC<Props> = ({
       data-testid="image-frame"
       className="relative flex w-full flex-col items-center gap-3 rounded-lg bg-frame-primary p-3"
     >
-      <FrameLink linkUrl={linkUrl} className="w-full gap-3">
+      <FrameLink linkUrl={linkUrl} className="w-full gap-3" overImage>
         <Image
           src={asset.url}
           alt={text}

@@ -23,10 +23,12 @@ describe("frame links in the viewer", () => {
     expect(link).toHaveAttribute("rel", FRAME_LINK_REL);
     expect(link.getAttribute("rel")).toContain("noopener");
     expect(link.getAttribute("rel")).toContain("noreferrer");
-    // The text, the shortened host and the new-tab cue all name the link.
+    // The text and the new-tab cue name the link; the address isn't shown.
     expect(link).toHaveAccessibleName(
-      `Read the guide 5 min example.com ${t("frame.link.opensInNewTab")}`,
+      `Read the guide 5 min ${t("frame.link.opensInNewTab")}`,
     );
+    expect(link).not.toHaveTextContent("example.com");
+    expect(screen.getByTestId("frame-link-icon")).toBeInTheDocument();
   });
 
   it("keeps the save button outside the link", () => {
@@ -39,6 +41,7 @@ describe("frame links in the viewer", () => {
   it("shows no link when the frame has none", () => {
     render(<SequenceFrame text="Plain" showIsLiked={false} />);
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("frame-link-icon")).not.toBeInTheDocument();
   });
 
   it("never renders an unsafe stored value as a link", () => {

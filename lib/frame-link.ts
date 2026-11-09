@@ -10,8 +10,9 @@
  * - Links into the viewer's own machine or network (`localhost`, IP
  *   addresses, `.local`, single-word intranet names) can trigger requests to
  *   routers and dev servers → refused; a link must name a public domain.
- * - Look-alike domains (Cyrillic "а" in "аpple.com") → the viewer shows the
- *   host as the URL parser normalises it (punycode, `xn--…`).
+ * - Look-alike domains (Cyrillic "а" in "аpple.com") → links are stored as
+ *   the URL parser normalises them (punycode, `xn--…`), which is what the
+ *   browser shows on hover.
  * - The opened page taking over this tab via `window.opener`, and the
  *   address of the sequence leaking → links open with
  *   `rel="noopener noreferrer"`; `nofollow ugc` marks them as user content.

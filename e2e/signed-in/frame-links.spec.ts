@@ -43,11 +43,12 @@ test.describe("frame links", () => {
     const stored = await db.findSequenceByTitle(users.me.id, title);
     expect(await db.findFrameLink(stored!.frames[0].id)).toBe(`${EXTERNAL}/setup`);
 
-    // In the viewer: the frame is a link, marked with its host.
+    // In the viewer: the frame is a link, marked only by the icon.
     await page.goto(`/?sequence=${stored!.id}`);
     const link = sequenceViewer(page).getByTestId("frame-link");
     await expect(link).toContainText("Read the setup guide");
-    await expect(link).toContainText("docs.example.com");
+    await expect(link.getByTestId("frame-link-icon")).toBeVisible();
+    await expect(link).not.toContainText("docs.example.com");
     await expect(link).toHaveAttribute("target", "_blank");
     await expect(link).toHaveAttribute("rel", /noopener/);
     await expect(link).toHaveAttribute("rel", /noreferrer/);
@@ -67,6 +68,7 @@ test.describe("frame links", () => {
 
     await expect(sequenceViewer(page).getByText(sequence.title)).toBeVisible();
     await expect(sequenceViewer(page).getByTestId("frame-link")).toHaveCount(0);
+    await expect(sequenceViewer(page).getByTestId("frame-link-icon")).toHaveCount(0);
   });
 
   test("an unsafe link that reached the database is never rendered", async ({ page, data }) => {

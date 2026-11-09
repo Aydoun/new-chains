@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useLazyGetSequencesByUserQuery } from "./services/sequences";
 import { SequenceCard } from "@/components/sequence-card";
-import { CreateSequenceForm } from "@/components/ui/create-sequence";
 import { useTranslation } from "@/components/locale-provider";
-import { Button, Callout, Spinner, Text, TextField } from "@radix-ui/themes";
-import Link from "next/link";
+import { Button, Spinner, Text, TextField } from "@radix-ui/themes";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { DataLoader, SessionLoader } from "@/components/ui/spinner";
 import { ViewSequence } from "@/components/view-sequence";
@@ -19,7 +18,11 @@ import { PaginationParams, Sequence, TimeFilter } from "@/app/types";
 import { useInfinitePagination } from "@/hooks/useInfinitePagination";
 import { FilterDropdown } from "@/components/filter-dropdown";
 import { useDebounce } from "use-debounce";
-import { DEFAULT_PAGE_SIZE, SEARCH_DEBOUNCE_DELAY } from "@/lib/constants";
+import {
+  DEFAULT_PAGE_SIZE,
+  SEARCH_DEBOUNCE_DELAY,
+  STUDIO_CREATE_PATH,
+} from "@/lib/constants";
 
 export default function Home({
   sequenceId,
@@ -28,14 +31,12 @@ export default function Home({
 }) {
   const { t } = useTranslation();
   const { data: session, status } = useSession();
+  const router = useRouter();
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [showCreationSuccess, setShowCreationSuccess] = useState(false);
   const [timeFilter, setTimeFilter] = useState<TimeFilter>();
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch] = useDebounce(searchTerm, SEARCH_DEBOUNCE_DELAY);
   const sequenceIdRef = useRef<string | number | null>(null);
-  const sequenceTitleRef = useRef<string>("");
   const userId = session?.user?.id;
   const [fetchSequences] = useLazyGetSequencesByUserQuery();
   const initialParams = useMemo(
@@ -62,17 +63,14 @@ export default function Home({
     isLoading && Array.isArray(sequences) && sequences.length === 0;
 
   useEffect(() => {
-    if (showCreationSuccess) {
-      setTimeout(() => setShowCreationSuccess(false), 1000 * 10);
-    }
-  }, [showCreationSuccess]);
-
-  useEffect(() => {
     if (sequenceId) {
       sequenceIdRef.current = sequenceId;
       setIsViewDialogOpen(true);
     }
   }, [sequenceId]);
+
+  // Sequences are created from the studio, which opens the form on arrival.
+  const goToCreate = () => router.push(STUDIO_CREATE_PATH);
 
   const clearSearchAndFilter = () => {
     setSearchTerm("");
@@ -83,7 +81,7 @@ export default function Home({
 
   return (
     <div className="flex flex-col gap-4 px-6 py-0 px-6 mt-20 md:mt-6">
-      <OnboardingChecklist onCreate={() => setIsCreateDialogOpen(true)} />
+      <OnboardingChecklist onCreate={goToCreate} />
       <div className="flex gap-4 justify-between flex-wrap mb-4">
         <Text
           data-testid="homepage-title"
@@ -102,26 +100,9 @@ export default function Home({
             {t("navigation.exploreDescription")}
           </Text>
         </Text>
-        <div className="min-h-[52px] hidden md:flex">
-          {showCreationSuccess && (
-            <Callout.Root className="mt-1 p-3 px-4" color="green" role="status">
-              <Callout.Text>
-                {t("sequence.cta.creation-message")}{" "}
-                <Link
-                  href="/studio"
-                  className="font-semibold underline underline-offset-4"
-                >
-                  {t("navigation.cta.studio-redirect")}
-                </Link>
-              </Callout.Text>
-            </Callout.Root>
-          )}
-        </div>
         <div className="self-center">
           <Button
-            onClick={() => {
-              setIsCreateDialogOpen(true);
-            }}
+            onClick={goToCreate}
             className="cursor-pointer h-10 items-center px-4 text-sm font-bold bg-primary-main"
           >
             <SquarePlus />
@@ -191,7 +172,7 @@ export default function Home({
                 ) : (
                   <SequenceEmptyState
                     onClear={clearSearchAndFilter}
-                    onCreate={() => setIsCreateDialogOpen(true)}
+                    onCreate={goToCreate}
                   />
                 )}
               </>
@@ -201,25 +182,10 @@ export default function Home({
           </>
         )}
       </section>
-      {/* <CreateSequenceCta
-        onCreate={(title) => {
-          sequenceTitleRef.current = title;
-          setIsCreateDialogOpen(true);
-        }}
-      /> */}
       {isViewDialogOpen && (
         <ViewSequence
           sequenceId={sequenceIdRef.current}
           onClose={() => setIsViewDialogOpen(false)}
-        />
-      )}
-      {isCreateDialogOpen && (
-        <CreateSequenceForm
-          onClose={() => {
-            setIsCreateDialogOpen(false);
-          }}
-          initialSequenceTitle={sequenceTitleRef.current}
-          onSequenceCreated={() => setShowCreationSuccess(true)}
         />
       )}
     </div>

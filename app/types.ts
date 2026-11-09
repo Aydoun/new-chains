@@ -29,11 +29,26 @@ export interface Sequence {
   updatedAt: string;
 }
 
+/** The picture of an IMAGE frame. */
+export interface FrameAsset {
+  url: string;
+  width: number;
+  height: number;
+}
+
+/** Returned by the upload API. */
+export interface UploadedAsset extends FrameAsset {
+  id: number;
+  contentType: string;
+}
+
 export interface Frame {
   id: number;
   type: FrameType;
   description?: string | null;
   content: string;
+  assetId?: number | null;
+  asset?: FrameAsset | null;
   createdById?: number | null;
   createdAt: string;
   updatedAt: string;
@@ -67,6 +82,8 @@ export type SequenceCreationFormValues = {
   pages: {
     content: string;
     description?: string;
+    /** Uploaded image for this frame, if any. */
+    asset?: UploadedAsset | null;
   }[];
 };
 

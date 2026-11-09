@@ -25,7 +25,7 @@
     "login": "Connexion",
     "logout": "Déconnexion",
     "me": "Mon compte",
-    "message": "Connectez-vous avec Google pour garder vos brouillons privés et partager avec attribution.",
+    "message": "Connectez-vous avec Google pour garder vos brouillons privés et partager en étant crédité.",
     "cta": {
       "google": "Continuer avec Google",
       "signIn": "Se connecter"
@@ -38,7 +38,7 @@
       "generic": "Une erreur est survenue lors de la connexion. Veuillez réessayer."
     },
     "google": "Google",
-    "welcome": "Bon retour",
+    "welcome": "Bon retour parmi nous",
     "subtitle": "Connectez-vous pour accéder à la bêta",
     "continueWithEmail": "Ou continuer avec un e-mail",
     "emailLabel": "Adresse e-mail",
@@ -80,7 +80,7 @@
     "sendMessage": "Envoyer un message",
     "replyTime": "Nous vous répondrons dès que possible",
     "welcomeMessage": "Contactez-nous",
-    "welcomeDescription": "Des questions sur l’explorateur de séquences, un problème, ou simplement envie de dire bonjour ? Contactez-nous directement ou envoyez un message ci-dessous.",
+    "welcomeDescription": "Vous avez des questions sur l’explorateur de séquences, rencontrez un problème ou souhaitez simplement dire bonjour ? Contactez-nous directement ou envoyez un message ci-dessous.",
     "copy": "Copier {value}"
   },
   "frame": {
@@ -110,9 +110,6 @@
     "language": "Langue"
   },
   "navigation": {
-    "cta": {
-      "studio-redirect": "Aller au Studio"
-    },
     "contact": "Contact",
     "home": "Accueil",
     "profile": "Profil",
@@ -124,9 +121,9 @@
   },
   "onboarding": {
     "actions": {
-      "complete": "Terminer",
+      "complete": "Marquer comme fait",
       "markDone": "Marquer comme fait",
-      "markItem": "Basculer l’état de {item}",
+      "markItem": "Cocher ou décocher {item}",
       "skip": "Passer pour l’instant",
       "undo": "Annuler"
     },
@@ -147,9 +144,9 @@
         "title": "Partager un lien"
       }
     },
-    "progress": "{completed}/{total} terminé(s)",
+    "progress": "Terminé : {completed}/{total}",
     "subtitle": "Bienvenue sur Link & Tell",
-    "title": "Nouveau ici ?"
+    "title": "Première visite ?"
   },
   "profile": {
     "accounts": "Comptes connectés",
@@ -173,7 +170,6 @@
     "cta": {
       "title": "Nommez votre séquence",
       "publish": "Publier",
-      "creation-message": "Séquence créée avec succès.",
       "url-copied": "Lien copié",
       "label": "Nouvelle séquence"
     },
@@ -241,7 +237,7 @@
     },
     "sequenceError": {
       "dashboard": "Accueil",
-      "description": "Le serveur a rencontré une condition inattendue, il s’agit peut-être d’un problème de connexion temporaire",
+      "description": "Le serveur a rencontré une erreur inattendue ; il s’agit peut-être d’un problème de connexion temporaire",
       "retry": "Réessayer",
       "title": "Impossible de charger les séquences"
     }
@@ -265,7 +261,7 @@
       "steps": {
         "1": {
           "content": "Listez vos 3 priorités du jour.",
-          "description": "Uniquement les tâches qui font avancer les choses. Pas de remplissage."
+          "description": "Uniquement les tâches qui comptent vraiment. Pas de tâches inutiles."
         },
         "2": {
           "content": "Réservez du temps pour chaque priorité.",
@@ -284,7 +280,7 @@
       "steps": {
         "1": {
           "content": "Passez rapidement en revue la semaine dernière.",
-          "description": "Qu’est-ce qui a marché ? Qu’est-ce qui n’a pas marché ? Une phrase chacun."
+          "description": "Qu’est-ce qui a marché ? Qu’est-ce qui n’a pas marché ? Une phrase pour chaque question."
         },
         "2": {
           "content": "Choisissez un objectif principal pour cette semaine.",
@@ -310,10 +306,26 @@
           "description": "Marcher, s’étirer, s’hydrater ou se reposer."
         },
         "3": {
-          "content": "Supprimez une source de mauvaises habitudes.",
+          "content": "Éliminez une tentation malsaine.",
           "description": "Cachez la malbouffe, coupez les notifications tardives, etc."
         }
       }
+    }
+  },
+  "images": {
+    "add": "Ajouter une image",
+    "remove": "Retirer l’image",
+    "uploading": "Envoi de l’image…",
+    "preview": "Image du cadre {index}",
+    "hint": "JPEG, PNG ou WebP, jusqu’à {maxMb} Mo, du 9:16 au 1,91:1 comme sur Instagram ou TikTok",
+    "errors": {
+      "type": "Utilisez une image JPEG, PNG ou WebP.",
+      "tooLarge": "L’image ne doit pas dépasser {maxMb} Mo.",
+      "tooSmall": "L’image doit faire au moins {minWidth}×{minHeight} pixels.",
+      "tooBig": "L’image doit faire au plus {maxWidth}×{maxHeight} pixels.",
+      "ratio": "Utilisez un format entre 9:16 (portrait) et 1,91:1 (paysage), comme sur Instagram ou TikTok.",
+      "empty": "Le fichier est vide.",
+      "upload": "Impossible d’envoyer l’image. Veuillez réessayer."
     }
   }
 }

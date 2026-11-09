@@ -15,6 +15,7 @@ const db = vi.hoisted(() => {
     sequence: { findMany: vi.fn(), findFirst: vi.fn() },
     frame: { findMany: vi.fn() },
     snippet: { findMany: vi.fn() },
+    asset: { findMany: vi.fn() },
     $transaction: vi.fn(async (fn: (t: typeof tx) => unknown) => fn(tx)),
   };
 });
@@ -33,6 +34,7 @@ beforeEach(() => {
   db.sequence.findMany.mockResolvedValue([]);
   db.frame.findMany.mockResolvedValue([]);
   db.snippet.findMany.mockResolvedValue([]);
+  db.asset.findMany.mockResolvedValue([]);
 });
 
 describe("POST /api/sequence/create", () => {
@@ -79,7 +81,7 @@ describe("POST /api/sequence/create", () => {
     expect(db.$transaction).toHaveBeenCalledTimes(1);
     expect(db.tx.frame.create).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: { content: "Wake up", description: "", createdById: 1 },
+        data: { type: "PHRASE", content: "Wake up", description: "", createdById: 1 },
       }),
     );
     expect(db.tx.sequence.create).toHaveBeenCalledWith({
@@ -91,6 +93,45 @@ describe("POST /api/sequence/create", () => {
         FrameOrder: [10, 11],
       },
     });
+  });
+});
+
+describe("POST /api/sequence/create with images", () => {
+  const body = (assetId: number) => ({
+    title: "Trip",
+    frames: [{ content: "Beach", assetId }, { content: "Text only" }],
+  });
+
+  it("makes frames with the user's own image IMAGE frames", async () => {
+    db.asset.findMany.mockResolvedValue([{ id: 42 }]);
+    db.tx.frame.create
+      .mockResolvedValueOnce({ id: 10 })
+      .mockResolvedValueOnce({ id: 11 });
+    db.tx.sequence.create.mockResolvedValue({ id: 5 });
+
+    const { res, store } = mockResponse();
+    await createHandler(mockRequest({ method: "POST", body: body(42) }), res);
+
+    expect(store.status).toBe(201);
+    expect(db.asset.findMany).toHaveBeenCalledWith({
+      where: { id: { in: [42] }, uploadedById: 1 },
+      select: { id: true },
+    });
+    expect(db.tx.frame.create.mock.calls.map(([arg]) => arg.data)).toEqual([
+      { type: "IMAGE", content: "Beach", description: "", assetId: 42, createdById: 1 },
+      { type: "PHRASE", content: "Text only", description: "", createdById: 1 },
+    ]);
+  });
+
+  it("refuses an image someone else uploaded, and creates nothing", async () => {
+    db.asset.findMany.mockResolvedValue([]);
+
+    const { res, store } = mockResponse();
+    await createHandler(mockRequest({ method: "POST", body: body(99) }), res);
+
+    expect(store.status).toBe(400);
+    expect(store.body.message).toBe("Unknown image");
+    expect(db.$transaction).not.toHaveBeenCalled();
   });
 });
 

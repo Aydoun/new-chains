@@ -8,6 +8,7 @@ import { useSaveSnippetMutation } from "@/app/services/snippets";
 import { useTranslation } from "@/components/locale-provider";
 import { Modal } from "./ui/modal";
 import { SequenceFrame } from "./sequence-card";
+import { ImageFrame } from "./image-frame";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { Heading } from "@radix-ui/themes";
 import { FrameSkeleton } from "./sequence-skeleton";
@@ -72,18 +73,26 @@ export function ViewSequence({ sequenceId, onClose }: Props) {
           <Carousel
             frames={
               guardedFrames.length > 0
-                ? guardedFrames.map((frame) => (
-                    <SequenceFrame
-                      key={frame.id}
-                      text={frame.content}
-                      description={frame.description}
-                      onLike={handleSaveSnippet(frame.id)}
-                      liked={
+                ? guardedFrames.map((frame) => {
+                    const frameProps = {
+                      text: frame.content,
+                      description: frame.description,
+                      onLike: handleSaveSnippet(frame.id),
+                      liked:
                         data?.likedFrames.includes(frame.id) ||
-                        newLikes.includes(frame.id)
-                      }
-                    />
-                  ))
+                        newLikes.includes(frame.id),
+                    };
+                    // The media type decides how the frame is drawn.
+                    return frame.type === "IMAGE" && frame.asset ? (
+                      <ImageFrame
+                        key={frame.id}
+                        asset={frame.asset}
+                        {...frameProps}
+                      />
+                    ) : (
+                      <SequenceFrame key={frame.id} {...frameProps} />
+                    );
+                  })
                 : [
                     <SequenceFrame
                       key="empty"

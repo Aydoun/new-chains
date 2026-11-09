@@ -2,6 +2,7 @@
 
 import { useMemo, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   useDeleteSequenceMutation,
   useLazyGetStudioSequencesQuery,
@@ -10,13 +11,20 @@ import { useTranslation } from "@/components/locale-provider";
 import { useInfinitePagination } from "@/hooks/useInfinitePagination";
 import { PaginationParams, Sequence, TimeFilter } from "@/app/types";
 import { StudioView } from "@/components/studio-view";
-import { DEFAULT_PAGE_SIZE, SEARCH_DEBOUNCE_DELAY } from "@/lib/constants";
+import {
+  CREATE_SEQUENCE_PARAM,
+  DEFAULT_PAGE_SIZE,
+  SEARCH_DEBOUNCE_DELAY,
+} from "@/lib/constants";
 import { useDebounce } from "use-debounce";
 import { SessionLoader } from "@/components/ui/spinner";
 
 export default function StudioPage() {
   const { t } = useTranslation();
   const { data: session, status } = useSession();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const openCreateOnLoad = searchParams?.has(CREATE_SEQUENCE_PARAM) ?? false;
   const [fetchStudioSequences] = useLazyGetStudioSequencesQuery();
   const [timeFilter, setTimeFilter] = useState<TimeFilter>();
   const [searchTerm, setSearchTerm] = useState("");
@@ -36,6 +44,7 @@ export default function StudioPage() {
     isLoading,
     error,
     loadMore,
+    refresh,
     exludeItem,
   } = useInfinitePagination<Sequence, PaginationParams>({
     fetchPage: (params) => fetchStudioSequences(params).unwrap(),
@@ -76,6 +85,10 @@ export default function StudioPage() {
       isLoading={isBusy}
       searchTerm={searchTerm}
       onSearchChange={setSearchTerm}
+      openCreateOnLoad={openCreateOnLoad}
+      // Drop the param so a reload or "back" doesn't reopen the form.
+      onCreateOpened={() => router.replace("/studio", { scroll: false })}
+      onSequenceCreated={refresh}
     />
   );
 }

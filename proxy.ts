@@ -22,7 +22,7 @@ function contentSecurityPolicy(nonce: string) {
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ""}`,
     // Radix and Next inject inline styles; styles can't run code.
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: blob: https://*.googleusercontent.com",
+    "img-src 'self' data: blob: https://*.googleusercontent.com https://*.public.blob.vercel-storage.com",
     "font-src 'self' data:",
     `connect-src 'self'${isDev ? " ws: wss:" : ""}`,
     "frame-ancestors 'none'",

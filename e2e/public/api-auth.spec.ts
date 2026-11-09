@@ -14,6 +14,7 @@ const routes = [
   { method: "GET", url: "/api/user/1" },
   { method: "PUT", url: "/api/user/update?id=1" },
   { method: "POST", url: "/api/contact/send" },
+  { method: "POST", url: "/api/asset/upload" },
 ] as const;
 
 test.describe("API without a session", () => {

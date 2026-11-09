@@ -13,7 +13,7 @@ interface Props {
 }
 
 export function SnippetCard({ frame, notes, onView, onDelete }: Props) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   return (
     <div
       data-testid="snippet-card"
@@ -23,7 +23,7 @@ export function SnippetCard({ frame, notes, onView, onDelete }: Props) {
           content={
             notes ??
             t("snippets.info", {
-              time: timeAgo(frame.createdAt),
+              time: timeAgo(frame.createdAt, { locale }),
             })
           }
         >

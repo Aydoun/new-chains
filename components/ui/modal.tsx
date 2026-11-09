@@ -11,6 +11,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/components/locale-provider";
 
 interface ModalProps {
   open: boolean;
@@ -19,6 +20,7 @@ interface ModalProps {
 }
 
 const ModalRoot = ({ open, onOpenChange, children }: ModalProps) => {
+  const { t } = useTranslation();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -50,7 +52,7 @@ const ModalRoot = ({ open, onOpenChange, children }: ModalProps) => {
     return createPortal(
       <div className="fixed inset-0 z-50 rounded-4xl">
         <button
-          aria-label="Close modal overlay"
+          aria-label={t("common.close")}
           className="absolute inset-0 h-full w-full bg-black/60"
         />
         <div className="relative z-10 flex h-full items-center justify-center overflow-y-auto px-4 py-10">
@@ -59,7 +61,7 @@ const ModalRoot = ({ open, onOpenChange, children }: ModalProps) => {
       </div>,
       themeRoot ?? document.body
     );
-  }, [children, mounted, onOpenChange, open]);
+  }, [children, mounted, onOpenChange, open, t]);
 
   return portalContent;
 };

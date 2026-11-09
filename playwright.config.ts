@@ -96,6 +96,9 @@ export default defineConfig({
           NEXTAUTH_URL: LOCAL_URL,
           // Separate build folder, so a running `yarn dev` doesn't block it.
           NEXT_DIST_DIR: ".next/e2e",
+          // Uploads go to local disk, apart from the dev server's files.
+          BLOB_READ_WRITE_TOKEN: "",
+          LOCAL_UPLOAD_DIR: ".uploads/e2e",
         },
       },
 });

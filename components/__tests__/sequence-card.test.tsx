@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Theme } from "@radix-ui/themes";
 import { vi } from "vitest";
@@ -83,5 +83,46 @@ describe("SequenceCard", () => {
     await user.click(screen.getByLabelText(translate("sequence.actions.delete")));
 
     expect(handleDelete).toHaveBeenCalledWith(baseSequence.id);
+  });
+
+  it("shows the picture of an IMAGE first frame, cropped to the card", () => {
+    renderCard({
+      sequenceOverrides: {
+        FrameOrder: [1, 2] as never,
+        firstFrame: {
+          id: 1,
+          type: "IMAGE",
+          content: "At the beach",
+          asset: { url: "/api/asset/file/assets/1/a.png", width: 1080, height: 1350 },
+          createdAt: "2024-04-01T12:00:00Z",
+          updatedAt: "2024-04-01T12:00:00Z",
+        } as never,
+      },
+    });
+
+    const preview = screen.getByTestId("card-image-frame");
+    expect(within(preview).getByRole("img", { name: "At the beach" })).toHaveAttribute(
+      "src",
+      "/api/asset/file/assets/1/a.png",
+    );
+    expect(within(preview).getByText("At the beach")).toBeInTheDocument();
+    expect(within(preview).getByText(translate("sequence.countLabel", { count: 2 }))).toBeInTheDocument();
+  });
+
+  it("keeps the text preview for a text first frame", () => {
+    renderCard({
+      sequenceOverrides: {
+        firstFrame: {
+          id: 1,
+          type: "PHRASE",
+          content: "Just words",
+          createdAt: "2024-04-01T12:00:00Z",
+          updatedAt: "2024-04-01T12:00:00Z",
+        } as never,
+      },
+    });
+
+    expect(screen.getByText("Just words")).toBeInTheDocument();
+    expect(screen.queryByTestId("card-image-frame")).not.toBeInTheDocument();
   });
 });

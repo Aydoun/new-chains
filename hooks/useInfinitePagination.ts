@@ -66,6 +66,12 @@ export function useInfinitePagination<
     await fetchAndSet(page);
   }, [hasMore, isLoading]);
 
+  /** Reloads the first page, keeping the current items until it arrives. */
+  const refresh = useCallback(
+    () => fetchAndSet(initialPage, true),
+    [fetchAndSet, initialPage]
+  );
+
   const exludeItem = useCallback(
     (targetId: string | number) => {
       const filteredItems = items.filter((item) => item.id !== targetId);
@@ -87,6 +93,7 @@ export function useInfinitePagination<
     isLoading,
     error,
     loadMore,
+    refresh,
     setItems,
     exludeItem,
   };

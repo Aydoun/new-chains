@@ -11,6 +11,11 @@ import type {
 
 type ListQuery = z.infer<typeof listSequencesQuery>;
 
+/** What the client needs to draw an IMAGE frame. */
+const frameAsset = {
+  asset: { select: { url: true, width: true, height: true } },
+} satisfies Prisma.FrameInclude;
+
 /** A sequence is visible to its owner, and to everyone when it's public. */
 const visibleTo = (viewerId: number): Prisma.SequenceWhereInput => ({
   OR: [{ visibility: "PUBLIC" }, { userId: viewerId }],
@@ -51,7 +56,10 @@ async function paginate(where: Prisma.SequenceWhereInput, query: ListQuery) {
     .filter((id): id is number => typeof id === "number");
 
   const frames = firstFrameIds.length
-    ? await prisma.frame.findMany({ where: { id: { in: firstFrameIds } } })
+    ? await prisma.frame.findMany({
+        where: { id: { in: firstFrameIds } },
+        include: frameAsset,
+      })
     : [];
   const framesById = new Map(frames.map((frame) => [frame.id, frame]));
 
@@ -91,7 +99,10 @@ export async function getSequenceForViewer(id: number, viewerId: number) {
   if (!sequence) throw notFound("Sequence");
 
   const [frames, snippets] = await Promise.all([
-    prisma.frame.findMany({ where: { id: { in: sequence.FrameOrder } } }),
+    prisma.frame.findMany({
+      where: { id: { in: sequence.FrameOrder } },
+      include: frameAsset,
+    }),
     prisma.snippet.findMany({
       where: { originSequenceId: id, createdById: viewerId },
       select: { frameId: true },
@@ -132,8 +143,10 @@ export function createSequenceWithFrames(
     for (const frame of input.frames) {
       const created = await tx.frame.create({
         data: {
+          type: frame.assetId ? "IMAGE" : "PHRASE",
           content: frame.content,
           description: frame.description,
+          assetId: frame.assetId,
           createdById: userId,
         },
         select: { id: true },

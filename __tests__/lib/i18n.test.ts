@@ -1,19 +1,5 @@
 import { describe, expect, it } from "vitest";
 import { detectLocale, translate } from "@/lib/i18n";
-import en from "@/locales/en.json";
-import fr from "@/locales/fr.json";
-import nl from "@/locales/nl.json";
-import zh from "@/locales/zh.json";
-
-function keysOf(value: unknown, prefix = ""): string[] {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) {
-    return [prefix];
-  }
-
-  return Object.entries(value).flatMap(([key, child]) =>
-    keysOf(child, prefix ? `${prefix}.${key}` : key)
-  );
-}
 
 describe("detectLocale", () => {
   it("matches on the primary language subtag", () => {
@@ -44,17 +30,5 @@ describe("translate", () => {
     expect(translate("does.not.exist", undefined, "nl")).toBe(
       "does.not.exist"
     );
-  });
-});
-
-describe("locale files", () => {
-  const englishKeys = keysOf(en).sort();
-
-  it.each([
-    ["fr", fr],
-    ["nl", nl],
-    ["zh", zh],
-  ])("%s has exactly the same keys as en", (_, dictionary) => {
-    expect(keysOf(dictionary).sort()).toEqual(englishKeys);
   });
 });

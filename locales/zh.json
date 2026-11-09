@@ -65,7 +65,7 @@
       "linkedin": "LinkedIn"
     },
     "directChannels": "直接联系方式",
-    "directChannelsDescription": "在社交平台上关注我们，或直接发送电子邮件。",
+    "directChannelsDescription": "通过社交平台与我们联系，或直接发送电子邮件。",
     "form": {
       "email": "电子邮件地址",
       "name": "姓名",
@@ -110,9 +110,6 @@
     "language": "语言"
   },
   "navigation": {
-    "cta": {
-      "studio-redirect": "前往工作室"
-    },
     "contact": "联系",
     "home": "首页",
     "profile": "个人资料",
@@ -124,7 +121,7 @@
   },
   "onboarding": {
     "actions": {
-      "complete": "完成",
+      "complete": "标记为完成",
       "markDone": "标记为完成",
       "markItem": "切换 {item} 的完成状态",
       "skip": "暂时跳过",
@@ -157,7 +154,7 @@
     "cta": {
       "avatar": "更换头像"
     },
-    "connectedMessage": "已作为 {email} 关联",
+    "connectedMessage": "已关联：{email}",
     "delete": "删除账户",
     "deleteWarn": "永久删除你的账户及所有内容。",
     "emailLabel": "电子邮件地址",
@@ -173,7 +170,6 @@
     "cta": {
       "title": "为你的序列命名",
       "publish": "发布",
-      "creation-message": "序列创建成功。",
       "url-copied": "链接已复制",
       "label": "新建序列"
     },
@@ -214,7 +210,7 @@
       "empty": "尚未保存任何片段。",
       "insertAction": "插入片段"
     },
-    "info": "创建于 {time}",
+    "info": "{time}创建",
     "originLabel": "来源",
     "menu": {
       "delete": "删除",
@@ -248,7 +244,7 @@
   },
   "studio": {
     "total": "序列总数",
-    "lastEdit": "最近编辑",
+    "lastEdit": "上次编辑",
     "greetings": "你好，{name}",
     "explorerWelcome": "欢迎来到 {name} 的工作室",
     "template-create": "从模板创建"
@@ -314,6 +310,22 @@
           "description": "把零食藏起来、关闭深夜通知等。"
         }
       }
+    }
+  },
+  "images": {
+    "add": "添加图片",
+    "remove": "移除图片",
+    "uploading": "正在上传图片…",
+    "preview": "画面 {index} 的图片",
+    "hint": "JPEG、PNG 或 WebP，最大 {maxMb} MB，比例从 9:16 到 1.91:1（与 Instagram 或 TikTok 相同）",
+    "errors": {
+      "type": "请使用 JPEG、PNG 或 WebP 图片。",
+      "tooLarge": "图片不能超过 {maxMb} MB。",
+      "tooSmall": "图片至少需要 {minWidth}×{minHeight} 像素。",
+      "tooBig": "图片最多 {maxWidth}×{maxHeight} 像素。",
+      "ratio": "请使用 9:16（竖版）到 1.91:1（横版）之间的比例，与 Instagram 或 TikTok 相同。",
+      "empty": "文件为空。",
+      "upload": "图片上传失败，请重试。"
     }
   }
 }
